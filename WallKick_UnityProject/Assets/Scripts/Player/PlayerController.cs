@@ -107,6 +107,8 @@ public class PlayerController : MonoBehaviour {
 
     private void Update()
     {
+        Debug.Log("New branch test");
+
         verticalVelocity = (int)rb.velocity.y;
 
         //if (rb.velocity.y >= maxVerticalVelocity)
