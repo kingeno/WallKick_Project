@@ -5,7 +5,6 @@ using UnityEngine;
 public class RightDetectionBox : MonoBehaviour {
 
     public bool isTriggered = false;
-    private Rigidbody2D _Rigidbody;
 
     private void OnTriggerEnter2D(Collider2D other)
     {

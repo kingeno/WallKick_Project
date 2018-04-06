@@ -4,6 +4,12 @@ using UnityEngine;
 using InControl;
 using UnityEngine.UI;
 
+// TODO 
+// 1. adding a trigger collider to the player (the collider must have the same size (or a little but taller on the vertical axis) as the collider that already exists)
+// 2. if the player is pressing down and the trigger is currently colliding(check if OnTriggerEnter works for this) with a plateform,
+// store the plateform index and disable the collisions between the player collider and the plateform
+// 3. use OnTriggerExit to set the collision back to true and empty the variable which stored the plateform index (for the variable to be up to store the next plateform index)
+
 public class PlayerController : MonoBehaviour {
 
     private GUIStyle guiStyle = new GUIStyle();
@@ -90,7 +96,7 @@ public class PlayerController : MonoBehaviour {
 
     //-----------------------------------------------------------------------------------------
 
-    void Awake()
+    void Start()
     {
         guiStyle.normal.textColor = Color.black;
 
@@ -100,6 +106,8 @@ public class PlayerController : MonoBehaviour {
         for (int i = 0; i < _plateforms.Length; i++)
         {
             _plateformColliders[i] = _plateforms[i].GetComponent<Collider2D>();
+            _plateformColliders[i].name = "PlateformCol_" + i.ToString();
+            Debug.Log(_plateformColliders[i].name);
         }
         rb = GetComponent<Rigidbody2D>();
         _collider2D = GetComponent<Collider2D>();
@@ -107,14 +115,10 @@ public class PlayerController : MonoBehaviour {
 
     private void Update()
     {
-        Debug.Log("New branch test");
+        Time.timeScale = 0.2f;
 
         verticalVelocity = (int)rb.velocity.y;
 
-        //if (rb.velocity.y >= maxVerticalVelocity)
-        //{
-        //    rb.velocity = new Vector2(rb.velocity.x, maxVerticalVelocity);
-        //}
         if (rb.velocity.y <= -maxVerticalVelocity)
         {
             rb.velocity = new Vector2(rb.velocity.x, -maxVerticalVelocity);
@@ -123,12 +127,6 @@ public class PlayerController : MonoBehaviour {
         xPos = transform.position.x;
         yPos = transform.position.y;
         zPos = transform.position.z;
-
-        //Vector2 debugTextPos = transform.position;
-        //debugText.transform.position = debugTextPos;
-        //debugText.text = "vertical velocity = " + verticalVelocity.ToString();
-
-        Time.timeScale = 1f;
 
         var inputDevice = InputManager.ActiveDevice;
         float leftStickValueX = Device.LeftStickX;
@@ -442,7 +440,13 @@ public class PlayerController : MonoBehaviour {
             {
                 foreach (Collider2D _collider in _plateformColliders)
                 {
-                    Physics2D.IgnoreCollision(_collider2D, _collider, true);
+                    if (_collider.name == PlayerGroundCheck.plateformName)
+                    {
+                        Physics2D.IgnoreCollision(_collider2D, _collider, true);
+
+                        Debug.Log("collider name = " + _collider.name);
+                        Debug.Log("PGC plateform name = " + PlayerGroundCheck.plateformName);
+                    }
                 }
             }
             else
