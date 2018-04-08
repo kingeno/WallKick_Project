@@ -102,7 +102,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        Time.timeScale = 1f;
+        //Time.timeScale = 1f;
 
         verticalVelocity = (int)rb.velocity.y;
 
@@ -193,7 +193,7 @@ public class PlayerController : MonoBehaviour
             inputPunch = false;
 
         //----------------- PAUSE ----------------------
-        if (Device.CommandWasPressed && !inputPause || Input.GetKey(KeyCode.Escape))
+        if (Device.CommandWasPressed && !inputPause || Input.GetKeyDown(KeyCode.Escape))
             inputPause = true;
         else
             inputPause = false;
@@ -417,7 +417,7 @@ public class PlayerController : MonoBehaviour
         float x = screenPos.x;
         float y = Screen.height - screenPos.y;
 
-        GUI.Label(new Rect(x - 30f, y - 50f, 20f, 50f),
+        GUI.Label(new Rect(x - 30f, y - 100f, 20f, 50f),
             "no collision = " + noCollisionState.ToString() + "\n" +
             "vertical velocity = " + verticalVelocity.ToString(),
             guiStyle);
