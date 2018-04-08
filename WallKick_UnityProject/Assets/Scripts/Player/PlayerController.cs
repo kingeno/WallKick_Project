@@ -5,12 +5,13 @@ using InControl;
 using UnityEngine.UI;
 
 // TODO 
-// 1. adding a trigger collider to the player (the collider must have the same size (or a little but taller on the vertical axis) as the collider that already exists)
+// 1. adding a trigger collider to the player. The collider must have the same size (or a little but taller on the vertical axis) as the collider that already exists
 // 2. if the player is pressing down and the trigger is currently colliding(check if OnTriggerEnter works for this) with a plateform,
 // store the plateform index and disable the collisions between the player collider and the plateform
 // 3. use OnTriggerExit to set the collision back to true and empty the variable which stored the plateform index (for the variable to be up to store the next plateform index)
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour
+{
 
     private GUIStyle guiStyle = new GUIStyle();
 
@@ -31,7 +32,6 @@ public class PlayerController : MonoBehaviour {
     public bool inputWallJump = false;
     public bool isFastFalling = false;
     public bool willPassThroughPlateform = false;
-    public bool passThroughPlateformCoroutine = false;
     public bool inputLeft = false;
     public bool inputRight = false;
     public static bool inputPause = false;
@@ -63,12 +63,11 @@ public class PlayerController : MonoBehaviour {
     public float airAcceleration;
     [Range(0.05f, 0.1f)]
     public float disabledCollisionDuration;
-    private float noCollisionState;  // used for debug display
+    private float noCollisionState;  // use for debug display
 
     [Header("Ground & Wall triggers")]
     public bool isGrounded = false;
     public bool isSlidingOnWall = false;
-    //public bool canWallJump = false;
     public bool canWallJumpToRight = false;
     public bool canWallJumpToLeft = false;
 
@@ -77,9 +76,6 @@ public class PlayerController : MonoBehaviour {
     public RightDetectionBox RightDetectionBox;
     Rigidbody2D rb;
     Collider2D _collider2D;
-
-    private Collider2D[] _plateformColliders;
-    private GameObject[] _plateforms;
 
     //-----------------------------------------------------------------------------------------
 
@@ -100,22 +96,13 @@ public class PlayerController : MonoBehaviour {
     {
         guiStyle.normal.textColor = Color.black;
 
-        _plateformColliders = new Collider2D[4];
-
-        _plateforms = GameObject.FindGameObjectsWithTag("Plateform");
-        for (int i = 0; i < _plateforms.Length; i++)
-        {
-            _plateformColliders[i] = _plateforms[i].GetComponent<Collider2D>();
-            _plateformColliders[i].name = "PlateformCol_" + i.ToString();
-            Debug.Log(_plateformColliders[i].name);
-        }
         rb = GetComponent<Rigidbody2D>();
         _collider2D = GetComponent<Collider2D>();
     }
 
     private void Update()
     {
-        Time.timeScale = 0.2f;
+        Time.timeScale = 1f;
 
         verticalVelocity = (int)rb.velocity.y;
 
@@ -145,7 +132,7 @@ public class PlayerController : MonoBehaviour {
             inputLeft = true;
         }
         else
-                inputLeft = false;
+            inputLeft = false;
 
         //----------------- RIGHT ----------------------
         if (leftStickValueX > 0.2f)
@@ -161,13 +148,14 @@ public class PlayerController : MonoBehaviour {
             inputRight = true;
         }
         else
-                inputRight = false;
+            inputRight = false;
 
         //----------------- JUMP -----------------------
         if (Device.Action1.WasPressed && isGrounded || Input.GetKeyDown(KeyCode.Space) && isGrounded || Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
         {
             inputJump = true;
-            /*jumpVFX = (GameObject) */Instantiate(jumpVFX, new Vector3(xPos, yPos - this.transform.localScale.y/2, transform.position.z), Quaternion.identity);
+            /*jumpVFX = (GameObject) */
+            Instantiate(jumpVFX, new Vector3(xPos, yPos - this.transform.localScale.y / 2, transform.position.z), Quaternion.identity);
             //Destroy(jumpVFX, 1f);
         }
 
@@ -181,20 +169,12 @@ public class PlayerController : MonoBehaviour {
             inputWallJump = true;
 
         //----------- PASS THROUGH PLATEFORM ------------
-        if (Device.LeftStickY < -0.5 && isGrounded || Input.GetKey(KeyCode.DownArrow) && isGrounded)
-        {
-            StartCoroutine(PassThroughPlateform(disabledCollisionDuration));
-        }
-        else
-        {
-            passThroughPlateformCoroutine = false;
-        }
 
-        if (Device.LeftStickY < -0.5 && !isGrounded || Input.GetKey(KeyCode.DownArrow) && !isGrounded)
+        if (Device.LeftStickY < -0.5 || Input.GetKey(KeyCode.DownArrow))
         {
             willPassThroughPlateform = true;
         }
-        else
+        else if (PlayerGroundCheck.plateformName == "empty")
         {
             willPassThroughPlateform = false;
         }
@@ -207,7 +187,7 @@ public class PlayerController : MonoBehaviour {
         if (Device.Action3.WasPressed || Input.GetKeyDown(KeyCode.C))
         {
             inputPunch = true;
-                
+
         }
         else
             inputPunch = false;
@@ -227,7 +207,7 @@ public class PlayerController : MonoBehaviour {
         }
         else
             isGrounded = false;
-        
+
         // check if the LEFT detection box is triggering a gameobject with the "wall" tag
         if (LeftDetectionBox.isTriggered && !RightDetectionBox.isTriggered)
         {
@@ -284,25 +264,30 @@ public class PlayerController : MonoBehaviour {
         if (isFacingRight && !isFacingLeft)
         {
             playerSkin.transform.rotation = facingRight;
-}
+        }
         if (isFacingLeft && !isFacingRight)
         {
             playerSkin.transform.rotation = facingLeft;
         }
 
         // pass through plateform
-        if (willPassThroughPlateform && !passThroughPlateformCoroutine)
+        if (willPassThroughPlateform)
         {
-            foreach (Collider2D _collider in _plateformColliders)
+            foreach (Collider2D _collider in PlayerGroundCheck.plateformColliders)
             {
-                Physics2D.IgnoreCollision(_collider2D, _collider, true);
+                if (_collider.name == PlayerGroundCheck.plateformName)
+                    Physics2D.IgnoreCollision(_collider2D, _collider, true);
             }
         }
-        else if (!willPassThroughPlateform && !passThroughPlateformCoroutine)
+        else if (!willPassThroughPlateform)
         {
-            foreach (Collider2D _collider in _plateformColliders)
+            foreach (Collider2D _collider in PlayerGroundCheck.plateformColliders)
             {
-                Physics2D.IgnoreCollision(_collider2D, _collider, false);
+                if (_collider.name == PlayerGroundCheck.plateformName)
+                {
+                    Physics2D.IgnoreCollision(_collider2D, _collider, false);
+                    //Debug.Log("Collision enabled between " + _collider2D.name + " & " + _collider.name);
+                }
             }
         }
     }
@@ -391,7 +376,6 @@ public class PlayerController : MonoBehaviour {
         // wall jump using side boxes (trigger) detection
         if (isSlidingOnWall)
         {
-            // code a change in vertical speed
             maxVerticalVelocity = 8f;
 
             if (!isGrounded && canWallJumpToRight)
@@ -426,41 +410,6 @@ public class PlayerController : MonoBehaviour {
             maxVerticalVelocity = 20f;
     }
 
-    // pass through plateforms wih coroutine
-    public IEnumerator PassThroughPlateform(float disabledCollisionDuration)
-    {
-        float t = 0f;
-        while (t < 2)
-        {
-            noCollisionState = t * 10f;
-            passThroughPlateformCoroutine = true;
-            t += Time.deltaTime / disabledCollisionDuration;
-
-            if (t < 2)
-            {
-                foreach (Collider2D _collider in _plateformColliders)
-                {
-                    if (_collider.name == PlayerGroundCheck.plateformName)
-                    {
-                        Physics2D.IgnoreCollision(_collider2D, _collider, true);
-
-                        Debug.Log("collider name = " + _collider.name);
-                        Debug.Log("PGC plateform name = " + PlayerGroundCheck.plateformName);
-                    }
-                }
-            }
-            else
-            {
-                foreach (Collider2D _collider in _plateformColliders)
-                {
-                    Physics2D.IgnoreCollision(_collider2D, _collider, false);
-                    noCollisionState = 0f;
-                }
-            }
-            yield return null;
-        }
-    }
-
     void OnGUI()
     {
         guiStyle.fontSize = 20;
@@ -470,7 +419,7 @@ public class PlayerController : MonoBehaviour {
 
         GUI.Label(new Rect(x - 30f, y - 50f, 20f, 50f),
             "no collision = " + noCollisionState.ToString() + "\n" +
-            "vertical velocity = " + verticalVelocity.ToString(), 
+            "vertical velocity = " + verticalVelocity.ToString(),
             guiStyle);
     }
 }
