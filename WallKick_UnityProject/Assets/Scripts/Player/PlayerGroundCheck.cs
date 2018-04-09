@@ -20,7 +20,7 @@ public class PlayerGroundCheck : MonoBehaviour {
         {
             plateformColliders[i] = plateforms[i].GetComponent<Collider2D>();
             plateformColliders[i].name = "PlateformCol_" + i.ToString();
-            Debug.Log(plateformColliders[i].name);
+            //Debug.Log(plateformColliders[i].name);
         }
     }
 
@@ -32,7 +32,7 @@ public class PlayerGroundCheck : MonoBehaviour {
             if (other.tag == "Plateform")
             {
                 plateformName = other.name;
-                Debug.Log("plateform name = " + plateformName);
+                //Debug.Log("plateform name = " + plateformName);
             }
 
             isGrounded = true;
@@ -46,7 +46,7 @@ public class PlayerGroundCheck : MonoBehaviour {
         {
             isGrounded = false;
             plateformName = "empty";
-            Debug.Log("plateform name = " + plateformName);
+            //Debug.Log("plateform name = " + plateformName);
         }
     }
 }

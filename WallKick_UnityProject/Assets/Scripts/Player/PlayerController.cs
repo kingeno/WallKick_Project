@@ -76,8 +76,10 @@ public class PlayerController : MonoBehaviour
     public PlayerGroundCheck PlayerGroundCheck;
     public LeftDetectionBox LeftDetectionBox;
     public RightDetectionBox RightDetectionBox;
-    Rigidbody2D rb;
-    Collider2D _collider2D;
+    private Rigidbody2D rb;
+    private Collider2D _collider2D;
+    private RaycastHit2D isHitingPlateform; // used to store collision with plateform when not grounded and holding joystick down
+    private int oneWayPlateformMask;  // contains the layermask for OneWayPlateform;
 
     //-----------------------------------------------------------------------------------------
 
@@ -94,17 +96,19 @@ public class PlayerController : MonoBehaviour
 
     //-----------------------------------------------------------------------------------------
 
+
     void Start()
     {
         guiStyle.normal.textColor = Color.black;
 
         rb = GetComponent<Rigidbody2D>();
         _collider2D = GetComponent<Collider2D>();
+
+        oneWayPlateformMask = LayerMask.GetMask("OneWayPlateform");
     }
 
     private void Update()
     {
-        Time.timeScale = 0.2f;
 
         verticalVelocity = (int)rb.velocity.y;
 
@@ -156,9 +160,6 @@ public class PlayerController : MonoBehaviour
         if (Device.Action1.WasPressed && isGrounded || Input.GetKeyDown(KeyCode.Space) && isGrounded || Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
         {
             inputJump = true;
-            /*jumpVFX = (GameObject) */
-            Instantiate(jumpVFX, new Vector3(xPos, yPos - this.transform.localScale.y / 2, transform.position.z), Quaternion.identity);
-            //Destroy(jumpVFX, 1f);
         }
 
         if (Device.Action1.IsPressed && !isGrounded || Input.GetKey(KeyCode.Space) && !isGrounded || Input.GetKey(KeyCode.UpArrow) && !isGrounded)
@@ -167,6 +168,7 @@ public class PlayerController : MonoBehaviour
             inputJumpHolded = false;
 
         //----------------- WALL JUMP -----------------------
+
         if (Device.Action1.WasPressed && isSlidingOnWall || Input.GetKeyDown(KeyCode.Space) && isSlidingOnWall || Input.GetKeyDown(KeyCode.UpArrow) && isSlidingOnWall)
             inputWallJump = true;
 
@@ -182,17 +184,15 @@ public class PlayerController : MonoBehaviour
             willPassThroughPlateform = false;
         }
         else
+        {
             willPassThroughPlateform_Raycast = false;
+        }
 
-        // --------------- FAST FALL --------------------
-        // if (Device.LeftStickY < -0.8)
-        //    Debug.Log("FastFall");
 
         //----------------- PUNCH ----------------------
         if (Device.Action3.WasPressed || Input.GetKeyDown(KeyCode.C))
         {
             inputPunch = true;
-
         }
         else
             inputPunch = false;
@@ -274,8 +274,12 @@ public class PlayerController : MonoBehaviour
         {
             playerSkin.transform.rotation = facingLeft;
         }
+    }
 
-        // pass through plateform
+
+    void FixedUpdate()
+    {
+        // pass through plateform when grounded
         if (willPassThroughPlateform)
         {
             foreach (Collider2D _collider in PlayerGroundCheck.plateformColliders)
@@ -296,24 +300,28 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // Does the ray intersect any objects excluding the player layer
-        if (willPassThroughPlateform_Raycast)
+        // pass through plateform when not grounded / in the air
+        Vector2 rayStart = new Vector2(xPos, yPos - transform.localScale.y / 2f);
+        Vector2 rayEnd = new Vector2(xPos, yPos - transform.localScale.y / 1f);
+
+        if (willPassThroughPlateform_Raycast && !isGrounded)
         {
-            if (Physics2D.Raycast(transform.position, transform.TransformDirection(Vector3.forward), 5f))
+            isHitingPlateform = Physics2D.Raycast(rayStart, Vector2.down, rayStart.y - rayEnd.y, oneWayPlateformMask);
+            //Debug.Log(rayStart.y - rayEnd.y);
+
+            if (isHitingPlateform == true)
             {
-                Debug.DrawRay(transform.position, transform.TransformDirection(Vector2.right), Color.yellow);
-                Debug.Log("Did Hit");
+                Physics2D.IgnoreCollision(_collider2D, isHitingPlateform.transform.gameObject.GetComponent<Collider2D>(), true);
+                //Debug.DrawLine(rayStart, rayEnd, Color.green, 0.5f);
             }
             else
             {
-                Debug.DrawRay(transform.position, transform.TransformDirection(Vector2.right), Color.white);
-                Debug.Log("Did not Hit");
+                //Debug.DrawLine(rayStart, rayEnd, Color.red, 0.5f);
+                willPassThroughPlateform_Raycast = false;
             }
         }
-    }
 
-    void FixedUpdate()
-    {
+
         // horizontal isGrounded movement
         if (isGrounded && inputRight && rb.velocity.x < analogGroundedMaxVelocity)
         {
@@ -367,10 +375,12 @@ public class PlayerController : MonoBehaviour
         }
 
         // jump
-        if (inputJump)
+        if (inputJump && rb.velocity.y == 0)
         {
             rb.velocity = new Vector2(rb.velocity.x, 0f);
             rb.AddForce(transform.up * jumpVelocity, ForceMode2D.Impulse);
+
+            Instantiate(jumpVFX, new Vector3(xPos, yPos - this.transform.localScale.y / 2, transform.position.z), Quaternion.identity);
             inputJump = false;
         }
         if (rb.velocity.y < 0)
