@@ -36,6 +36,8 @@ public class PlayerController : MonoBehaviour
     public bool inputRight = false;
     public static bool inputPause = false;
 
+    public bool willPassThroughPlateform_Raycast = false;
+
     [Header("Jump")]
     [Range(10, 30)]
     public float jumpVelocity; //recommended value : 20
@@ -102,7 +104,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        //Time.timeScale = 1f;
+        Time.timeScale = 0.2f;
 
         verticalVelocity = (int)rb.velocity.y;
 
@@ -173,11 +175,14 @@ public class PlayerController : MonoBehaviour
         if (Device.LeftStickY < -0.5 || Input.GetKey(KeyCode.DownArrow))
         {
             willPassThroughPlateform = true;
+            willPassThroughPlateform_Raycast = true;
         }
         else if (PlayerGroundCheck.plateformName == "empty")
         {
             willPassThroughPlateform = false;
         }
+        else
+            willPassThroughPlateform_Raycast = false;
 
         // --------------- FAST FALL --------------------
         // if (Device.LeftStickY < -0.8)
@@ -288,6 +293,21 @@ public class PlayerController : MonoBehaviour
                     Physics2D.IgnoreCollision(_collider2D, _collider, false);
                     //Debug.Log("Collision enabled between " + _collider2D.name + " & " + _collider.name);
                 }
+            }
+        }
+
+        // Does the ray intersect any objects excluding the player layer
+        if (willPassThroughPlateform_Raycast)
+        {
+            if (Physics2D.Raycast(transform.position, transform.TransformDirection(Vector3.forward), 5f))
+            {
+                Debug.DrawRay(transform.position, transform.TransformDirection(Vector2.right), Color.yellow);
+                Debug.Log("Did Hit");
+            }
+            else
+            {
+                Debug.DrawRay(transform.position, transform.TransformDirection(Vector2.right), Color.white);
+                Debug.Log("Did not Hit");
             }
         }
     }
