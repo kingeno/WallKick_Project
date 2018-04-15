@@ -88,8 +88,8 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
     private bool isFacingRight = true;
     private bool isFacingLeft = false;
-    private Quaternion facingRight = Quaternion.Euler(0f, 0f, 0f);
-    private Quaternion facingLeft = Quaternion.Euler(0f, 180f, 0f);
+    private Quaternion facingRight = Quaternion.Euler(0f, 90f, 0f);
+    private Quaternion facingLeft = Quaternion.Euler(0f, 270f, 0f);
 
     [Header("Visual Effects")]
     public GameObject jumpVFX;
@@ -109,6 +109,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        //Time.timeScale = 0.5f;
 
         verticalVelocity = (int)rb.velocity.y;
 
@@ -237,15 +238,16 @@ public class PlayerController : MonoBehaviour
         }
 
 
+        // used for 2D sprite animation
+        //if (inputPunch)
+        //{
+        //    animator.SetBool("isPunching", true);
 
-        if (inputPunch)
-        {
-            animator.SetBool("isPunching", true);
-        }
-        else
-        {
-            animator.SetBool("isPunching", false);
-        }
+        //}
+        //else
+        //{
+        //    animator.SetBool("isPunching", false);
+        //}
 
         if (rb.velocity.x != 0 && isGrounded)
         {
@@ -256,14 +258,14 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isRunning", false);
         }
 
-        if (!isGrounded)
-        {
-            animator.SetBool("isJumping", true);
-        }
-        else
-        {
-            animator.SetBool("isJumping", false);
-        }
+        //if (!isGrounded)
+        //{
+        //    animator.SetBool("isJumping", true);
+        //}
+        //else
+        //{
+        //    animator.SetBool("isJumping", false);
+        //}
 
         // facing animation (left & right)
         if (isFacingRight && !isFacingLeft)
@@ -440,16 +442,16 @@ public class PlayerController : MonoBehaviour
             maxVerticalVelocity = 20f;
     }
 
-    void OnGUI()
-    {
-        guiStyle.fontSize = 20;
-        Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
-        float x = screenPos.x;
-        float y = Screen.height - screenPos.y;
+    //void OnGUI()
+    //{
+    //    guiStyle.fontSize = 20;
+    //    Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+    //    float x = screenPos.x;
+    //    float y = Screen.height - screenPos.y;
 
-        GUI.Label(new Rect(x - 30f, y - 100f, 20f, 50f),
-            "no collision = " + noCollisionState.ToString() + "\n" +
-            "vertical velocity = " + verticalVelocity.ToString(),
-            guiStyle);
-    }
+    //    GUI.Label(new Rect(x - 30f, y - 100f, 20f, 50f),
+    //        "no collision = " + noCollisionState.ToString() + "\n" +
+    //        "vertical velocity = " + verticalVelocity.ToString(),
+    //        guiStyle);
+    //}
 }
