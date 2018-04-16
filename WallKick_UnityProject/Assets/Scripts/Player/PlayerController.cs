@@ -112,6 +112,7 @@ public class PlayerController : MonoBehaviour
         //Time.timeScale = 0.5f;
 
         verticalVelocity = (int)rb.velocity.y;
+        horizontalVelocity = (int)rb.velocity.x;
 
         if (rb.velocity.y <= -maxVerticalVelocity)
         {
@@ -238,18 +239,25 @@ public class PlayerController : MonoBehaviour
         }
 
 
-        // used for 2D sprite animation
-        //if (inputPunch)
-        //{
-        //    animator.SetBool("isPunching", true);
+        if (isGrounded && rb.velocity == new Vector2(0f, 0f))
+        {
+            animator.SetBool("isIdling", true);
+        }
+        else
+        {
+            animator.SetBool("isIdling", false);
+        }
 
-        //}
-        //else
-        //{
-        //    animator.SetBool("isPunching", false);
-        //}
+        if (isGrounded && rb.velocity.x < 0f && rb.velocity.x > -7f || isGrounded && rb.velocity.x > 0f && rb.velocity.x < 7f)
+        {
+            animator.SetBool("isWalking", true);
+        }
+        else
+        {
+            animator.SetBool("isWalking", false);
+        }
 
-        if (rb.velocity.x != 0 && isGrounded)
+        if (isGrounded && rb.velocity.x >= 7f || isGrounded && rb.velocity.x <= -7f)
         {
             animator.SetBool("isRunning", true);
         }
@@ -258,14 +266,41 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isRunning", false);
         }
 
-        //if (!isGrounded)
-        //{
-        //    animator.SetBool("isJumping", true);
-        //}
-        //else
-        //{
-        //    animator.SetBool("isJumping", false);
-        //}
+        if (rb.velocity.y > 0f)
+        {
+            animator.SetBool("isJumping", true);
+        }
+        else
+        {
+            animator.SetBool("isJumping", false);
+        }
+
+        if (!isGrounded && rb.velocity.y < 7f)
+        {
+            animator.SetBool("isFalling", true);
+        }
+        else
+        {
+            animator.SetBool("isFalling", false);
+        }
+
+        if (!isGrounded && isSlidingOnWall)
+        {
+            animator.SetBool("isSlidingOnWall", true);
+        }
+        else
+        {
+            animator.SetBool("isSlidingOnWall", false);
+        }
+
+        if (inputPunch)
+        {
+            animator.SetBool("isPunching", true);
+        }
+        else
+        {
+            animator.SetBool("isPunching", false);
+        }
 
         // facing animation (left & right)
         if (isFacingRight && !isFacingLeft)
@@ -442,16 +477,17 @@ public class PlayerController : MonoBehaviour
             maxVerticalVelocity = 20f;
     }
 
-    //void OnGUI()
-    //{
-    //    guiStyle.fontSize = 20;
-    //    Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
-    //    float x = screenPos.x;
-    //    float y = Screen.height - screenPos.y;
+    void OnGUI()
+    {
+        guiStyle.fontSize = 20;
+        Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+        float x = screenPos.x;
+        float y = Screen.height - screenPos.y;
 
-    //    GUI.Label(new Rect(x - 30f, y - 100f, 20f, 50f),
-    //        "no collision = " + noCollisionState.ToString() + "\n" +
-    //        "vertical velocity = " + verticalVelocity.ToString(),
-    //        guiStyle);
-    //}
+        GUI.Label(new Rect(x - 30f, y - 100f, 20f, 50f),
+            "no collision = " + noCollisionState.ToString() + "\n" +
+            "vertical velocity = " + verticalVelocity.ToString() + "\n" +
+            "horizontal velocity = " + horizontalVelocity.ToString(),
+            guiStyle);
+    }
 }
