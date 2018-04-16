@@ -218,10 +218,13 @@ public class PlayerController : MonoBehaviour
         // check if the LEFT detection box is triggering a gameobject with the "wall" tag
         if (LeftDetectionBox.isTriggered && !RightDetectionBox.isTriggered)
         {
-            canWallJumpToRight = true;
-            isSlidingOnWall = true;
+            if (leftStickValueX < -0.2f || Input.GetKey(KeyCode.LeftArrow))
+            {
+                canWallJumpToRight = true;
+                isSlidingOnWall = true;
+            }
         }
-        else if (!LeftDetectionBox.isTriggered && !RightDetectionBox.isTriggered)
+        else if (!LeftDetectionBox.isTriggered && !RightDetectionBox.isTriggered || Input.GetKey(KeyCode.DownArrow) || Device.LeftStickY < -0.5)
         {
             canWallJumpToRight = false;
             isSlidingOnWall = false;
@@ -229,10 +232,13 @@ public class PlayerController : MonoBehaviour
         // check if the RIGHT detection box is triggering a gameobject with the "wall" tag
         if (RightDetectionBox.isTriggered && !LeftDetectionBox.isTriggered)
         {
-            canWallJumpToLeft = true;
-            isSlidingOnWall = true;
+            if (leftStickValueX > 0.2f || Input.GetKey(KeyCode.RightArrow))
+            {
+                canWallJumpToLeft = true;
+                isSlidingOnWall = true;
+            }
         }
-        else if (!RightDetectionBox.isTriggered && !LeftDetectionBox.isTriggered)
+        else if (!RightDetectionBox.isTriggered && !LeftDetectionBox.isTriggered || Input.GetKey(KeyCode.DownArrow) || Device.LeftStickY < -0.5)
         {
             canWallJumpToLeft = false;
             isSlidingOnWall = false;
@@ -477,17 +483,17 @@ public class PlayerController : MonoBehaviour
             maxVerticalVelocity = 20f;
     }
 
-    void OnGUI()
-    {
-        guiStyle.fontSize = 20;
-        Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
-        float x = screenPos.x;
-        float y = Screen.height - screenPos.y;
+    //void OnGUI()
+    //{
+    //    guiStyle.fontSize = 20;
+    //    Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+    //    float x = screenPos.x;
+    //    float y = Screen.height - screenPos.y;
 
-        GUI.Label(new Rect(x - 30f, y - 100f, 20f, 50f),
-            "no collision = " + noCollisionState.ToString() + "\n" +
-            "vertical velocity = " + verticalVelocity.ToString() + "\n" +
-            "horizontal velocity = " + horizontalVelocity.ToString(),
-            guiStyle);
-    }
+    //    GUI.Label(new Rect(x - 30f, y - 100f, 20f, 50f),
+    //        "no collision = " + noCollisionState.ToString() + "\n" +
+    //        "vertical velocity = " + verticalVelocity.ToString() + "\n" +
+    //        "horizontal velocity = " + horizontalVelocity.ToString(),
+    //        guiStyle);
+    //}
 }

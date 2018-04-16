@@ -65,6 +65,9 @@ ModelImporter:
     400056: upper_arm_R
     2100000: unnamed
     2100002: Material
+    2100004: HeadMaterial
+    2100006: BodyMaterial
+    2100008: FistMaterial
     4300000: Head
     4300002: Body
     4300004: LeftPunch
@@ -88,6 +91,21 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: BodyMaterial
+    second: {instanceID: 0}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: FistMaterial
+    second: {instanceID: 0}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HeadMaterial
+    second: {instanceID: 0}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Material
     second: {fileID: 2100000, guid: 2465992f15df24144aefda7c99c2a460, type: 2}
   - first:
@@ -99,7 +117,7 @@ ModelImporter:
     importMaterials: 1
     materialName: 0
     materialSearch: 1
-    materialLocation: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
