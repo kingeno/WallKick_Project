@@ -109,7 +109,6 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        //Time.timeScale = 0.5f;
 
         verticalVelocity = (int)rb.velocity.y;
         horizontalVelocity = (int)rb.velocity.x;
@@ -308,6 +307,7 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isPunching", false);
         }
 
+
         // facing animation (left & right)
         if (isFacingRight && !isFacingLeft)
         {
@@ -483,6 +483,31 @@ public class PlayerController : MonoBehaviour
             maxVerticalVelocity = 20f;
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+            if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Plateform")
+        {
+            StartCoroutine(LandingLag(0.2f));
+        }
+    }
+
+    IEnumerator LandingLag(float time)
+    {
+        float i = 0;
+        while (i <= time)
+        {
+            i += Time.deltaTime;
+            if (i <= time/* && isGrounded*/)
+            {
+                animator.SetBool("isLanding", true);
+            }
+            else
+                animator.SetBool("isLanding", false);
+            yield return null;
+            //yield return new WaitForSeconds(time / 5);
+        }
+    }
+
     //void OnGUI()
     //{
     //    guiStyle.fontSize = 20;
@@ -491,9 +516,9 @@ public class PlayerController : MonoBehaviour
     //    float y = Screen.height - screenPos.y;
 
     //    GUI.Label(new Rect(x - 30f, y - 100f, 20f, 50f),
-    //        "no collision = " + noCollisionState.ToString() + "\n" +
-    //        "vertical velocity = " + verticalVelocity.ToString() + "\n" +
-    //        "horizontal velocity = " + horizontalVelocity.ToString(),
-    //        guiStyle);
+    //        "no collision = " + noCollisionState.ToString()
+    //         + "\n" + "vertical velocity = " + verticalVelocity.ToString()
+    //        // + "\n" + "horizontal velocity = " + horizontalVelocity.ToString(),
+    //        ,guiStyle);
     //}
 }

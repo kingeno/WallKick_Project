@@ -92,17 +92,17 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: BodyMaterial
-    second: {instanceID: 0}
+    second: {fileID: 2100000, guid: 6aff688007051b54fa710e883edf5312, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: FistMaterial
-    second: {instanceID: 0}
+    second: {fileID: 2100000, guid: f0f97c6bf587b4547a69fe7e942e8b34, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: HeadMaterial
-    second: {instanceID: 0}
+    second: {fileID: 2100000, guid: 3198d1547ad9a5043a65f9ea569c800e, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -143,7 +143,7 @@ ModelImporter:
       name: Default Take
       takeName: Default Take
       firstFrame: 0
-      lastFrame: 3
+      lastFrame: 22
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -254,8 +254,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Landing
       takeName: Landing
-      firstFrame: 0
-      lastFrame: 6
+      firstFrame: 7
+      lastFrame: 11
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -282,8 +282,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Punch_001
       takeName: Punch_001
-      firstFrame: 3
-      lastFrame: 17
+      firstFrame: 4
+      lastFrame: 14
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -399,8 +399,8 @@ ModelImporter:
     addColliders: 0
     importVisibility: 1
     importBlendShapes: 1
-    importCameras: 1
-    importLights: 1
+    importCameras: 0
+    importLights: 0
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1

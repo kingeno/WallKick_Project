@@ -5,6 +5,8 @@ using UnityEngine;
 public class WallSplitMovement : MonoBehaviour {
 
 
+    public Transform bottomGear;
+
     // ----- SPLIT WALL MOVEMENT USING LERP -----
     public bool isMoving { get; private set; }
     public bool checkIfMoving;
