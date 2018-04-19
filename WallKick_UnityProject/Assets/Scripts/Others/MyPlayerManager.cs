@@ -95,12 +95,19 @@ public class MyPlayerManager : MonoBehaviour {
                 gameObject.name = "Player1";
                 foreach (Transform t in gameObject.transform)
                 {
-                    if (t.name == "Skin")
-                        foreach(Transform u in t.transform)
+                    if (t.name == "Left Punch Collider") // for 3D player
+                    {
+                        t.tag = "Punch1";
+                    }
+
+                    if (t.name == "Skin") // for 2D player
+                    {
+                        foreach (Transform u in t.transform)
                             if (u.name == "Punch")
                                 foreach (Transform v in u.transform)
                                     if (v.name == "PunchCollider")
                                         v.gameObject.tag = "Punch1";
+                    }
                 }
             }
             else
@@ -109,12 +116,19 @@ public class MyPlayerManager : MonoBehaviour {
                 gameObject.name = "Player2";
                 foreach (Transform t in gameObject.transform)
                 {
-                    if (t.name == "Skin")
+                    if (t.name == "Left Punch Collider") // for 3D player
+                    {
+                        t.tag = "Punch2";
+                    }
+
+                    if (t.name == "Skin") // for 2D player
+                    {
                         foreach (Transform u in t.transform)
                             if (u.name == "Punch")
                                 foreach (Transform v in u.transform)
                                     if (v.name == "PunchCollider")
                                         v.gameObject.tag = "Punch2";
+                    }
                 }
             }
 
@@ -138,19 +152,19 @@ public class MyPlayerManager : MonoBehaviour {
     }
 
 
-    void OnGUI()
-    {
-        guiStyle.fontSize = 20;
-        const float h = 22.0f;
-        var y = 10.0f;
+    //void OnGUI()
+    //{
+    //    guiStyle.fontSize = 20;
+    //    const float h = 22.0f;
+    //    var y = 10.0f;
 
-        GUI.Label(new Rect(10, y, 300, y + h), "Active players: " + players.Count + "/" + maxPlayers, guiStyle);
-        y += h;
+    //    GUI.Label(new Rect(10, y, 300, y + h), "Active players: " + players.Count + "/" + maxPlayers, guiStyle);
+    //    y += h;
 
-        if (players.Count < maxPlayers)
-        {
-            GUI.Label(new Rect(10, y, 300, y + h), "Press any button to join", guiStyle);
-            y += h;
-        }
-    }
+    //    if (players.Count < maxPlayers)
+    //    {
+    //        GUI.Label(new Rect(10, y, 300, y + h), "Press any button to join", guiStyle);
+    //        y += h;
+    //    }
+    //}
 }

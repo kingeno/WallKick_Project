@@ -631,20 +631,20 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnGUI()
-    {
-        guiStyle.fontSize = 12;
-        Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
-        float x = screenPos.x;
-        float y = Screen.height - screenPos.y;
+    //void OnGUI()
+    //{
+    //    guiStyle.fontSize = 12;
+    //    Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+    //    float x = screenPos.x;
+    //    float y = Screen.height - screenPos.y;
 
-        GUI.Label(new Rect(x - 50f, y - 100f, 20f, 50f),
-            "spend energy = " + spendEnergy.ToString()
-            + "\n" + "energy decrease = " + energyDecrease.ToString()
-            + "\n" + "energy = " + displayedEnergy.ToString()
-            //"no collision = " + noCollisionState.ToString()
-            //+ "\n" + "vertical velocity = " + verticalVelocity.ToString()
-            //+ "\n" + "horizontal velocity = " + horizontalVelocity.ToString()
-            , guiStyle);
-    }
+    //    GUI.Label(new Rect(x - 50f, y - 100f, 20f, 50f),
+    //        "spend energy = " + spendEnergy.ToString()
+    //        + "\n" + "energy decrease = " + energyDecrease.ToString()
+    //        + "\n" + "energy = " + displayedEnergy.ToString()
+    //        //"no collision = " + noCollisionState.ToString()
+    //        //+ "\n" + "vertical velocity = " + verticalVelocity.ToString()
+    //        //+ "\n" + "horizontal velocity = " + horizontalVelocity.ToString()
+    //        , guiStyle);
+    //}
 }
