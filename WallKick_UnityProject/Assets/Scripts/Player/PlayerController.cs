@@ -26,6 +26,24 @@ public class PlayerController : MonoBehaviour
     private float verticalVelocity;
     private float horizontalVelocity;
 
+    private int displayedEnergy;
+    public float currentEnergy;
+    public float maximumEnergy = 100f;
+    public float energyDecreaseRate;
+
+    private bool isLoosingEnergy;
+    private bool isSpendingEnergy;
+
+    public bool isPowered = true;
+    public bool energyDecrease = true;
+    public bool spendEnergy = true;
+
+    public float groundedMoveEnergyCost = 0.1f;
+    public float airMoveEnergyCost = 0.1f;
+    public float jumpEnergyCost = 1f;
+    public float wallJumpEnergyCost = 0.5f;
+    public float punchEnergyCost = 2f;
+
     public bool inputPunch = false;
     public bool inputJump = false;
     public bool inputJumpHolded = false;
@@ -35,7 +53,6 @@ public class PlayerController : MonoBehaviour
     public bool inputLeft = false;
     public bool inputRight = false;
     public static bool inputPause = false;
-
     public bool willPassThroughPlateform_Raycast = false;
 
     [Header("Jump")]
@@ -99,16 +116,62 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        guiStyle.normal.textColor = Color.black;
+
+        guiStyle.normal.textColor = Color.white;
 
         rb = GetComponent<Rigidbody2D>();
         _collider2D = GetComponent<Collider2D>();
 
         oneWayPlateformMask = LayerMask.GetMask("OneWayPlateform");
+
+        currentEnergy = maximumEnergy;
     }
 
     private void Update()
     {
+
+        displayedEnergy = (int)currentEnergy;
+
+        if (Device.DPadDown.WasPressed || Input.GetKeyDown(KeyCode.S))
+        {
+            if (spendEnergy)
+                spendEnergy = false;
+            else if (!spendEnergy)
+                spendEnergy = true;
+        }
+        if (Device.DPadUp.WasPressed || Input.GetKeyDown(KeyCode.D))
+        {
+            if (energyDecrease)
+                energyDecrease = false;
+            else if (!energyDecrease)
+                energyDecrease = true;
+        }
+
+        if (currentEnergy > 0)
+        {
+            if (energyDecrease)
+            {
+                currentEnergy -= energyDecreaseRate * Time.deltaTime;
+            }
+            isPowered = true;
+
+            if (Device.Action4.WasPressed || Input.GetKeyDown(KeyCode.E))
+                currentEnergy = maximumEnergy;
+        }
+        else
+        {
+            rb.velocity += Vector2.zero;
+            currentEnergy = 0f;
+            isPowered = false;
+            animator.SetBool("poweredOff", true);
+            if (Device.Action4.WasPressed || Input.GetKeyDown(KeyCode.E))
+            {
+                currentEnergy = maximumEnergy;
+                isPowered = true;
+                animator.SetBool("poweredOff", false);
+                animator.SetBool("poweredOn", true);
+            }
+        }
 
         verticalVelocity = (int)rb.velocity.y;
         horizontalVelocity = (int)rb.velocity.x;
@@ -125,78 +188,104 @@ public class PlayerController : MonoBehaviour
         var inputDevice = InputManager.ActiveDevice;
         float leftStickValueX = Device.LeftStickX;
 
-        //----------------- LEFT ----------------------
-        if (leftStickValueX < -0.2f)
+        if (isPowered)
         {
-            analogGroundedMaxVelocity = -groundedMaxVelocity * leftStickValueX;
-            analogAirMaxVelocity = -airMaxVelocity * leftStickValueX;
-            inputLeft = true;
-        }
-        else if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            analogGroundedMaxVelocity = 15f;
-            analogAirMaxVelocity = 12f;
-            inputLeft = true;
-        }
-        else
-            inputLeft = false;
+            //----------------- LEFT ----------------------
+            if (leftStickValueX < -0.2f)
+            {
+                analogGroundedMaxVelocity = -groundedMaxVelocity * leftStickValueX;
+                analogAirMaxVelocity = -airMaxVelocity * leftStickValueX;
+                inputLeft = true;
 
-        //----------------- RIGHT ----------------------
-        if (leftStickValueX > 0.2f)
-        {
-            analogGroundedMaxVelocity = groundedMaxVelocity * leftStickValueX;
-            analogAirMaxVelocity = airMaxVelocity * leftStickValueX;
-            inputRight = true;
+                if (spendEnergy)
+                    StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
+            }
+            else if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                analogGroundedMaxVelocity = 15f;
+                analogAirMaxVelocity = 12f;
+                inputLeft = true;
+
+                if (spendEnergy)
+                    StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
+            }
+            else
+                inputLeft = false;
+
+            //----------------- RIGHT ----------------------
+            if (leftStickValueX > 0.2f)
+            {
+                analogGroundedMaxVelocity = groundedMaxVelocity * leftStickValueX;
+                analogAirMaxVelocity = airMaxVelocity * leftStickValueX;
+                inputRight = true;
+
+                if (spendEnergy)
+                    StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
+            }
+            else if (Input.GetKey(KeyCode.RightArrow))
+            {
+                analogGroundedMaxVelocity = 15f;
+                analogAirMaxVelocity = 12f;
+                inputRight = true;
+
+                if (spendEnergy)
+                    StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
+            }
+            else
+                inputRight = false;
+
+            //----------------- JUMP -----------------------
+            if (Device.Action1.WasPressed && isGrounded || Input.GetKeyDown(KeyCode.Space) && isGrounded || Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
+            {
+                inputJump = true;
+
+                if (spendEnergy)
+                    StartCoroutine(EnergyConsumption(jumpEnergyCost));
+            }
+
+            if (Device.Action1.IsPressed && !isGrounded || Input.GetKey(KeyCode.Space) && !isGrounded || Input.GetKey(KeyCode.UpArrow) && !isGrounded)
+                inputJumpHolded = true;
+            else
+                inputJumpHolded = false;
+
+            //----------------- WALL JUMP -----------------------
+
+            if (Device.Action1.WasPressed && isSlidingOnWall || Input.GetKeyDown(KeyCode.Space) && isSlidingOnWall || Input.GetKeyDown(KeyCode.UpArrow) && isSlidingOnWall)
+            {
+                inputWallJump = true;
+
+                if (spendEnergy)
+                    StartCoroutine(EnergyConsumption(wallJumpEnergyCost));
+            }
+
+            //----------- PASS THROUGH PLATEFORM ------------
+
+            if (Device.LeftStickY < -0.5 || Input.GetKey(KeyCode.DownArrow))
+            {
+                willPassThroughPlateform = true;
+                willPassThroughPlateform_Raycast = true;
+            }
+            else if (PlayerGroundCheck.plateformName == "empty")
+            {
+                willPassThroughPlateform = false;
+            }
+            else
+            {
+                willPassThroughPlateform_Raycast = false;
+            }
+
+
+            //----------------- PUNCH ----------------------
+            if (Device.Action3.WasPressed || Input.GetKeyDown(KeyCode.C))
+            {
+                inputPunch = true;
+
+                if (spendEnergy)
+                    StartCoroutine(EnergyConsumption(punchEnergyCost));
+            }
+            else
+                inputPunch = false;
         }
-        else if (Input.GetKey(KeyCode.RightArrow))
-        {
-            analogGroundedMaxVelocity = 15f;
-            analogAirMaxVelocity = 12f;
-            inputRight = true;
-        }
-        else
-            inputRight = false;
-
-        //----------------- JUMP -----------------------
-        if (Device.Action1.WasPressed && isGrounded || Input.GetKeyDown(KeyCode.Space) && isGrounded || Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
-        {
-            inputJump = true;
-        }
-
-        if (Device.Action1.IsPressed && !isGrounded || Input.GetKey(KeyCode.Space) && !isGrounded || Input.GetKey(KeyCode.UpArrow) && !isGrounded)
-            inputJumpHolded = true;
-        else
-            inputJumpHolded = false;
-
-        //----------------- WALL JUMP -----------------------
-
-        if (Device.Action1.WasPressed && isSlidingOnWall || Input.GetKeyDown(KeyCode.Space) && isSlidingOnWall || Input.GetKeyDown(KeyCode.UpArrow) && isSlidingOnWall)
-            inputWallJump = true;
-
-        //----------- PASS THROUGH PLATEFORM ------------
-
-        if (Device.LeftStickY < -0.5 || Input.GetKey(KeyCode.DownArrow))
-        {
-            willPassThroughPlateform = true;
-            willPassThroughPlateform_Raycast = true;
-        }
-        else if (PlayerGroundCheck.plateformName == "empty")
-        {
-            willPassThroughPlateform = false;
-        }
-        else
-        {
-            willPassThroughPlateform_Raycast = false;
-        }
-
-
-        //----------------- PUNCH ----------------------
-        if (Device.Action3.WasPressed || Input.GetKeyDown(KeyCode.C))
-        {
-            inputPunch = true;
-        }
-        else
-            inputPunch = false;
 
         //----------------- PAUSE ----------------------
         if (Device.CommandWasPressed && !inputPause || Input.GetKeyDown(KeyCode.Escape))
@@ -322,170 +411,175 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        // pass through plateform when grounded
-        if (willPassThroughPlateform)
+        if (isPowered)
         {
-            foreach (Collider2D _collider in PlayerGroundCheck.plateformColliders)
+            // pass through plateform when grounded
+            if (willPassThroughPlateform)
             {
-                if (_collider.name == PlayerGroundCheck.plateformName)
-                    Physics2D.IgnoreCollision(_collider2D, _collider, true);
-            }
-        }
-        else if (!willPassThroughPlateform)
-        {
-            foreach (Collider2D _collider in PlayerGroundCheck.plateformColliders)
-            {
-                if (_collider.name == PlayerGroundCheck.plateformName)
+                foreach (Collider2D _collider in PlayerGroundCheck.plateformColliders)
                 {
-                    Physics2D.IgnoreCollision(_collider2D, _collider, false);
-                    //Debug.Log("Collision enabled between " + _collider2D.name + " & " + _collider.name);
+                    if (_collider.name == PlayerGroundCheck.plateformName)
+                        Physics2D.IgnoreCollision(_collider2D, _collider, true);
                 }
             }
-        }
-
-        // pass through plateform when not grounded / in the air
-        Vector2 rayStart = new Vector2(xPos, yPos - transform.localScale.y / 2f);
-        Vector2 rayEnd = new Vector2(xPos, yPos - transform.localScale.y / 1f);
-
-        if (willPassThroughPlateform_Raycast && !isGrounded)
-        {
-            isHitingPlateform = Physics2D.Raycast(rayStart, Vector2.down, rayStart.y - rayEnd.y, oneWayPlateformMask);
-            //Debug.Log(rayStart.y - rayEnd.y);
-
-            if (isHitingPlateform == true)
+            else if (!willPassThroughPlateform)
             {
-                Physics2D.IgnoreCollision(_collider2D, isHitingPlateform.transform.gameObject.GetComponent<Collider2D>(), true);
-                //Debug.DrawLine(rayStart, rayEnd, Color.green, 0.5f);
+                foreach (Collider2D _collider in PlayerGroundCheck.plateformColliders)
+                {
+                    if (_collider.name == PlayerGroundCheck.plateformName)
+                    {
+                        Physics2D.IgnoreCollision(_collider2D, _collider, false);
+                        //Debug.Log("Collision enabled between " + _collider2D.name + " & " + _collider.name);
+                    }
+                }
             }
-            else
+
+            // pass through plateform when not grounded / in the air
+            Vector2 rayStart = new Vector2(xPos, yPos - transform.localScale.y / 2f);
+            Vector2 rayEnd = new Vector2(xPos, yPos - transform.localScale.y / 1f);
+
+            if (willPassThroughPlateform_Raycast && !isGrounded)
             {
-                //Debug.DrawLine(rayStart, rayEnd, Color.red, 0.5f);
-                willPassThroughPlateform_Raycast = false;
+                isHitingPlateform = Physics2D.Raycast(rayStart, Vector2.down, rayStart.y - rayEnd.y, oneWayPlateformMask);
+                //Debug.Log(rayStart.y - rayEnd.y);
+
+                if (isHitingPlateform == true)
+                {
+                    Physics2D.IgnoreCollision(_collider2D, isHitingPlateform.transform.gameObject.GetComponent<Collider2D>(), true);
+                    //Debug.DrawLine(rayStart, rayEnd, Color.green, 0.5f);
+                }
+                else
+                {
+                    //Debug.DrawLine(rayStart, rayEnd, Color.red, 0.5f);
+                    willPassThroughPlateform_Raycast = false;
+                }
             }
-        }
 
 
-        // horizontal isGrounded movement
-        if (isGrounded && inputRight && rb.velocity.x < analogGroundedMaxVelocity)
-        {
-            isFacingLeft = false;
-            isFacingRight = true;
-            float _maxContribution = Mathf.Max(0, analogGroundedMaxVelocity - rb.velocity.x);
-            float _acceleration = Mathf.Min(_maxContribution, groundedAcceleration);
-            rb.velocity += new Vector2(_acceleration, 0f);
-        }
-        else if (isGrounded && inputLeft && rb.velocity.x > -analogGroundedMaxVelocity)
-        {
-            isFacingRight = false;
-            isFacingLeft = true;
-            float _maxContribution = Mathf.Max(0, analogGroundedMaxVelocity + rb.velocity.x);
-            float _acceleration = Mathf.Min(_maxContribution, groundedAcceleration);
-            rb.velocity += new Vector2(-_acceleration, 0f);
-        }
-        if (isGrounded && !inputLeft && !inputRight)
-        {
-            rb.velocity = new Vector2(0f, rb.velocity.y);
-        }
-
-        // horizontal airborn movement
-        if (!isGrounded && inputRight && rb.velocity.x < analogAirMaxVelocity)
-        {
-            isFacingLeft = false;
-            isFacingRight = true;
-            float _maxContribution = Mathf.Max(0, analogAirMaxVelocity - rb.velocity.x);
-            float _acceleration = Mathf.Min(_maxContribution, airAcceleration);
-            rb.velocity += new Vector2(_acceleration, 0f);
-        }
-        else if (!isGrounded && inputLeft && rb.velocity.x > -analogAirMaxVelocity)
-        {
-            isFacingRight = false;
-            isFacingLeft = true;
-            float _maxContribution = Mathf.Max(0, analogAirMaxVelocity + rb.velocity.x);
-            float _acceleration = Mathf.Min(_maxContribution, airAcceleration);
-            rb.velocity += new Vector2(-_acceleration, 0f);
-        }
-
-        // horizontal deceleration when joystick not pushed
-        if (!isGrounded && !inputLeft && !inputRight && rb.velocity.x < 0)
-        {
-            float _deceleration = 0.3f;
-            rb.velocity += new Vector2(_deceleration, 0f);
-        }
-        else if (!isGrounded && !inputLeft && !inputRight && rb.velocity.x > 0)
-        {
-            float _deceleration = 0.3f;
-            rb.velocity += new Vector2(-_deceleration, 0f);
-        }
-
-        // jump
-        if (inputJump && rb.velocity.y == 0)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, 0f);
-            rb.AddForce(transform.up * jumpVelocity, ForceMode2D.Impulse);
-
-            Instantiate(jumpVFX, new Vector3(xPos, yPos - this.transform.localScale.y / 2, transform.position.z), Quaternion.identity);
-            inputJump = false;
-        }
-        if (rb.velocity.y < 0)
-        {
-            rb.gravityScale = fallMultiplier;
-        }
-        else if (rb.velocity.y > 0)
-        {
-            if (inputJumpHolded)
-                rb.gravityScale = lowJumpMultiplier;
-            else
-                rb.gravityScale = fallMultiplier;
-        }
-        else if (isGrounded)
-        {
-            rb.gravityScale = 1f;
-        }
-        else
-        {
-            inputJumpHolded = false;
-        }
-
-        // wall jump using side boxes (trigger) detection
-        if (isSlidingOnWall)
-        {
-            maxVerticalVelocity = 8f;
-
-            if (!isGrounded && canWallJumpToRight)
+            // horizontal isGrounded movement
+            if (isGrounded && inputRight && rb.velocity.x < analogGroundedMaxVelocity)
             {
                 isFacingLeft = false;
                 isFacingRight = true;
-
-                if (inputWallJump)
-                {
-                    rb.velocity = new Vector2(0f, 0f);
-                    Vector2 _wallJumpForce = new Vector2(horizontalForce, verticalForce);
-                    rb.AddForce(_wallJumpForce, ForceMode2D.Impulse);
-                    isSlidingOnWall = false;
-                }
+                float _maxContribution = Mathf.Max(0, analogGroundedMaxVelocity - rb.velocity.x);
+                float _acceleration = Mathf.Min(_maxContribution, groundedAcceleration);
+                rb.velocity += new Vector2(_acceleration, 0f);
             }
-            if (!isGrounded && canWallJumpToLeft)
+            else if (isGrounded && inputLeft && rb.velocity.x > -analogGroundedMaxVelocity)
             {
                 isFacingRight = false;
                 isFacingLeft = true;
-
-                if (inputWallJump)
-                {
-                    rb.velocity = new Vector2(0f, 0f);
-                    Vector2 _wallJumpForce = new Vector2(-horizontalForce, verticalForce);
-                    rb.AddForce(_wallJumpForce, ForceMode2D.Impulse);
-                    isSlidingOnWall = false;
-                }
+                float _maxContribution = Mathf.Max(0, analogGroundedMaxVelocity + rb.velocity.x);
+                float _acceleration = Mathf.Min(_maxContribution, groundedAcceleration);
+                rb.velocity += new Vector2(-_acceleration, 0f);
             }
-            inputWallJump = false;
+            if (isGrounded && !inputLeft && !inputRight)
+            {
+                rb.velocity = new Vector2(0f, rb.velocity.y);
+            }
+
+            // horizontal airborn movement
+            if (!isGrounded && inputRight && rb.velocity.x < analogAirMaxVelocity)
+            {
+                isFacingLeft = false;
+                isFacingRight = true;
+                float _maxContribution = Mathf.Max(0, analogAirMaxVelocity - rb.velocity.x);
+                float _acceleration = Mathf.Min(_maxContribution, airAcceleration);
+                rb.velocity += new Vector2(_acceleration, 0f);
+            }
+            else if (!isGrounded && inputLeft && rb.velocity.x > -analogAirMaxVelocity)
+            {
+                isFacingRight = false;
+                isFacingLeft = true;
+                float _maxContribution = Mathf.Max(0, analogAirMaxVelocity + rb.velocity.x);
+                float _acceleration = Mathf.Min(_maxContribution, airAcceleration);
+                rb.velocity += new Vector2(-_acceleration, 0f);
+            }
+
+            // horizontal deceleration when joystick not pushed
+            if (!isGrounded && !inputLeft && !inputRight && rb.velocity.x < 0)
+            {
+                float _deceleration = 0.3f;
+                rb.velocity += new Vector2(_deceleration, 0f);
+            }
+            else if (!isGrounded && !inputLeft && !inputRight && rb.velocity.x > 0)
+            {
+                float _deceleration = 0.3f;
+                rb.velocity += new Vector2(-_deceleration, 0f);
+            }
+
+            // jump
+            if (inputJump && rb.velocity.y == 0)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, 0f);
+                rb.AddForce(transform.up * jumpVelocity, ForceMode2D.Impulse);
+
+                Instantiate(jumpVFX, new Vector3(xPos, yPos - this.transform.localScale.y / 2, transform.position.z), Quaternion.identity);
+                inputJump = false;
+            }
+            if (rb.velocity.y < 0)
+            {
+                rb.gravityScale = fallMultiplier;
+            }
+            else if (rb.velocity.y > 0)
+            {
+                if (inputJumpHolded)
+                    rb.gravityScale = lowJumpMultiplier;
+                else
+                    rb.gravityScale = fallMultiplier;
+            }
+            else if (isGrounded)
+            {
+                rb.gravityScale = 1f;
+            }
+            else
+            {
+                inputJumpHolded = false;
+            }
+
+            // wall jump using side boxes (trigger) detection
+            if (isSlidingOnWall)
+            {
+                maxVerticalVelocity = 8f;
+
+                if (!isGrounded && canWallJumpToRight)
+                {
+                    isFacingLeft = false;
+                    isFacingRight = true;
+
+                    if (inputWallJump)
+                    {
+                        rb.velocity = new Vector2(0f, 0f);
+                        Vector2 _wallJumpForce = new Vector2(horizontalForce, verticalForce);
+                        rb.AddForce(_wallJumpForce, ForceMode2D.Impulse);
+                        isSlidingOnWall = false;
+                    }
+                }
+                if (!isGrounded && canWallJumpToLeft)
+                {
+                    isFacingRight = false;
+                    isFacingLeft = true;
+
+                    if (inputWallJump)
+                    {
+                        rb.velocity = new Vector2(0f, 0f);
+                        Vector2 _wallJumpForce = new Vector2(-horizontalForce, verticalForce);
+                        rb.AddForce(_wallJumpForce, ForceMode2D.Impulse);
+                        isSlidingOnWall = false;
+                    }
+                }
+                inputWallJump = false;
+            }
+            else
+                maxVerticalVelocity = 20f;
         }
         else
-            maxVerticalVelocity = 20f;
+            rb.velocity = Vector2.zero;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-            if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Plateform")
+        if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Plateform")
         {
             StartCoroutine(LandingLag(0.2f));
         }
@@ -508,17 +602,38 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //void OnGUI()
-    //{
-    //    guiStyle.fontSize = 20;
-    //    Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
-    //    float x = screenPos.x;
-    //    float y = Screen.height - screenPos.y;
+    IEnumerator EnergyConsumption(float actionCost)
+    {
+        float i = 0;
+        while (i <= 1)
+        {
+            i += 2;
+            currentEnergy -= actionCost;
+            if (actionCost < 0.2f)
+            {
+                yield return new WaitForSeconds(0.5f);
+            }
+            else
+            {
+                yield return null;
+            }
+        }
+    }
 
-    //    GUI.Label(new Rect(x - 30f, y - 100f, 20f, 50f),
-    //        "no collision = " + noCollisionState.ToString()
-    //         + "\n" + "vertical velocity = " + verticalVelocity.ToString()
-    //        // + "\n" + "horizontal velocity = " + horizontalVelocity.ToString(),
-    //        ,guiStyle);
-    //}
+    void OnGUI()
+    {
+        guiStyle.fontSize = 20;
+        Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+        float x = screenPos.x;
+        float y = Screen.height - screenPos.y;
+
+        GUI.Label(new Rect(x - 50f, y - 100f, 20f, 50f),
+            "spend energy = " + spendEnergy.ToString()
+            + "\n" + "energy decrease = " + energyDecrease.ToString()
+            + "\n" + "energy = " + displayedEnergy.ToString()
+            //"no collision = " + noCollisionState.ToString()
+            //+ "\n" + "vertical velocity = " + verticalVelocity.ToString()
+            //+ "\n" + "horizontal velocity = " + horizontalVelocity.ToString()
+            , guiStyle);
+    }
 }

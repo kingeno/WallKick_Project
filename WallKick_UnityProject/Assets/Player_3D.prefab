@@ -1145,6 +1145,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ae9c3c70eff2294e95b72f446b92c11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentEnergy: 0
+  maximumEnergy: 100
+  energyDecreaseRate: 1
+  isPowered: 0
+  energyDecrease: 1
+  spendEnergy: 1
+  groundedMoveEnergyCost: 0.1
+  airMoveEnergyCost: 0.1
+  jumpEnergyCost: 1
+  wallJumpEnergyCost: 0.5
+  punchEnergyCost: 2
   inputPunch: 0
   inputJump: 0
   inputJumpHolded: 0
