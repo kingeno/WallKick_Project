@@ -62,6 +62,7 @@ public class PlayerController : MonoBehaviour
     public float fallMultiplier; // recommended value : 6
     [Range(0, 100)]
     public float lowJumpMultiplier; // recommended value : 3
+    public float landingLag;
     [Header("Wall Jump")]
     public float horizontalForce = 10;
     public float verticalForce = 20;
@@ -93,6 +94,7 @@ public class PlayerController : MonoBehaviour
     public PlayerGroundCheck PlayerGroundCheck;
     public LeftDetectionBox LeftDetectionBox;
     public RightDetectionBox RightDetectionBox;
+    public Transform leftPunchCollider;
     private Rigidbody2D rb;
     private Collider2D _collider2D;
     private RaycastHit2D isHitingPlateform; // used to store collision with plateform when not grounded and holding joystick down
@@ -102,7 +104,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Animations")]
     public Transform playerSkin;
-    public Animator animator;
+    public Animator characterAnimator;
+    public Animator punchCollidersAnimator;
     private bool isFacingRight = true;
     private bool isFacingLeft = false;
     private Quaternion facingRight = Quaternion.Euler(0f, 90f, 0f);
@@ -129,17 +132,18 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        //Time.timeScale = 0.12f;
 
         displayedEnergy = (int)currentEnergy;
 
-        if (Device.DPadDown.WasPressed || Input.GetKeyDown(KeyCode.S))
+        if (Device.DPadUp.WasPressed || Input.GetKeyDown(KeyCode.S))
         {
             if (spendEnergy)
                 spendEnergy = false;
             else if (!spendEnergy)
                 spendEnergy = true;
         }
-        if (Device.DPadUp.WasPressed || Input.GetKeyDown(KeyCode.D))
+        if (Device.DPadDown.WasPressed || Input.GetKeyDown(KeyCode.D))
         {
             if (energyDecrease)
                 energyDecrease = false;
@@ -163,13 +167,13 @@ public class PlayerController : MonoBehaviour
             rb.velocity += Vector2.zero;
             currentEnergy = 0f;
             isPowered = false;
-            animator.SetBool("poweredOff", true);
+            characterAnimator.SetBool("poweredOff", true);
             if (Device.Action4.WasPressed || Input.GetKeyDown(KeyCode.E))
             {
                 currentEnergy = maximumEnergy;
                 isPowered = true;
-                animator.SetBool("poweredOff", false);
-                animator.SetBool("poweredOn", true);
+                characterAnimator.SetBool("poweredOff", false);
+                characterAnimator.SetBool("poweredOn", true);
             }
         }
 
@@ -335,66 +339,73 @@ public class PlayerController : MonoBehaviour
 
         if (isGrounded && rb.velocity == new Vector2(0f, 0f))
         {
-            animator.SetBool("isIdling", true);
+            characterAnimator.SetBool("isIdling", true);
         }
         else
         {
-            animator.SetBool("isIdling", false);
+            characterAnimator.SetBool("isIdling", false);
         }
 
         if (isGrounded && rb.velocity.x < 0f && rb.velocity.x > -7f || isGrounded && rb.velocity.x > 0f && rb.velocity.x < 7f)
         {
-            animator.SetBool("isWalking", true);
+            characterAnimator.SetBool("isWalking", true);
         }
         else
         {
-            animator.SetBool("isWalking", false);
+            characterAnimator.SetBool("isWalking", false);
         }
 
         if (isGrounded && rb.velocity.x >= 7f || isGrounded && rb.velocity.x <= -7f)
         {
-            animator.SetBool("isRunning", true);
+            characterAnimator.SetBool("isRunning", true);
         }
         else
         {
-            animator.SetBool("isRunning", false);
+            characterAnimator.SetBool("isRunning", false);
         }
 
         if (rb.velocity.y > 0f)
         {
-            animator.SetBool("isJumping", true);
+            characterAnimator.SetBool("isJumping", true);
         }
         else
         {
-            animator.SetBool("isJumping", false);
+            characterAnimator.SetBool("isJumping", false);
         }
 
         if (!isGrounded && rb.velocity.y < 7f)
         {
-            animator.SetBool("isFalling", true);
+            characterAnimator.SetBool("isFalling", true);
         }
         else
         {
-            animator.SetBool("isFalling", false);
+            characterAnimator.SetBool("isFalling", false);
         }
 
         if (!isGrounded && isSlidingOnWall)
         {
-            animator.SetBool("isSlidingOnWall", true);
+            characterAnimator.SetBool("isSlidingOnWall", true);
         }
         else
         {
-            animator.SetBool("isSlidingOnWall", false);
+            characterAnimator.SetBool("isSlidingOnWall", false);
         }
 
         if (inputPunch)
         {
-            animator.SetBool("isPunching", true);
+            characterAnimator.SetBool("isPunching", true);
         }
         else
         {
-            animator.SetBool("isPunching", false);
+            characterAnimator.SetBool("isPunching", false);
+            punchCollidersAnimator.SetBool("enableRightColliderAnimation", false);
+            punchCollidersAnimator.SetBool("enableLeftColliderAnimation", false);
         }
+
+        if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.5f)
+            punchCollidersAnimator.SetBool("enableRightColliderAnimation", true);
+        if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.5f)
+            punchCollidersAnimator.SetBool("enableLeftColliderAnimation", true);
 
 
         // facing animation (left & right)
@@ -581,7 +592,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Plateform")
         {
-            StartCoroutine(LandingLag(0.2f));
+            StartCoroutine(LandingLag(landingLag));
         }
     }
 
@@ -593,10 +604,10 @@ public class PlayerController : MonoBehaviour
             i += Time.deltaTime;
             if (i <= time/* && isGrounded*/)
             {
-                animator.SetBool("isLanding", true);
+                characterAnimator.SetBool("isLanding", true);
             }
             else
-                animator.SetBool("isLanding", false);
+                characterAnimator.SetBool("isLanding", false);
             yield return null;
             //yield return new WaitForSeconds(time / 5);
         }
@@ -622,7 +633,7 @@ public class PlayerController : MonoBehaviour
 
     void OnGUI()
     {
-        guiStyle.fontSize = 20;
+        guiStyle.fontSize = 12;
         Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
         float x = screenPos.x;
         float y = Screen.height - screenPos.y;
