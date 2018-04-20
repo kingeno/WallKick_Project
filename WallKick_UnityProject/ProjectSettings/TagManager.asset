@@ -13,6 +13,7 @@ TagManager:
   - Punch1
   - Punch2
   - SplitWall
+  - EnergySource
   layers:
   - Default
   - TransparentFX
@@ -28,9 +29,9 @@ TagManager:
   - Button
   - OneWayPlateform
   - Punches
-  - 
-  - 
-  - 
+  - SplitLimiters
+  - EnergySource
+  - PlayerTriggers
   - 
   - 
   - 

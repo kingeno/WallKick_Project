@@ -35,7 +35,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4330001989043296}
   - component: {fileID: 137401324391137690}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: RightPunch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67,9 +67,9 @@ GameObject:
   - component: {fileID: 4280924416071816}
   - component: {fileID: 61432994592892236}
   - component: {fileID: 114955074824424184}
-  m_Layer: 8
+  m_Layer: 16
   m_Name: Right Detection Box
-  m_TagString: Untagged
+  m_TagString: Punch
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -83,7 +83,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4288017793022608}
   - component: {fileID: 137446160134618810}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: LeftPunch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -162,9 +162,9 @@ GameObject:
   - component: {fileID: 58816220260940764}
   - component: {fileID: 95083082292130728}
   - component: {fileID: 111359484269658530}
-  m_Layer: 13
+  m_Layer: 16
   m_Name: Left Punch Collider
-  m_TagString: Untagged
+  m_TagString: Punch
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -241,9 +241,9 @@ GameObject:
   - component: {fileID: 61720573573230016}
   - component: {fileID: 212428620091537068}
   - component: {fileID: 114001301321808336}
-  m_Layer: 8
+  m_Layer: 16
   m_Name: Ground Detection Box
-  m_TagString: Untagged
+  m_TagString: Punch
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -533,9 +533,9 @@ GameObject:
   - component: {fileID: 4197565398400116}
   - component: {fileID: 61031879293823982}
   - component: {fileID: 114860504696487352}
-  m_Layer: 8
+  m_Layer: 16
   m_Name: Left Detection Box
-  m_TagString: Untagged
+  m_TagString: Punch
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -615,7 +615,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1306742963469922}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.1, z: 0}
+  m_LocalPosition: {x: 0.8, y: 0.1, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 4715853437676352}
@@ -854,7 +854,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1761390289194588}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -5, y: 4, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
@@ -1137,7 +1137,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.1}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -1148,7 +1148,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 1}
+  m_Size: {x: 0.4, y: 1.2}
   m_EdgeRadius: 0
 --- !u!95 &95083082292130728
 Animator:
@@ -1194,7 +1194,7 @@ Animation:
   serializedVersion: 3
   m_Animation: {fileID: 7400000, guid: 4925310edfdfdb0489003ca44b8b53ca, type: 2}
   m_Animations:
-  - {fileID: 7400000, guid: b033826db0f5bb84cb9f2964e4b51a39, type: 2}
+  - {fileID: 0}
   m_WrapMode: 0
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
@@ -1254,7 +1254,7 @@ MonoBehaviour:
   maxVerticalVelocity: 20
   groundedMaxVelocity: 15
   groundedAcceleration: 2
-  airMaxVelocity: 12
+  airMaxVelocity: 10
   fallingMaxVelocity: 18
   airAcceleration: 1.2
   disabledCollisionDuration: 0.1

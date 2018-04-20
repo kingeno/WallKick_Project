@@ -4,11 +4,6 @@ using UnityEngine;
 using InControl;
 using UnityEngine.UI;
 
-// TODO 
-// 1. adding a trigger collider to the player. The collider must have the same size (or a little but taller on the vertical axis) as the collider that already exists
-// 2. if the player is pressing down and the trigger is currently colliding(check if OnTriggerEnter works for this) with a plateform,
-// store the plateform index and disable the collisions between the player collider and the plateform
-// 3. use OnTriggerExit to set the collision back to true and empty the variable which stored the plateform index (for the variable to be up to store the next plateform index)
 
 public class PlayerController : MonoBehaviour
 {
@@ -26,6 +21,7 @@ public class PlayerController : MonoBehaviour
     private float verticalVelocity;
     private float horizontalVelocity;
 
+
     private int displayedEnergy;
     public float currentEnergy;
     public float maximumEnergy = 100f;
@@ -33,6 +29,7 @@ public class PlayerController : MonoBehaviour
 
     private bool isLoosingEnergy;
     private bool isSpendingEnergy;
+    private bool canCollideWithSource;
 
     public bool isPowered = true;
     public bool energyDecrease = true;
@@ -133,6 +130,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         //Time.timeScale = 0.12f;
+        canCollideWithSource = false;
 
         displayedEnergy = (int)currentEnergy;
 
@@ -150,6 +148,7 @@ public class PlayerController : MonoBehaviour
             else if (!energyDecrease)
                 energyDecrease = true;
         }
+
 
         if (currentEnergy > 0)
         {
@@ -176,6 +175,9 @@ public class PlayerController : MonoBehaviour
                 characterAnimator.SetBool("poweredOn", true);
             }
         }
+
+
+
 
         verticalVelocity = (int)rb.velocity.y;
         horizontalVelocity = (int)rb.velocity.x;
@@ -422,6 +424,8 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (rb.velocity.y <= -fallingMaxVelocity)
+            rb.velocity = new Vector2(rb.velocity.x, -fallingMaxVelocity);
         if (isPowered)
         {
             // pass through plateform when grounded
@@ -622,12 +626,24 @@ public class PlayerController : MonoBehaviour
             currentEnergy -= actionCost;
             if (actionCost < 0.2f)
             {
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(1f);
             }
             else
             {
                 yield return null;
             }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        canCollideWithSource = true;
+
+        if (canCollideWithSource && other.tag == "EnergySource")
+        {
+            Debug.Log("enter in collision");
+            currentEnergy += 30f;
+            canCollideWithSource = false;
         }
     }
 
