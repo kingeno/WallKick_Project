@@ -59,19 +59,19 @@ public class EnergySource : MonoBehaviour {
         }
     }
 
-    //void OnGUI()
-    //{
-    //    if (debugDisplay)
-    //    {
-    //        guiStyle.fontSize = 8;
-    //        Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
-    //        float x = screenPos.x;
-    //        float y = Screen.height - screenPos.y;
+    void OnGUI()
+    {
+        if (debugDisplay)
+        {
+            guiStyle.fontSize = 8;
+            Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+            float x = screenPos.x;
+            float y = Screen.height - screenPos.y;
 
-    //        GUI.Label(new Rect(x - 50f, y - 100f, 20f, 50f),
-    //            "is charged = " + isCharged.ToString()
-    //            //+ "\n" + "energy decrease = " + energyDecrease.ToString()
-    //            , guiStyle);
-    //    }
-    //}
+            GUI.Label(new Rect(x - 50f, y - 100f, 20f, 50f),
+                "is charged = " + isCharged.ToString()
+                //+ "\n" + "energy decrease = " + energyDecrease.ToString()
+                , guiStyle);
+        }
+    }
 }
