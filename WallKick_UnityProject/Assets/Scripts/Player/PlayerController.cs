@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     private GUIStyle guiStyle = new GUIStyle();
 
     public InputDevice Device { get; set; }
+    public bool keyboardAndController;
 
     private Text debugText;
 
@@ -111,13 +112,15 @@ public class PlayerController : MonoBehaviour
     [Header("Visual Effects")]
     public GameObject jumpVFX;
 
+
+    private GameObject _SplitWall;
+    private Collider2D _SplitWallCol;
     //-----------------------------------------------------------------------------------------
 
 
     void Start()
     {
-
-        guiStyle.normal.textColor = Color.white;
+        keyboardAndController = true;
 
         rb = GetComponent<Rigidbody2D>();
         _collider2D = GetComponent<Collider2D>();
@@ -125,6 +128,8 @@ public class PlayerController : MonoBehaviour
         oneWayPlateformMask = LayerMask.GetMask("OneWayPlateform");
 
         currentEnergy = maximumEnergy;
+
+        guiStyle.normal.textColor = Color.white;
     }
 
     private void Update()
@@ -196,228 +201,394 @@ public class PlayerController : MonoBehaviour
 
         if (isPowered)
         {
-            //----------------- LEFT ----------------------
-            if (leftStickValueX < -0.2f)
+            if (tag == "Player1" && !keyboardAndController)
             {
-                analogGroundedMaxVelocity = -groundedMaxVelocity * leftStickValueX;
-                analogAirMaxVelocity = -airMaxVelocity * leftStickValueX;
-                inputLeft = true;
+                //----------------- LEFT ----------------------
+                if (leftStickValueX < -0.2f)
+                {
+                    analogGroundedMaxVelocity = -groundedMaxVelocity * leftStickValueX;
+                    analogAirMaxVelocity = -airMaxVelocity * leftStickValueX;
+                    inputLeft = true;
 
-                if (spendEnergy)
-                    StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
+                    if (spendEnergy)
+                        StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
+                }
+                else if (Input.GetKey(KeyCode.LeftArrow))
+                {
+                    analogGroundedMaxVelocity = 15f;
+                    analogAirMaxVelocity = 12f;
+                    inputLeft = true;
+
+                    if (spendEnergy)
+                        StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
+                }
+                else
+                    inputLeft = false;
+
+                //----------------- RIGHT ----------------------
+                if (leftStickValueX > 0.2f)
+                {
+                    analogGroundedMaxVelocity = groundedMaxVelocity * leftStickValueX;
+                    analogAirMaxVelocity = airMaxVelocity * leftStickValueX;
+                    inputRight = true;
+
+                    if (spendEnergy)
+                        StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
+                }
+                else if (Input.GetKey(KeyCode.RightArrow))
+                {
+                    analogGroundedMaxVelocity = 15f;
+                    analogAirMaxVelocity = 12f;
+                    inputRight = true;
+
+                    if (spendEnergy)
+                        StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
+                }
+                else
+                    inputRight = false;
+
+                //----------------- JUMP -----------------------
+                if (Device.Action1.WasPressed && isGrounded || Input.GetKeyDown(KeyCode.Space) && isGrounded || Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
+                {
+                    inputJump = true;
+
+                    if (spendEnergy)
+                        StartCoroutine(EnergyConsumption(jumpEnergyCost));
+                }
+
+                if (Device.Action1.IsPressed && !isGrounded || Input.GetKey(KeyCode.Space) && !isGrounded || Input.GetKey(KeyCode.UpArrow) && !isGrounded)
+                    inputJumpHolded = true;
+                else
+                    inputJumpHolded = false;
+
+                //----------------- WALL JUMP -----------------------
+
+                if (Device.Action1.WasPressed && isSlidingOnWall || Input.GetKeyDown(KeyCode.Space) && isSlidingOnWall || Input.GetKeyDown(KeyCode.UpArrow) && isSlidingOnWall)
+                {
+                    inputWallJump = true;
+
+                    if (spendEnergy)
+                        StartCoroutine(EnergyConsumption(wallJumpEnergyCost));
+                }
+
+                //----------- PASS THROUGH PLATEFORM ------------
+
+                if (Device.LeftStickY < -0.5 || Input.GetKey(KeyCode.DownArrow))
+                {
+                    willPassThroughPlateform = true;
+                    willPassThroughPlateform_Raycast = true;
+                }
+                else if (PlayerGroundCheck.plateformName == "empty")
+                {
+                    willPassThroughPlateform = false;
+                }
+                else
+                {
+                    willPassThroughPlateform_Raycast = false;
+                }
+
+
+                //----------------- PUNCH ----------------------
+                if (Device.Action3.WasPressed || Input.GetKeyDown(KeyCode.C))
+                {
+                    inputPunch = true;
+
+                    if (spendEnergy)
+                        StartCoroutine(EnergyConsumption(punchEnergyCost));
+                }
+                else
+                    inputPunch = false;
             }
-            else if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                analogGroundedMaxVelocity = 15f;
-                analogAirMaxVelocity = 12f;
-                inputLeft = true;
 
-                if (spendEnergy)
-                    StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
+            if (tag == "Player1" && keyboardAndController)
+            {
+                //----------------- LEFT ----------------------
+                if (leftStickValueX < -0.2f)
+                {
+                    analogGroundedMaxVelocity = -groundedMaxVelocity * leftStickValueX;
+                    analogAirMaxVelocity = -airMaxVelocity * leftStickValueX;
+                    inputLeft = true;
+
+                    if (spendEnergy)
+                        StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
+                }
+                else
+                    inputLeft = false;
+
+                //----------------- RIGHT ----------------------
+                if (leftStickValueX > 0.2f)
+                {
+                    analogGroundedMaxVelocity = groundedMaxVelocity * leftStickValueX;
+                    analogAirMaxVelocity = airMaxVelocity * leftStickValueX;
+                    inputRight = true;
+
+                    if (spendEnergy)
+                        StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
+                }
+                else
+                    inputRight = false;
+
+                //----------------- JUMP -----------------------
+                if (Device.Action1.WasPressed && isGrounded)
+                {
+                    inputJump = true;
+
+                    if (spendEnergy)
+                        StartCoroutine(EnergyConsumption(jumpEnergyCost));
+                }
+
+                if (Device.Action1.IsPressed && !isGrounded)
+                    inputJumpHolded = true;
+                else
+                    inputJumpHolded = false;
+
+                //----------------- WALL JUMP -----------------------
+
+                if (Device.Action1.WasPressed && isSlidingOnWall)
+                {
+                    inputWallJump = true;
+
+                    if (spendEnergy)
+                        StartCoroutine(EnergyConsumption(wallJumpEnergyCost));
+                }
+
+                //----------- PASS THROUGH PLATEFORM ------------
+
+                if (Device.LeftStickY < -0.5)
+                {
+                    willPassThroughPlateform = true;
+                    willPassThroughPlateform_Raycast = true;
+                }
+                else if (PlayerGroundCheck.plateformName == "empty")
+                {
+                    willPassThroughPlateform = false;
+                }
+                else
+                {
+                    willPassThroughPlateform_Raycast = false;
+                }
+
+
+                //----------------- PUNCH ----------------------
+                if (Device.Action3.WasPressed)
+                {
+                    inputPunch = true;
+
+                    if (spendEnergy)
+                        StartCoroutine(EnergyConsumption(punchEnergyCost));
+                }
+                else
+                    inputPunch = false;
+            }
+
+            if (tag == "Player2" && keyboardAndController)
+            {
+                //----------------- LEFT ----------------------
+
+                if (Input.GetKey(KeyCode.LeftArrow))
+                {
+                    analogGroundedMaxVelocity = 15f;
+                    analogAirMaxVelocity = 12f;
+                    inputLeft = true;
+
+                    if (spendEnergy)
+                        StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
+                }
+                else
+                    inputLeft = false;
+
+                //----------------- RIGHT ----------------------
+                if (Input.GetKey(KeyCode.RightArrow))
+                {
+                    analogGroundedMaxVelocity = 15f;
+                    analogAirMaxVelocity = 12f;
+                    inputRight = true;
+
+                    if (spendEnergy)
+                        StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
+                }
+                else
+                    inputRight = false;
+
+                //----------------- JUMP -----------------------
+                if (Input.GetKeyDown(KeyCode.Space) && isGrounded || Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
+                {
+                    inputJump = true;
+
+                    if (spendEnergy)
+                        StartCoroutine(EnergyConsumption(jumpEnergyCost));
+                }
+
+                if (Input.GetKey(KeyCode.Space) && !isGrounded || Input.GetKey(KeyCode.UpArrow) && !isGrounded)
+                    inputJumpHolded = true;
+                else
+                    inputJumpHolded = false;
+
+                //----------------- WALL JUMP -----------------------
+
+                if (Input.GetKeyDown(KeyCode.Space) && isSlidingOnWall || Input.GetKeyDown(KeyCode.UpArrow) && isSlidingOnWall)
+                {
+                    inputWallJump = true;
+
+                    if (spendEnergy)
+                        StartCoroutine(EnergyConsumption(wallJumpEnergyCost));
+                }
+
+                //----------- PASS THROUGH PLATEFORM ------------
+
+                if (Input.GetKey(KeyCode.DownArrow))
+                {
+                    willPassThroughPlateform = true;
+                    willPassThroughPlateform_Raycast = true;
+                }
+                else if (PlayerGroundCheck.plateformName == "empty")
+                {
+                    willPassThroughPlateform = false;
+                }
+                else
+                {
+                    willPassThroughPlateform_Raycast = false;
+                }
+
+
+                //----------------- PUNCH ----------------------
+                if (Input.GetKeyDown(KeyCode.C))
+                {
+                    inputPunch = true;
+
+                    if (spendEnergy)
+                        StartCoroutine(EnergyConsumption(punchEnergyCost));
+                }
+                else
+                    inputPunch = false;
+            }
+
+            //----------------- PAUSE ----------------------
+            if (Device.CommandWasPressed && !inputPause || Input.GetKeyDown(KeyCode.Escape))
+                inputPause = true;
+            else
+                inputPause = false;
+
+
+            // check if grounded
+            if (PlayerGroundCheck.isGrounded && rb.velocity.y <= 0f)
+            {
+                isGrounded = true;
+                isSlidingOnWall = false;
             }
             else
-                inputLeft = false;
+                isGrounded = false;
 
-            //----------------- RIGHT ----------------------
-            if (leftStickValueX > 0.2f)
+            // check if the LEFT detection box is triggering a gameobject with the "wall" tag
+            if (LeftDetectionBox.isTriggered && !RightDetectionBox.isTriggered)
             {
-                analogGroundedMaxVelocity = groundedMaxVelocity * leftStickValueX;
-                analogAirMaxVelocity = airMaxVelocity * leftStickValueX;
-                inputRight = true;
-
-                if (spendEnergy)
-                    StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
+                if (leftStickValueX < -0.2f || Input.GetKey(KeyCode.LeftArrow))
+                {
+                    canWallJumpToRight = true;
+                    isSlidingOnWall = true;
+                }
             }
-            else if (Input.GetKey(KeyCode.RightArrow))
+            else if (!LeftDetectionBox.isTriggered && !RightDetectionBox.isTriggered || Input.GetKey(KeyCode.DownArrow) || Device.LeftStickY < -0.5)
             {
-                analogGroundedMaxVelocity = 15f;
-                analogAirMaxVelocity = 12f;
-                inputRight = true;
-
-                if (spendEnergy)
-                    StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
+                canWallJumpToRight = false;
+                isSlidingOnWall = false;
             }
-            else
-                inputRight = false;
-
-            //----------------- JUMP -----------------------
-            if (Device.Action1.WasPressed && isGrounded || Input.GetKeyDown(KeyCode.Space) && isGrounded || Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
+            // check if the RIGHT detection box is triggering a gameobject with the "wall" tag
+            if (RightDetectionBox.isTriggered && !LeftDetectionBox.isTriggered)
             {
-                inputJump = true;
-
-                if (spendEnergy)
-                    StartCoroutine(EnergyConsumption(jumpEnergyCost));
+                if (leftStickValueX > 0.2f || Input.GetKey(KeyCode.RightArrow))
+                {
+                    canWallJumpToLeft = true;
+                    isSlidingOnWall = true;
+                }
+            }
+            else if (!RightDetectionBox.isTriggered && !LeftDetectionBox.isTriggered || Input.GetKey(KeyCode.DownArrow) || Device.LeftStickY < -0.5)
+            {
+                canWallJumpToLeft = false;
+                isSlidingOnWall = false;
             }
 
-            if (Device.Action1.IsPressed && !isGrounded || Input.GetKey(KeyCode.Space) && !isGrounded || Input.GetKey(KeyCode.UpArrow) && !isGrounded)
-                inputJumpHolded = true;
-            else
-                inputJumpHolded = false;
 
-            //----------------- WALL JUMP -----------------------
-
-            if (Device.Action1.WasPressed && isSlidingOnWall || Input.GetKeyDown(KeyCode.Space) && isSlidingOnWall || Input.GetKeyDown(KeyCode.UpArrow) && isSlidingOnWall)
+            if (isGrounded && rb.velocity == new Vector2(0f, 0f))
             {
-                inputWallJump = true;
-
-                if (spendEnergy)
-                    StartCoroutine(EnergyConsumption(wallJumpEnergyCost));
-            }
-
-            //----------- PASS THROUGH PLATEFORM ------------
-
-            if (Device.LeftStickY < -0.5 || Input.GetKey(KeyCode.DownArrow))
-            {
-                willPassThroughPlateform = true;
-                willPassThroughPlateform_Raycast = true;
-            }
-            else if (PlayerGroundCheck.plateformName == "empty")
-            {
-                willPassThroughPlateform = false;
+                characterAnimator.SetBool("isIdling", true);
             }
             else
             {
-                willPassThroughPlateform_Raycast = false;
+                characterAnimator.SetBool("isIdling", false);
             }
 
-
-            //----------------- PUNCH ----------------------
-            if (Device.Action3.WasPressed || Input.GetKeyDown(KeyCode.C))
+            if (isGrounded && rb.velocity.x < 0f && rb.velocity.x > -7f || isGrounded && rb.velocity.x > 0f && rb.velocity.x < 7f)
             {
-                inputPunch = true;
-
-                if (spendEnergy)
-                    StartCoroutine(EnergyConsumption(punchEnergyCost));
+                characterAnimator.SetBool("isWalking", true);
             }
             else
-                inputPunch = false;
-        }
-
-        //----------------- PAUSE ----------------------
-        if (Device.CommandWasPressed && !inputPause || Input.GetKeyDown(KeyCode.Escape))
-            inputPause = true;
-        else
-            inputPause = false;
-
-
-        // check if grounded
-        if (PlayerGroundCheck.isGrounded && rb.velocity.y <= 0f)
-        {
-            isGrounded = true;
-            isSlidingOnWall = false;
-        }
-        else
-            isGrounded = false;
-
-        // check if the LEFT detection box is triggering a gameobject with the "wall" tag
-        if (LeftDetectionBox.isTriggered && !RightDetectionBox.isTriggered)
-        {
-            if (leftStickValueX < -0.2f || Input.GetKey(KeyCode.LeftArrow))
             {
-                canWallJumpToRight = true;
-                isSlidingOnWall = true;
+                characterAnimator.SetBool("isWalking", false);
             }
-        }
-        else if (!LeftDetectionBox.isTriggered && !RightDetectionBox.isTriggered || Input.GetKey(KeyCode.DownArrow) || Device.LeftStickY < -0.5)
-        {
-            canWallJumpToRight = false;
-            isSlidingOnWall = false;
-        }
-        // check if the RIGHT detection box is triggering a gameobject with the "wall" tag
-        if (RightDetectionBox.isTriggered && !LeftDetectionBox.isTriggered)
-        {
-            if (leftStickValueX > 0.2f || Input.GetKey(KeyCode.RightArrow))
+
+            if (isGrounded && rb.velocity.x >= 7f || isGrounded && rb.velocity.x <= -7f)
             {
-                canWallJumpToLeft = true;
-                isSlidingOnWall = true;
+                characterAnimator.SetBool("isRunning", true);
             }
-        }
-        else if (!RightDetectionBox.isTriggered && !LeftDetectionBox.isTriggered || Input.GetKey(KeyCode.DownArrow) || Device.LeftStickY < -0.5)
-        {
-            canWallJumpToLeft = false;
-            isSlidingOnWall = false;
-        }
+            else
+            {
+                characterAnimator.SetBool("isRunning", false);
+            }
+
+            if (rb.velocity.y > 0f)
+            {
+                characterAnimator.SetBool("isJumping", true);
+            }
+            else
+            {
+                characterAnimator.SetBool("isJumping", false);
+            }
+
+            if (!isGrounded && rb.velocity.y < 7f)
+            {
+                characterAnimator.SetBool("isFalling", true);
+            }
+            else
+            {
+                characterAnimator.SetBool("isFalling", false);
+            }
+
+            if (!isGrounded && isSlidingOnWall)
+            {
+                characterAnimator.SetBool("isSlidingOnWall", true);
+            }
+            else
+            {
+                characterAnimator.SetBool("isSlidingOnWall", false);
+            }
+
+            if (inputPunch)
+            {
+                characterAnimator.SetBool("isPunching", true);
+            }
+            else
+            {
+                characterAnimator.SetBool("isPunching", false);
+                punchCollidersAnimator.SetBool("enableRightColliderAnimation", false);
+                punchCollidersAnimator.SetBool("enableLeftColliderAnimation", false);
+            }
+
+            if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.5f)
+                punchCollidersAnimator.SetBool("enableRightColliderAnimation", true);
+            if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.5f)
+                punchCollidersAnimator.SetBool("enableLeftColliderAnimation", true);
 
 
-        if (isGrounded && rb.velocity == new Vector2(0f, 0f))
-        {
-            characterAnimator.SetBool("isIdling", true);
-        }
-        else
-        {
-            characterAnimator.SetBool("isIdling", false);
-        }
-
-        if (isGrounded && rb.velocity.x < 0f && rb.velocity.x > -7f || isGrounded && rb.velocity.x > 0f && rb.velocity.x < 7f)
-        {
-            characterAnimator.SetBool("isWalking", true);
-        }
-        else
-        {
-            characterAnimator.SetBool("isWalking", false);
-        }
-
-        if (isGrounded && rb.velocity.x >= 7f || isGrounded && rb.velocity.x <= -7f)
-        {
-            characterAnimator.SetBool("isRunning", true);
-        }
-        else
-        {
-            characterAnimator.SetBool("isRunning", false);
-        }
-
-        if (rb.velocity.y > 0f)
-        {
-            characterAnimator.SetBool("isJumping", true);
-        }
-        else
-        {
-            characterAnimator.SetBool("isJumping", false);
-        }
-
-        if (!isGrounded && rb.velocity.y < 7f)
-        {
-            characterAnimator.SetBool("isFalling", true);
-        }
-        else
-        {
-            characterAnimator.SetBool("isFalling", false);
-        }
-
-        if (!isGrounded && isSlidingOnWall)
-        {
-            characterAnimator.SetBool("isSlidingOnWall", true);
-        }
-        else
-        {
-            characterAnimator.SetBool("isSlidingOnWall", false);
-        }
-
-        if (inputPunch)
-        {
-            characterAnimator.SetBool("isPunching", true);
-        }
-        else
-        {
-            characterAnimator.SetBool("isPunching", false);
-            punchCollidersAnimator.SetBool("enableRightColliderAnimation", false);
-            punchCollidersAnimator.SetBool("enableLeftColliderAnimation", false);
-        }
-
-        if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.5f)
-            punchCollidersAnimator.SetBool("enableRightColliderAnimation", true);
-        if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.5f)
-            punchCollidersAnimator.SetBool("enableLeftColliderAnimation", true);
-
-
-        // facing animation (left & right)
-        if (isFacingRight && !isFacingLeft)
-        {
-            playerSkin.transform.rotation = facingRight;
-        }
-        if (isFacingLeft && !isFacingRight)
-        {
-            playerSkin.transform.rotation = facingLeft;
+            // facing animation (left & right)
+            if (isFacingRight && !isFacingLeft)
+            {
+                playerSkin.transform.rotation = facingRight;
+            }
+            if (isFacingLeft && !isFacingRight)
+            {
+                playerSkin.transform.rotation = facingLeft;
+            }
         }
     }
 
@@ -600,6 +771,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        canCollideWithSource = true;
+
+        if (canCollideWithSource && other.tag == "EnergySource")
+        {
+            //Debug.Log("enter in collision");
+            currentEnergy += 30f;
+            canCollideWithSource = false;
+        }
+    }
+
     IEnumerator LandingLag(float time)
     {
         float i = 0;
@@ -635,32 +818,20 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    void OnGUI()
     {
-        canCollideWithSource = true;
+        guiStyle.fontSize = 14;
+        Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+        float x = screenPos.x;
+        float y = Screen.height - screenPos.y;
 
-        if (canCollideWithSource && other.tag == "EnergySource")
-        {
-            Debug.Log("enter in collision");
-            currentEnergy += 30f;
-            canCollideWithSource = false;
-        }
+        GUI.Label(new Rect(x - 50f, y - 100f, 20f, 50f),
+            //"spend energy = " + spendEnergy.ToString() + " (S)"
+            //+ "\n" + "energy decrease = " + energyDecrease.ToString() + " (D)"
+            /*+*/ "\n" + "energy = " + displayedEnergy.ToString() + " (E)"
+            //"no collision = " + noCollisionState.ToString()
+            //+ "\n" + "vertical velocity = " + verticalVelocity.ToString()
+            //+ "\n" + "horizontal velocity = " + horizontalVelocity.ToString()
+            , guiStyle);
     }
-
-    //void OnGUI()
-    //{
-    //    guiStyle.fontSize = 12;
-    //    Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
-    //    float x = screenPos.x;
-    //    float y = Screen.height - screenPos.y;
-
-    //    GUI.Label(new Rect(x - 50f, y - 100f, 20f, 50f),
-    //        "spend energy = " + spendEnergy.ToString()
-    //        + "\n" + "energy decrease = " + energyDecrease.ToString()
-    //        + "\n" + "energy = " + displayedEnergy.ToString()
-    //        //"no collision = " + noCollisionState.ToString()
-    //        //+ "\n" + "vertical velocity = " + verticalVelocity.ToString()
-    //        //+ "\n" + "horizontal velocity = " + horizontalVelocity.ToString()
-    //        , guiStyle);
-    //}
 }

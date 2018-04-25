@@ -8,18 +8,18 @@ public class ButtonCenter : MonoBehaviour
     public GameObject splitWall;
     public Rigidbody2D splitWallRb;
     public WallSplitMovement splitWallMovement;
+    private Rigidbody2D rb;
 
     private Collider2D buttonCollider;
 
     public int hitStrengh;
-    public int bonusStrengh;
-    public float superHitStrengh;
-    public float freezeTime;
-    public float verticalSpeed;
+    private int bonusStrengh;
+    public float freezeFrameTime;
 
     private void Start()
     {
         buttonCollider = GetComponent<Collider2D>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
@@ -31,32 +31,55 @@ public class ButtonCenter : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
+        float xVelocity = splitWallRb.velocity.x;
+
+        
+
         if (other.collider.tag == "Punch1")
         {
             //Debug.Log("Player 1 hit the button!");
-            StartCoroutine(FreezeFrame(freezeTime));
-            //transform.Translate(new Vector2(transform.position.x, RandomPos()));
-            //transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x, RandomPos(), transform.position.z), verticalSpeed * Time.deltaTime);
 
-            float xVelocity = splitWallRb.velocity.x;
+            transform.position = new Vector3(transform.position.x, RandomPos(), transform.position.z);
+            //transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x, RandomPos(), transform.position.z), 1f * Time.deltaTime);
+            StartCoroutine(FreezeFrame(freezeFrameTime));
+            //transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, RandomPos(), transform.position.z), 1.2f * Time.deltaTime);
 
-            splitWallRb.velocity = new Vector2(0f, 0f);
-
-
-            if (xVelocity < 0f)
+            if (xVelocity <= 0.0f)
             {
-                splitWallRb.AddForce(transform.right * (hitStrengh + -bonusStrengh), ForceMode2D.Impulse);
+                splitWallRb.velocity = new Vector2(0f, 0f);
+                ReturnPoint.isEnable = false;
+                splitWallRb.AddForce(transform.right * (hitStrengh + (-bonusStrengh * 20)), ForceMode2D.Impulse);
+                Debug.Log("hit strengh = " + hitStrengh + " + " + -bonusStrengh);
             }
-            else
+            else if (xVelocity >= 0.1f)
+            {
+                ReturnPoint.isEnable = false;
                 splitWallRb.AddForce(transform.right * hitStrengh, ForceMode2D.Impulse);
-
-            Debug.Log(hitStrengh);
+                Debug.Log("hit strengh = " + hitStrengh);
+            }
         }
 
         if (other.collider.tag == "Punch2")
         {
-            Debug.Log("Player 2 hit the button!");
-            splitWallRb.AddForce(transform.right * -hitStrengh, ForceMode2D.Impulse);
+            //Debug.Log("Player 2 hit the button!");
+            transform.position = new Vector3(transform.position.x, RandomPos(), transform.position.z);
+            //transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x, RandomPos(), transform.position.z), 0.1f);
+            StartCoroutine(FreezeFrame(freezeFrameTime));
+            //transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, RandomPos(), transform.position.z), 1.2f * Time.deltaTime);
+
+            if (xVelocity >= 0.0f)
+            {
+                splitWallRb.velocity = new Vector2(0f, 0f);
+                ReturnPoint.isEnable = false;
+                splitWallRb.AddForce(transform.right * (-hitStrengh + (-bonusStrengh * 20)), ForceMode2D.Impulse);
+                Debug.Log("hit strengh = " + hitStrengh + " + " + bonusStrengh);
+            }
+            else if (xVelocity <= -0.1f)
+            {
+                ReturnPoint.isEnable = false;
+                splitWallRb.AddForce(transform.right * -hitStrengh, ForceMode2D.Impulse);
+                Debug.Log("hit strengh = " + hitStrengh);
+            }
         }
     }
 
@@ -64,8 +87,8 @@ public class ButtonCenter : MonoBehaviour
     {
         int newRandomPos;
 
-        int[] arrayOfPos = new int[] { 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
-        newRandomPos = arrayOfPos[Random.Range(0, 10)];
+        int[] arrayOfPos = new int[] { 4, 6, 8, 10, 12, 14, 16, 18 };
+        newRandomPos = arrayOfPos[Random.Range(0, 7)];
 
         return newRandomPos;
     }
@@ -78,12 +101,12 @@ public class ButtonCenter : MonoBehaviour
             i++;
             if (i < time)
             {
-                Debug.Log(i);
+                //Debug.Log(i);
                 Time.timeScale = 0f;
             }
             else if (i < time + 1)
             {
-                Debug.Log("end of coroutine");
+                //Debug.Log("end of coroutine");
                 ScreenShake.shakeDuration = 0.1f;
                 Time.timeScale = 1f;
             }

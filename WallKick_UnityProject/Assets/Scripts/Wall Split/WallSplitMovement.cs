@@ -7,21 +7,28 @@ public class WallSplitMovement : MonoBehaviour {
     private GUIStyle guiStyle = new GUIStyle();
 
     private Rigidbody2D rb;
+    private Collider2D col;
     public Transform bottomGear;
     public Transform forceField;
     public Transform returnPoint;
-    
-    public float horizontalVelocity;
-    public float forceAmount;
-    public float speed;
+
+    public float maxVelocity;
+
+    public static float horizontalVelocity;
+    public float returnPointAttractionForce;
 
     public bool isGeneratingEnergy = false;
 
     private void Awake()
     {
+        col = GetComponent<Collider2D>();
         rb = GetComponent<Rigidbody2D>();
 
         guiStyle.normal.textColor = Color.white;
+
+
+        if (maxVelocity < 5f)
+            Debug.LogError("Check the WallSplit \"maxVelocity\" value in the Inspector, it must be at 15 minimum");
     }
 
     private void Update()
@@ -30,9 +37,9 @@ public class WallSplitMovement : MonoBehaviour {
 
         if (horizontalVelocity != 0)
         {
-            if (ReturnPoint.isInReturnPoint && horizontalVelocity <= 0.5f && horizontalVelocity >= -0.5f)
+            if (ReturnPoint.isInReturnPoint && horizontalVelocity <= 1.9f && horizontalVelocity >= -1.9f)
             {
-                transform.position = returnPoint.transform.position;
+                transform.position = Vector3.MoveTowards(transform.position, returnPoint.position, 1.2f * Time.deltaTime);
                 isGeneratingEnergy = false;
             }
             else
@@ -44,13 +51,15 @@ public class WallSplitMovement : MonoBehaviour {
     {
         horizontalVelocity = rb.velocity.x;
 
+        if (rb.velocity.x >= maxVelocity)
+        {
+            rb.velocity = new Vector2(maxVelocity, 0f);
+        }
 
-
-        if (!ReturnPoint.isInReturnPoint)
-            rb.AddForce((returnPoint.transform.position - transform.position).normalized * forceAmount * Time.deltaTime);
-        if (transform.position.x == returnPoint.transform.position.x)
+        if (!ReturnPoint.isInReturnPoint && ReturnPoint.isEnable)
+            rb.AddForce((returnPoint.transform.position - transform.position).normalized * returnPointAttractionForce * Time.deltaTime);
+        if (transform.position.x == returnPoint.transform.position.x && ReturnPoint.isEnable)
             rb.velocity = new Vector2(0f, transform.position.y);
-
     }
 
     void OnGUI()

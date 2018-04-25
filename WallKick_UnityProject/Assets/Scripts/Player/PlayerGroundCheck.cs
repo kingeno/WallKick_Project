@@ -7,20 +7,22 @@ public class PlayerGroundCheck : MonoBehaviour {
     public bool isGrounded = false;
 
     public GameObject[] plateforms;
-    public Collider2D[] plateformColliders;
+    public List <Collider2D> plateformColliders;
     public string plateformName;
+    public int numberOfPlateforms;
 
     private void Start()
     {
-        plateformColliders = new Collider2D[4];
+        plateformColliders = new List<Collider2D>();
 
         plateforms = GameObject.FindGameObjectsWithTag("Plateform");
 
         for (int i = 0; i < plateforms.Length; i++)
         {
-            plateformColliders[i] = plateforms[i].GetComponent<Collider2D>();
+            plateformColliders.Add(plateforms[i].GetComponent<Collider2D>());
+            //plateformColliders[i] = plateforms[i].GetComponent<Collider2D>();
             plateformColliders[i].name = "PlateformCol_" + i.ToString();
-            //Debug.Log(plateformColliders[i].name);
+            Debug.Log(plateformColliders[i].name);
         }
     }
 

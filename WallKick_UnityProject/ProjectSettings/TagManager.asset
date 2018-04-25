@@ -32,8 +32,8 @@ TagManager:
   - SplitLimiters
   - EnergySource
   - PlayerTriggers
-  - 
-  - 
+  - ForceField
+  - ButtonVerticalLimits
   - 
   - 
   - 
