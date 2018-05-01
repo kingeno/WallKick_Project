@@ -22,20 +22,6 @@ public class PlayerController : MonoBehaviour
     private float verticalVelocity;
     private float horizontalVelocity;
 
-
-    private int displayedEnergy;
-    public float currentEnergy;
-    public float maximumEnergy = 100f;
-    public float energyDecreaseRate;
-
-    private bool isLoosingEnergy;
-    private bool isSpendingEnergy;
-    private bool canCollideWithSource;
-
-    public bool isPowered = true;
-    public bool energyDecrease = true;
-    public bool spendEnergy = true;
-
     public float groundedMoveEnergyCost = 0.1f;
     public float airMoveEnergyCost = 0.1f;
     public float jumpEnergyCost = 1f;
@@ -98,6 +84,30 @@ public class PlayerController : MonoBehaviour
     private RaycastHit2D isHitingPlateform; // used to store collision with plateform when not grounded and holding joystick down
     private int oneWayPlateformMask;  // contains the layermask for OneWayPlateform;
 
+
+    [Header("Energy")]
+
+    [HideInInspector]
+    public float currentEnergy;
+    public float maximumEnergy = 100f;
+    public float energyDecreaseRate;
+
+    [HideInInspector]
+    public bool isLoosingEnergy;
+    [HideInInspector]
+    public bool isSpendingEnergy;
+    [HideInInspector]
+    public bool canCollideWithSource;
+    [HideInInspector]
+    public bool isPowered = true;
+    [HideInInspector]
+    public bool energyDecrease = true;
+    [HideInInspector]
+    public bool spendEnergy = true;
+
+    public Image energyGauge;
+    private int debugDisplayedEnergy;
+
     //-----------------------------------------------------------------------------------------
 
     [Header("Animations")]
@@ -115,19 +125,30 @@ public class PlayerController : MonoBehaviour
 
     private GameObject _SplitWall;
     private Collider2D _SplitWallCol;
+
+    private GameObject gameManager;
+    private GameManager gameManagerScript;
     //-----------------------------------------------------------------------------------------
 
 
-    void Start()
+    void Awake()
     {
-        keyboardAndController = true;
+        keyboardAndController = false;
 
         rb = GetComponent<Rigidbody2D>();
         _collider2D = GetComponent<Collider2D>();
 
+        gameManager = GameObject.Find("GameManager");
+        gameManagerScript = gameManager.GetComponent<GameManager>();
+
         oneWayPlateformMask = LayerMask.GetMask("OneWayPlateform");
 
         currentEnergy = maximumEnergy;
+        energyGauge.fillAmount = maximumEnergy / maximumEnergy;
+        if (energyGauge.fillAmount < 0.33f)
+        {
+            // make the gauge blink
+        }
 
         guiStyle.normal.textColor = Color.white;
     }
@@ -137,7 +158,9 @@ public class PlayerController : MonoBehaviour
         //Time.timeScale = 0.12f;
         canCollideWithSource = false;
 
-        displayedEnergy = (int)currentEnergy;
+        debugDisplayedEnergy = (int)currentEnergy;
+        energyGauge.fillAmount = currentEnergy / 100;
+
 
         if (Device.DPadUp.WasPressed || Input.GetKeyDown(KeyCode.S))
         {
@@ -165,8 +188,11 @@ public class PlayerController : MonoBehaviour
 
             if (Device.Action4.WasPressed || Input.GetKeyDown(KeyCode.E))
                 currentEnergy = maximumEnergy;
+
+            if (currentEnergy > maximumEnergy)
+                currentEnergy = maximumEnergy;
         }
-        else
+        else if (currentEnergy <= 0 && isGrounded)
         {
             rb.velocity += Vector2.zero;
             currentEnergy = 0f;
@@ -278,7 +304,7 @@ public class PlayerController : MonoBehaviour
                     willPassThroughPlateform = true;
                     willPassThroughPlateform_Raycast = true;
                 }
-                else if (PlayerGroundCheck.plateformName == "empty")
+                else if (gameManagerScript.plateformName == "empty")
                 {
                     willPassThroughPlateform = false;
                 }
@@ -359,7 +385,7 @@ public class PlayerController : MonoBehaviour
                     willPassThroughPlateform = true;
                     willPassThroughPlateform_Raycast = true;
                 }
-                else if (PlayerGroundCheck.plateformName == "empty")
+                else if (gameManagerScript.plateformName == "empty")
                 {
                     willPassThroughPlateform = false;
                 }
@@ -441,7 +467,7 @@ public class PlayerController : MonoBehaviour
                     willPassThroughPlateform = true;
                     willPassThroughPlateform_Raycast = true;
                 }
-                else if (PlayerGroundCheck.plateformName == "empty")
+                else if (gameManagerScript.plateformName == "empty")
                 {
                     willPassThroughPlateform = false;
                 }
@@ -602,17 +628,17 @@ public class PlayerController : MonoBehaviour
             // pass through plateform when grounded
             if (willPassThroughPlateform)
             {
-                foreach (Collider2D _collider in PlayerGroundCheck.plateformColliders)
+                foreach (Collider2D _collider in gameManagerScript.plateformColliders)
                 {
-                    if (_collider.name == PlayerGroundCheck.plateformName)
+                    if (_collider.name == gameManagerScript.plateformName)
                         Physics2D.IgnoreCollision(_collider2D, _collider, true);
                 }
             }
             else if (!willPassThroughPlateform)
             {
-                foreach (Collider2D _collider in PlayerGroundCheck.plateformColliders)
+                foreach (Collider2D _collider in gameManagerScript.plateformColliders)
                 {
-                    if (_collider.name == PlayerGroundCheck.plateformName)
+                    if (_collider.name == gameManagerScript.plateformName)
                     {
                         Physics2D.IgnoreCollision(_collider2D, _collider, false);
                         //Debug.Log("Collision enabled between " + _collider2D.name + " & " + _collider.name);
@@ -642,7 +668,7 @@ public class PlayerController : MonoBehaviour
             }
 
 
-            // horizontal isGrounded movement
+            // horizontal grounded movement
             if (isGrounded && inputRight && rb.velocity.x < analogGroundedMaxVelocity)
             {
                 isFacingLeft = false;
@@ -818,20 +844,20 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnGUI()
-    {
-        guiStyle.fontSize = 14;
-        Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
-        float x = screenPos.x;
-        float y = Screen.height - screenPos.y;
+    //void OnGUI()
+    //{
+    //    guiStyle.fontSize = 14;
+    //    Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+    //    float x = screenPos.x;
+    //    float y = Screen.height - screenPos.y;
 
-        GUI.Label(new Rect(x - 50f, y - 100f, 20f, 50f),
-            //"spend energy = " + spendEnergy.ToString() + " (S)"
-            //+ "\n" + "energy decrease = " + energyDecrease.ToString() + " (D)"
-            /*+*/ "\n" + "energy = " + displayedEnergy.ToString() + " (E)"
-            //"no collision = " + noCollisionState.ToString()
-            //+ "\n" + "vertical velocity = " + verticalVelocity.ToString()
-            //+ "\n" + "horizontal velocity = " + horizontalVelocity.ToString()
-            , guiStyle);
-    }
+    //    GUI.Label(new Rect(x - 50f, y - 100f, 20f, 50f),
+    //        //"spend energy = " + spendEnergy.ToString() + " (S)"
+    //        //+ "\n" + "energy decrease = " + energyDecrease.ToString() + " (D)"
+    //        /*+*/ "\n" + "energy = " + debugDisplayedEnergy.ToString() + " (E)"
+    //        //"no collision = " + noCollisionState.ToString()
+    //        //+ "\n" + "vertical velocity = " + verticalVelocity.ToString()
+    //        //+ "\n" + "horizontal velocity = " + horizontalVelocity.ToString()
+    //        , guiStyle);
+    //}
 }

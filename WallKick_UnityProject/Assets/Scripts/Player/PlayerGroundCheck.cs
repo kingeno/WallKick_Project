@@ -6,26 +6,15 @@ public class PlayerGroundCheck : MonoBehaviour {
 
     public bool isGrounded = false;
 
-    public GameObject[] plateforms;
-    public List <Collider2D> plateformColliders;
-    public string plateformName;
-    public int numberOfPlateforms;
+    private GameObject gameManager;
+    private GameManager gameManagerScript;
 
-    private void Start()
+
+    private void Awake()
     {
-        plateformColliders = new List<Collider2D>();
-
-        plateforms = GameObject.FindGameObjectsWithTag("Plateform");
-
-        for (int i = 0; i < plateforms.Length; i++)
-        {
-            plateformColliders.Add(plateforms[i].GetComponent<Collider2D>());
-            //plateformColliders[i] = plateforms[i].GetComponent<Collider2D>();
-            plateformColliders[i].name = "PlateformCol_" + i.ToString();
-            Debug.Log(plateformColliders[i].name);
-        }
+        gameManager = GameObject.Find("GameManager");
+        gameManagerScript = gameManager.GetComponent<GameManager>();
     }
-
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -33,7 +22,7 @@ public class PlayerGroundCheck : MonoBehaviour {
         {
             if (other.tag == "Plateform")
             {
-                plateformName = other.name;
+                gameManagerScript.plateformName = other.name;
                 //Debug.Log("plateform name = " + plateformName);
             }
 
@@ -41,13 +30,12 @@ public class PlayerGroundCheck : MonoBehaviour {
         }
     }
 
-
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.tag == "Ground" || other.tag == "Plateform")
         {
             isGrounded = false;
-            plateformName = "empty";
+            gameManagerScript.plateformName = "empty";
             //Debug.Log("plateform name = " + plateformName);
         }
     }

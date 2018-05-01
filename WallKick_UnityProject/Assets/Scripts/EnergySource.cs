@@ -10,21 +10,37 @@ public class EnergySource : MonoBehaviour {
 
     private BoxCollider2D boxCol;
 
-    public static float maxLoad = 30f;
+    public static float maxLoad = 10f;
 
     public float timeToCharge;
     public bool isCharged = true;
 
+    private Renderer rend;
+    private Color chargedColor;
+    private Color unchargedColor = Color.black;
+
     private void Awake()
     {
-        debugDisplay = true;
-        guiStyle.normal.textColor = Color.white;
+        rend = GetComponent<Renderer>();
+
+        chargedColor.r = 220f;
+        chargedColor.g = 240f;
+        chargedColor.b = 0f;
 
         boxCol = GetComponent<BoxCollider2D>();
+
+        debugDisplay = false;
+        guiStyle.normal.textColor = Color.white;
     }
 
     private void Update()
     {
+        if (isCharged)
+        {
+            rend.material.color = chargedColor;
+        }
+        else
+            rend.material.color = unchargedColor;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
