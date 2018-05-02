@@ -95,20 +95,20 @@ public class ButtonCenter : MonoBehaviour
 
     IEnumerator FreezeFrame(float time)
     {
-        float i = 0;
+        float i = .0f;
         while (i <= time)
         {
             i++;
             if (i < time)
             {
                 //Debug.Log(i);
-                Time.timeScale = 0f;
+                Time.timeScale = .0f;
             }
             else if (i < time + 1)
             {
                 //Debug.Log("end of coroutine");
-                ScreenShake.shakeDuration = 0.1f;
-                Time.timeScale = 1f;
+                ScreenShake.shakeDuration = .1f;
+                Time.timeScale = 1.0f;
             }
             yield return null;
         }

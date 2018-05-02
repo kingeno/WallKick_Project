@@ -1402,7 +1402,7 @@ MonoBehaviour:
   isPowered: 0
   energyDecrease: 1
   spendEnergy: 1
-  EnergyGauge: {fileID: 114818634378149348}
+  energyGauge: {fileID: 114818634378149348}
   playerSkin: {fileID: 4841939589882952}
   characterAnimator: {fileID: 95904996405941196}
   punchCollidersAnimator: {fileID: 95083082292130728}
