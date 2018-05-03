@@ -14,7 +14,6 @@ public class ButtonCenter : MonoBehaviour
 
     public int hitStrengh;
     private int bonusStrengh;
-    public float freezeFrameTime;
 
     private void Start()
     {
@@ -38,20 +37,17 @@ public class ButtonCenter : MonoBehaviour
         if (other.collider.tag == "Punch1")
         {
             //Debug.Log("Player 1 hit the button!");
-
+            StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
             transform.position = new Vector3(transform.position.x, RandomPos(), transform.position.z);
-            //transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x, RandomPos(), transform.position.z), 1f * Time.deltaTime);
-            StartCoroutine(FreezeFrame(freezeFrameTime));
-            //transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, RandomPos(), transform.position.z), 1.2f * Time.deltaTime);
 
-            if (xVelocity <= 0.0f)
+            if (xVelocity <= .0f)
             {
-                splitWallRb.velocity = new Vector2(0f, 0f);
+                splitWallRb.velocity = Vector2.zero;
                 ReturnPoint.isEnable = false;
                 splitWallRb.AddForce(transform.right * (hitStrengh + (-bonusStrengh * 20)), ForceMode2D.Impulse);
                 Debug.Log("hit strengh = " + hitStrengh + " + " + -bonusStrengh);
             }
-            else if (xVelocity >= 0.1f)
+            else if (xVelocity >= .1f)
             {
                 ReturnPoint.isEnable = false;
                 splitWallRb.AddForce(transform.right * hitStrengh, ForceMode2D.Impulse);
@@ -62,19 +58,17 @@ public class ButtonCenter : MonoBehaviour
         if (other.collider.tag == "Punch2")
         {
             //Debug.Log("Player 2 hit the button!");
+            StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
             transform.position = new Vector3(transform.position.x, RandomPos(), transform.position.z);
-            //transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x, RandomPos(), transform.position.z), 0.1f);
-            StartCoroutine(FreezeFrame(freezeFrameTime));
-            //transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, RandomPos(), transform.position.z), 1.2f * Time.deltaTime);
 
-            if (xVelocity >= 0.0f)
+            if (xVelocity >= .0f)
             {
-                splitWallRb.velocity = new Vector2(0f, 0f);
+                splitWallRb.velocity = Vector2.zero;
                 ReturnPoint.isEnable = false;
                 splitWallRb.AddForce(transform.right * (-hitStrengh + (-bonusStrengh * 20)), ForceMode2D.Impulse);
                 Debug.Log("hit strengh = " + hitStrengh + " + " + bonusStrengh);
             }
-            else if (xVelocity <= -0.1f)
+            else if (xVelocity <= -.1f)
             {
                 ReturnPoint.isEnable = false;
                 splitWallRb.AddForce(transform.right * -hitStrengh, ForceMode2D.Impulse);
@@ -91,26 +85,5 @@ public class ButtonCenter : MonoBehaviour
         newRandomPos = arrayOfPos[Random.Range(0, 7)];
 
         return newRandomPos;
-    }
-
-    IEnumerator FreezeFrame(float time)
-    {
-        float i = .0f;
-        while (i <= time)
-        {
-            i++;
-            if (i < time)
-            {
-                //Debug.Log(i);
-                Time.timeScale = .0f;
-            }
-            else if (i < time + 1)
-            {
-                //Debug.Log("end of coroutine");
-                ScreenShake.shakeDuration = .1f;
-                Time.timeScale = 1.0f;
-            }
-            yield return null;
-        }
     }
 }

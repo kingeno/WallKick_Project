@@ -11,13 +11,20 @@ public class GameManager : MonoBehaviour {
     public bool vSyncEnabled;
 
     private int numberOfPlateforms;
-    public GameObject[] plateforms;
-    public List<Collider2D> plateformColliders;
-    public string plateformName;
+    [HideInInspector] public GameObject[] plateforms;
+    [HideInInspector] public List<Collider2D> plateformColliders;
+    [HideInInspector] public string plateformName;
 
+    public static float timeSpeed = 1.0f;
+
+    public float _freezeDurationWhenButtonHit;
+    public static float freezeDurationWhenButtonHit;
 
     private void Awake()
     {
+        freezeDurationWhenButtonHit = _freezeDurationWhenButtonHit;
+        Time.timeScale = timeSpeed;
+
         forcedFrameRate = false;
         vSyncEnabled = false;
 
@@ -51,6 +58,27 @@ public class GameManager : MonoBehaviour {
         else
         {
             QualitySettings.vSyncCount = 0;
+        }
+    }
+
+    public static IEnumerator FreezeFrame(float freezeDuration)
+    {
+        float i = .0f;
+        while (i <= freezeDuration)
+        {
+            i++;
+            if (i < freezeDuration)
+            {
+                //Debug.Log(i);
+                Time.timeScale = .0f;
+            }
+            else if (i < freezeDuration + 1)
+            {
+                //Debug.Log("end of coroutine");
+                ScreenShake.shakeDuration = .1f;
+                Time.timeScale = timeSpeed;
+            }
+            yield return null;
         }
     }
 }

@@ -2846,7 +2846,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 888412984}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.28, y: 5.5, z: 0}
+  m_LocalPosition: {x: 4.28, y: 2.14, z: 0}
   m_LocalScale: {x: 4, y: 4, z: 0.8}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2867,7 +2867,6 @@ MonoBehaviour:
   splitWallRb: {fileID: 166936725}
   splitWallMovement: {fileID: 166936724}
   hitStrengh: 10
-  freezeFrameTime: 20
 --- !u!58 &888412989
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -3376,6 +3375,7 @@ MonoBehaviour:
   plateforms: []
   plateformColliders: []
   plateformName: 
+  _freezeDurationWhenButtonHit: 100
 --- !u!1 &1031863073
 GameObject:
   m_ObjectHideFlags: 0
@@ -4154,7 +4154,7 @@ Transform:
   m_GameObject: {fileID: 1241278611}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 10, y: 3, z: 0}
-  m_LocalScale: {x: 4, y: 0.4, z: 3}
+  m_LocalScale: {x: 4, y: 0.4, z: 2}
   m_Children: []
   m_Father: {fileID: 1589556413}
   m_RootOrder: 6
@@ -5118,7 +5118,7 @@ Transform:
   m_GameObject: {fileID: 1531790070}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 11, z: 0}
-  m_LocalScale: {x: 10, y: 0.4, z: 3}
+  m_LocalScale: {x: 10, y: 0.4, z: 2}
   m_Children: []
   m_Father: {fileID: 1589556413}
   m_RootOrder: 4
@@ -5669,7 +5669,7 @@ Transform:
   m_GameObject: {fileID: 1739339549}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -10, y: 3, z: 0}
-  m_LocalScale: {x: 4, y: 0.4, z: 3}
+  m_LocalScale: {x: 4, y: 0.4, z: 2}
   m_Children: []
   m_Father: {fileID: 1589556413}
   m_RootOrder: 5

@@ -137,7 +137,6 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        //Time.timeScale = .12f;
         canCollideWithSource = false;
 
         debugDisplayedEnergy = (int)currentEnergy;
