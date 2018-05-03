@@ -24,16 +24,16 @@ TagManager:
   - 
   - 
   - Players
-  - Walls
-  - Split
-  - Button
-  - OneWayPlateform
   - Punches
-  - SplitLimiters
-  - EnergySource
   - PlayerTriggers
+  - Button
+  - Split
   - ForceField
-  - ButtonVerticalLimits
+  - Split_Limiters&Triggers
+  - EnergySource
+  - OneWayPlateform
+  - Level
+  - Background
   - 
   - 
   - 

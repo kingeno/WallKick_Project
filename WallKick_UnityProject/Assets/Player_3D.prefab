@@ -35,7 +35,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4330001989043296}
   - component: {fileID: 137401324391137690}
-  m_Layer: 13
+  m_Layer: 0
   m_Name: RightPunch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67,7 +67,7 @@ GameObject:
   - component: {fileID: 4280924416071816}
   - component: {fileID: 61432994592892236}
   - component: {fileID: 114955074824424184}
-  m_Layer: 16
+  m_Layer: 10
   m_Name: Right Detection Box
   m_TagString: Punch
   m_Icon: {fileID: 0}
@@ -83,7 +83,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4288017793022608}
   - component: {fileID: 137446160134618810}
-  m_Layer: 13
+  m_Layer: 0
   m_Name: LeftPunch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 58816220260940764}
   - component: {fileID: 95083082292130728}
   - component: {fileID: 111359484269658530}
-  m_Layer: 13
+  m_Layer: 9
   m_Name: Left Punch Collider
   m_TagString: Punch
   m_Icon: {fileID: 0}
@@ -275,7 +275,7 @@ GameObject:
   - component: {fileID: 61720573573230016}
   - component: {fileID: 212428620091537068}
   - component: {fileID: 114001301321808336}
-  m_Layer: 16
+  m_Layer: 10
   m_Name: Ground Detection Box
   m_TagString: Punch
   m_Icon: {fileID: 0}
@@ -601,7 +601,7 @@ GameObject:
   - component: {fileID: 4197565398400116}
   - component: {fileID: 61031879293823982}
   - component: {fileID: 114860504696487352}
-  m_Layer: 16
+  m_Layer: 10
   m_Name: Left Detection Box
   m_TagString: Punch
   m_Icon: {fileID: 0}
@@ -1357,21 +1357,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ae9c3c70eff2294e95b72f446b92c11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keyboardAndController: 0
-  groundedMoveEnergyCost: 0.1
-  airMoveEnergyCost: 0.1
-  jumpEnergyCost: 1
-  wallJumpEnergyCost: 0.5
-  punchEnergyCost: 2
-  inputPunch: 0
-  inputJump: 0
-  inputJumpHolded: 0
-  inputWallJump: 0
-  isFastFalling: 0
-  willPassThroughPlateform: 0
-  inputLeft: 0
-  inputRight: 0
-  willPassThroughPlateform_Raycast: 0
+  groundedMaxVelocity: 17
+  groundedAcceleration: 5
+  airMaxVelocity: 13
+  airAcceleration: 1.2
+  fallingMaxVelocity: 18
   jumpVelocity: 20
   fallMultiplier: 8
   lowJumpMultiplier: 2.7
@@ -1379,34 +1369,35 @@ MonoBehaviour:
   horizontalForce: 15
   verticalForce: 18
   maxVerticalVelocity: 20
-  groundedMaxVelocity: 17
-  groundedAcceleration: 5
-  airMaxVelocity: 13
-  fallingMaxVelocity: 18
-  airAcceleration: 1.2
-  disabledCollisionDuration: 0.1
-  isGrounded: 0
-  isSlidingOnWall: 0
-  canWallJumpToRight: 0
-  canWallJumpToLeft: 0
-  PlayerGroundCheck: {fileID: 114001301321808336}
-  LeftDetectionBox: {fileID: 114860504696487352}
-  RightDetectionBox: {fileID: 114955074824424184}
-  leftPunchCollider: {fileID: 4199727873269924}
-  currentEnergy: 0
   maximumEnergy: 100
-  energyDecreaseRate: 1
+  passiveEnergyLoss: 1
+  groundedMoveEnergyCost: 0.1
+  airMoveEnergyCost: 0.1
+  jumpEnergyCost: 1
+  wallJumpEnergyCost: 0.5
+  punchEnergyCost: 2
+  currentEnergy: 0
   isLoosingEnergy: 0
   isSpendingEnergy: 0
   canCollideWithSource: 0
   isPowered: 0
   energyDecrease: 1
   spendEnergy: 1
-  energyGauge: {fileID: 114818634378149348}
+  playerGroundCheck: {fileID: 114001301321808336}
+  leftDetectionBox: {fileID: 114860504696487352}
+  rightDetectionBox: {fileID: 114955074824424184}
+  leftPunchCollider: {fileID: 4199727873269924}
   playerSkin: {fileID: 4841939589882952}
   characterAnimator: {fileID: 95904996405941196}
   punchCollidersAnimator: {fileID: 95083082292130728}
   jumpVFX: {fileID: 1405802149343542, guid: 89a0f6afd5fae884eb3202f409078c88, type: 2}
+  energyGauge: {fileID: 114818634378149348}
+  isGrounded: 0
+  isSlidingOnWall: 0
+  canWallJumpToRight: 0
+  canWallJumpToLeft: 0
+  willPassThroughPlateform: 0
+  willPassThroughPlateformRaycast: 0
 --- !u!114 &114286112270507596
 MonoBehaviour:
   m_ObjectHideFlags: 1

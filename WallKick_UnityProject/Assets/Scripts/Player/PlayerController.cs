@@ -7,105 +7,55 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-
-    private GUIStyle guiStyle = new GUIStyle();
-
     public InputDevice Device { get; set; }
-
-    private Text debugText;
-
-    private float xPos;
-    private float yPos;
-    private float zPos;
-
-    private float verticalVelocity;
-    private float horizontalVelocity;
-
-    public float groundedMoveEnergyCost = 0.1f;
-    public float airMoveEnergyCost = 0.1f;
-    public float jumpEnergyCost = 1f;
-    public float wallJumpEnergyCost = 0.5f;
-    public float punchEnergyCost = 2f;
-
-    public bool inputPunch = false;
-    public bool inputJump = false;
-    public bool inputJumpHolded = false;
-    public bool inputWallJump = false;
-    public bool isFastFalling = false;
-    public bool willPassThroughPlateform = false;
-    public bool inputLeft = false;
-    public bool inputRight = false;
-    public static bool inputPause = false;
-    public bool willPassThroughPlateform_Raycast = false;
-
-    [Header("Jump")]
-    [Range(10, 30)]
-    public float jumpVelocity; //recommended value : 20
-    [Range(0, 100)]
-    public float fallMultiplier; // recommended value : 6
-    [Range(0, 100)]
-    public float lowJumpMultiplier; // recommended value : 3
-    public float landingLag;
-    [Header("Wall Jump")]
-    public float horizontalForce = 10;
-    public float verticalForce = 20;
-    public float maxVerticalVelocity; // todo : enter a recommended value
 
     [Header("Grounded Movement")]
     public float groundedMaxVelocity;
     private float analogGroundedMaxVelocity;
-    [Range(0.2f, 5f)]
-    public float groundedAcceleration;
+    [Range(.2f, 5.0f)] public float groundedAcceleration;
 
-    [Header("Air Movement")]
+    [Header("Airborn Movement")]
     public float airMaxVelocity;
     private float analogAirMaxVelocity;
+    [Range(.2f, 20.0f)] public float airAcceleration;
     private float fallingVelocity;
-    public float fallingMaxVelocity = 20f;
-    [Range(0.2f, 20f)]
-    public float airAcceleration;
-    [Range(0.05f, 0.1f)]
-    public float disabledCollisionDuration;
-    private float noCollisionState;  // use for debug display
+    public float fallingMaxVelocity = 20.0f;
 
-    [Header("Ground & Wall triggers")]
-    public bool isGrounded = false;
-    public bool isSlidingOnWall = false;
-    public bool canWallJumpToRight = false;
-    public bool canWallJumpToLeft = false;
+    [Header("Jump")]
+    [Range(10, 30)] public float jumpVelocity; //recommended value : 20
+    [Range(0, 100)] public float fallMultiplier; // recommended value : 6
+    [Range(0, 100)] public float lowJumpMultiplier; // recommended value : 3
+    public float landingLag;
 
-    public PlayerGroundCheck PlayerGroundCheck;
-    public LeftDetectionBox LeftDetectionBox;
-    public RightDetectionBox RightDetectionBox;
-    public Transform leftPunchCollider;
-    private Rigidbody2D rb;
-    private Collider2D _collider2D;
-    private RaycastHit2D isHitingPlateform; // used to store collision with plateform when not grounded and holding joystick down
-    private int oneWayPlateformMask;  // contains the layermask for OneWayPlateform;
-
+    [Header("Wall Jump")]
+    public float horizontalForce = 10.0f;
+    public float verticalForce = 20.0f;
+    public float maxVerticalVelocity; // todo : enter a recommended value
 
     [Header("Energy")]
+    public float maximumEnergy = 100.0f;
+    public float passiveEnergyLoss;
+    public float groundedMoveEnergyCost = .1f;
+    public float airMoveEnergyCost = .1f;
+    public float jumpEnergyCost = 1.0f;
+    public float wallJumpEnergyCost = .5f;
+    public float punchEnergyCost = 2.0f;
+    [HideInInspector] public float currentEnergy;
 
-    [HideInInspector]
-    public float currentEnergy;
-    public float maximumEnergy = 100f;
-    public float energyDecreaseRate;
+    [HideInInspector] public bool isLoosingEnergy;
+    [HideInInspector] public bool isSpendingEnergy;
+    [HideInInspector] public bool canCollideWithSource;
+    [HideInInspector] public bool isPowered;
+    [HideInInspector] public bool energyDecrease;
+    [HideInInspector] public bool spendEnergy;
 
-    [HideInInspector]
-    public bool isLoosingEnergy;
-    [HideInInspector]
-    public bool isSpendingEnergy;
-    [HideInInspector]
-    public bool canCollideWithSource;
-    [HideInInspector]
-    public bool isPowered = true;
-    [HideInInspector]
-    public bool energyDecrease = true;
-    [HideInInspector]
-    public bool spendEnergy = true;
+    [Header("Ground & Wall triggers")]
+    public PlayerGroundCheck playerGroundCheck;
+    public LeftDetectionBox leftDetectionBox;
+    public RightDetectionBox rightDetectionBox;
 
-    public Image energyGauge;
-    private int debugDisplayedEnergy;
+    [Header("Punch Colliders")]
+    public Transform leftPunchCollider;
 
     //-----------------------------------------------------------------------------------------
 
@@ -113,27 +63,62 @@ public class PlayerController : MonoBehaviour
     public Transform playerSkin;
     public Animator characterAnimator;
     public Animator punchCollidersAnimator;
-    private bool isFacingRight = true;
+    private bool isFacingRight;
     private bool isFacingLeft = false;
-    private Quaternion facingRight = Quaternion.Euler(0f, 90f, 0f);
-    private Quaternion facingLeft = Quaternion.Euler(0f, 270f, 0f);
+    private Quaternion facingRight = Quaternion.Euler(.0f, 90.0f, .0f);
+    private Quaternion facingLeft = Quaternion.Euler(.0f, 270.0f, .0f);
 
     [Header("Visual Effects")]
     public GameObject jumpVFX;
 
+    [Header("UI")]
+    public Image energyGauge;
 
-    private GameObject _SplitWall;
-    private Collider2D _SplitWallCol;
+    //-----------------------------------------------------------------------------------------
+
+    private Rigidbody2D playerRigidbody;
+    private Collider2D playerCollider;
+    private RaycastHit2D isHitingPlateform; // used to store collision with plateform when not grounded and holding joystick down
+    private int oneWayPlateformMask;  // contains the layermask for OneWayPlateform;
 
     private GameObject gameManager;
     private GameManager gameManagerScript;
+
     //-----------------------------------------------------------------------------------------
+
+    private bool inputLeft = false;
+    private bool inputRight = false;
+    private bool inputPunch = false;
+    private bool inputJump = false;
+    private bool inputJumpHolded = false;
+    private bool inputWallJump = false;
+    public static bool inputPause = false;
+
+    [HideInInspector] public bool isGrounded = false;
+    [HideInInspector] public bool isSlidingOnWall = false;
+    [HideInInspector] public bool canWallJumpToRight = false;
+    [HideInInspector] public bool canWallJumpToLeft = false;
+
+    [HideInInspector] public bool willPassThroughPlateform = false;
+    [HideInInspector] public bool willPassThroughPlateformRaycast = false;
+
+    //-----------------------------------------------------------------------------------------
+
+    private float xPos;
+    private float yPos;
+    private float zPos;
+    private float verticalVelocity;
+    private float horizontalVelocity;
+
+    private GUIStyle guiStyle = new GUIStyle();
+    private Text debugText;
+    private int debugDisplayedEnergy;
 
 
     void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
-        _collider2D = GetComponent<Collider2D>();
+        playerRigidbody = GetComponent<Rigidbody2D>();
+        playerCollider = GetComponent<Collider2D>();
 
         gameManager = GameObject.Find("GameManager");
         gameManagerScript = gameManager.GetComponent<GameManager>();
@@ -142,7 +127,7 @@ public class PlayerController : MonoBehaviour
 
         currentEnergy = maximumEnergy;
         energyGauge.fillAmount = maximumEnergy / maximumEnergy;
-        if (energyGauge.fillAmount < 0.33f)
+        if (energyGauge.fillAmount < .33f)
         {
             // make the gauge blink
         }
@@ -152,7 +137,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        //Time.timeScale = 0.12f;
+        //Time.timeScale = .12f;
         canCollideWithSource = false;
 
         debugDisplayedEnergy = (int)currentEnergy;
@@ -166,7 +151,7 @@ public class PlayerController : MonoBehaviour
             else if (!spendEnergy)
                 spendEnergy = true;
         }
-        // energy c
+        // energy passive consumption
         if (Device.DPadDown.WasPressed || Input.GetKeyDown(KeyCode.D))
         {
             if (energyDecrease)
@@ -175,12 +160,12 @@ public class PlayerController : MonoBehaviour
                 energyDecrease = true;
         }
 
-
+        // energy decrease condition
         if (currentEnergy > 0)
         {
             if (energyDecrease)
             {
-                currentEnergy -= energyDecreaseRate * Time.deltaTime;
+                currentEnergy -= passiveEnergyLoss * Time.deltaTime;
             }
             isPowered = true;
 
@@ -192,7 +177,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (currentEnergy <= 0 && isGrounded)
         {
-            rb.velocity += Vector2.zero;
+            playerRigidbody.velocity += Vector2.zero;
             currentEnergy = 0f;
             isPowered = false;
             characterAnimator.SetBool("poweredOff", true);
@@ -205,12 +190,12 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        verticalVelocity = (int)rb.velocity.y;
-        horizontalVelocity = (int)rb.velocity.x;
+        verticalVelocity = (int)playerRigidbody.velocity.y;
+        horizontalVelocity = (int)playerRigidbody.velocity.x;
 
-        if (rb.velocity.y <= -maxVerticalVelocity)
+        if (playerRigidbody.velocity.y <= -maxVerticalVelocity)
         {
-            rb.velocity = new Vector2(rb.velocity.x, -maxVerticalVelocity);
+            playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, -maxVerticalVelocity);
         }
 
         xPos = transform.position.x;
@@ -244,7 +229,7 @@ public class PlayerController : MonoBehaviour
                 inputLeft = false;
 
             //----------------- RIGHT ----------------------
-            if (leftStickValueX > 0.2f)
+            if (leftStickValueX > .2f)
             {
                 analogGroundedMaxVelocity = groundedMaxVelocity * leftStickValueX;
                 analogAirMaxVelocity = airMaxVelocity * leftStickValueX;
@@ -293,7 +278,7 @@ public class PlayerController : MonoBehaviour
             if (Device.LeftStickY < -0.5 || Input.GetKey(KeyCode.DownArrow))
             {
                 willPassThroughPlateform = true;
-                willPassThroughPlateform_Raycast = true;
+                willPassThroughPlateformRaycast = true;
             }
             else if (gameManagerScript.plateformName == "empty")
             {
@@ -301,7 +286,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                willPassThroughPlateform_Raycast = false;
+                willPassThroughPlateformRaycast = false;
             }
 
 
@@ -324,7 +309,7 @@ public class PlayerController : MonoBehaviour
 
 
             // check if grounded
-            if (PlayerGroundCheck.isGrounded && rb.velocity.y <= 0f)
+            if (playerGroundCheck.isGrounded && playerRigidbody.velocity.y <= 0f)
             {
                 isGrounded = true;
                 isSlidingOnWall = false;
@@ -333,7 +318,7 @@ public class PlayerController : MonoBehaviour
                 isGrounded = false;
 
             // check if the LEFT detection box is triggering a gameobject with the "wall" tag
-            if (LeftDetectionBox.isTriggered && !RightDetectionBox.isTriggered)
+            if (leftDetectionBox.isTriggered && !rightDetectionBox.isTriggered)
             {
                 if (leftStickValueX < -0.2f || Input.GetKey(KeyCode.LeftArrow))
                 {
@@ -341,28 +326,28 @@ public class PlayerController : MonoBehaviour
                     isSlidingOnWall = true;
                 }
             }
-            else if (!LeftDetectionBox.isTriggered && !RightDetectionBox.isTriggered || Input.GetKey(KeyCode.DownArrow) || Device.LeftStickY < -0.5)
+            else if (!leftDetectionBox.isTriggered && !rightDetectionBox.isTriggered || Input.GetKey(KeyCode.DownArrow) || Device.LeftStickY < -0.5)
             {
                 canWallJumpToRight = false;
                 isSlidingOnWall = false;
             }
             // check if the RIGHT detection box is triggering a gameobject with the "wall" tag
-            if (RightDetectionBox.isTriggered && !LeftDetectionBox.isTriggered)
+            if (rightDetectionBox.isTriggered && !leftDetectionBox.isTriggered)
             {
-                if (leftStickValueX > 0.2f || Input.GetKey(KeyCode.RightArrow))
+                if (leftStickValueX > .2f || Input.GetKey(KeyCode.RightArrow))
                 {
                     canWallJumpToLeft = true;
                     isSlidingOnWall = true;
                 }
             }
-            else if (!RightDetectionBox.isTriggered && !LeftDetectionBox.isTriggered || Input.GetKey(KeyCode.DownArrow) || Device.LeftStickY < -0.5)
+            else if (!rightDetectionBox.isTriggered && !leftDetectionBox.isTriggered || Input.GetKey(KeyCode.DownArrow) || Device.LeftStickY < -0.5)
             {
                 canWallJumpToLeft = false;
                 isSlidingOnWall = false;
             }
 
 
-            if (isGrounded && rb.velocity == new Vector2(0f, 0f))
+            if (isGrounded && playerRigidbody.velocity == new Vector2(0f, 0f))
             {
                 characterAnimator.SetBool("isIdling", true);
             }
@@ -371,7 +356,7 @@ public class PlayerController : MonoBehaviour
                 characterAnimator.SetBool("isIdling", false);
             }
 
-            if (isGrounded && rb.velocity.x < 0f && rb.velocity.x > -7f || isGrounded && rb.velocity.x > 0f && rb.velocity.x < 7f)
+            if (isGrounded && playerRigidbody.velocity.x < 0f && playerRigidbody.velocity.x > -7f || isGrounded && playerRigidbody.velocity.x > 0f && playerRigidbody.velocity.x < 7f)
             {
                 characterAnimator.SetBool("isWalking", true);
             }
@@ -380,7 +365,7 @@ public class PlayerController : MonoBehaviour
                 characterAnimator.SetBool("isWalking", false);
             }
 
-            if (isGrounded && rb.velocity.x >= 7f || isGrounded && rb.velocity.x <= -7f)
+            if (isGrounded && playerRigidbody.velocity.x >= 7f || isGrounded && playerRigidbody.velocity.x <= -7f)
             {
                 characterAnimator.SetBool("isRunning", true);
             }
@@ -389,7 +374,7 @@ public class PlayerController : MonoBehaviour
                 characterAnimator.SetBool("isRunning", false);
             }
 
-            if (rb.velocity.y > 0f)
+            if (playerRigidbody.velocity.y > 0f)
             {
                 characterAnimator.SetBool("isJumping", true);
             }
@@ -398,7 +383,7 @@ public class PlayerController : MonoBehaviour
                 characterAnimator.SetBool("isJumping", false);
             }
 
-            if (!isGrounded && rb.velocity.y < 7f)
+            if (!isGrounded && playerRigidbody.velocity.y < 7f)
             {
                 characterAnimator.SetBool("isFalling", true);
             }
@@ -427,9 +412,9 @@ public class PlayerController : MonoBehaviour
                 punchCollidersAnimator.SetBool("enableLeftColliderAnimation", false);
             }
 
-            if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.5f)
+            if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
                 punchCollidersAnimator.SetBool("enableRightColliderAnimation", true);
-            if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.5f)
+            if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
                 punchCollidersAnimator.SetBool("enableLeftColliderAnimation", true);
 
 
@@ -448,8 +433,9 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (rb.velocity.y <= -fallingMaxVelocity)
-            rb.velocity = new Vector2(rb.velocity.x, -fallingMaxVelocity);
+        if (playerRigidbody.velocity.y <= -fallingMaxVelocity)
+            playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, -fallingMaxVelocity);
+
         if (isPowered)
         {
             // pass through plateform when grounded
@@ -458,7 +444,7 @@ public class PlayerController : MonoBehaviour
                 foreach (Collider2D _collider in gameManagerScript.plateformColliders)
                 {
                     if (_collider.name == gameManagerScript.plateformName)
-                        Physics2D.IgnoreCollision(_collider2D, _collider, true);
+                        Physics2D.IgnoreCollision(playerCollider, _collider, true);
                 }
             }
             else if (!willPassThroughPlateform)
@@ -467,109 +453,108 @@ public class PlayerController : MonoBehaviour
                 {
                     if (_collider.name == gameManagerScript.plateformName)
                     {
-                        Physics2D.IgnoreCollision(_collider2D, _collider, false);
-                        //Debug.Log("Collision enabled between " + _collider2D.name + " & " + _collider.name);
+                        Physics2D.IgnoreCollision(playerCollider, _collider, false);
                     }
                 }
             }
 
-            // pass through plateform when not grounded / in the air
+            // pass through plateform when not grounded/in the air
             Vector2 rayStart = new Vector2(xPos, yPos - transform.localScale.y / 2f);
             Vector2 rayEnd = new Vector2(xPos, yPos - transform.localScale.y / 1f);
 
-            if (willPassThroughPlateform_Raycast && !isGrounded)
+            if (willPassThroughPlateformRaycast && !isGrounded)
             {
                 isHitingPlateform = Physics2D.Raycast(rayStart, Vector2.down, rayStart.y - rayEnd.y, oneWayPlateformMask);
                 //Debug.Log(rayStart.y - rayEnd.y);
 
-                if (isHitingPlateform == true)
+                if (isHitingPlateform)
                 {
-                    Physics2D.IgnoreCollision(_collider2D, isHitingPlateform.transform.gameObject.GetComponent<Collider2D>(), true);
-                    //Debug.DrawLine(rayStart, rayEnd, Color.green, 0.5f);
+                    Physics2D.IgnoreCollision(playerCollider, isHitingPlateform.transform.gameObject.GetComponent<Collider2D>(), true);
+                    //Debug.DrawLine(rayStart, rayEnd, Color.green, .5f);
                 }
                 else
                 {
-                    //Debug.DrawLine(rayStart, rayEnd, Color.red, 0.5f);
-                    willPassThroughPlateform_Raycast = false;
+                    //Debug.DrawLine(rayStart, rayEnd, Color.red, .5f);
+                    willPassThroughPlateformRaycast = false;
                 }
             }
 
 
             // horizontal grounded movement
-            if (isGrounded && inputRight && rb.velocity.x < analogGroundedMaxVelocity)
+            if (isGrounded && inputRight && playerRigidbody.velocity.x < analogGroundedMaxVelocity)
             {
                 isFacingLeft = false;
                 isFacingRight = true;
-                float _maxContribution = Mathf.Max(0, analogGroundedMaxVelocity - rb.velocity.x);
+                float _maxContribution = Mathf.Max(.0f, analogGroundedMaxVelocity - playerRigidbody.velocity.x);
                 float _acceleration = Mathf.Min(_maxContribution, groundedAcceleration);
-                rb.velocity += new Vector2(_acceleration, 0f);
+                playerRigidbody.velocity += new Vector2(_acceleration, .0f);
             }
-            else if (isGrounded && inputLeft && rb.velocity.x > -analogGroundedMaxVelocity)
+            else if (isGrounded && inputLeft && playerRigidbody.velocity.x > -analogGroundedMaxVelocity)
             {
                 isFacingRight = false;
                 isFacingLeft = true;
-                float _maxContribution = Mathf.Max(0, analogGroundedMaxVelocity + rb.velocity.x);
+                float _maxContribution = Mathf.Max(0, analogGroundedMaxVelocity + playerRigidbody.velocity.x);
                 float _acceleration = Mathf.Min(_maxContribution, groundedAcceleration);
-                rb.velocity += new Vector2(-_acceleration, 0f);
+                playerRigidbody.velocity += new Vector2(-_acceleration, .0f);
             }
             if (isGrounded && !inputLeft && !inputRight)
             {
-                rb.velocity = new Vector2(0f, rb.velocity.y);
+                playerRigidbody.velocity = new Vector2(0f, playerRigidbody.velocity.y);
             }
 
             // horizontal airborn movement
-            if (!isGrounded && inputRight && rb.velocity.x < analogAirMaxVelocity)
+            if (!isGrounded && inputRight && playerRigidbody.velocity.x < analogAirMaxVelocity)
             {
                 isFacingLeft = false;
                 isFacingRight = true;
-                float _maxContribution = Mathf.Max(0, analogAirMaxVelocity - rb.velocity.x);
+                float _maxContribution = Mathf.Max(0, analogAirMaxVelocity - playerRigidbody.velocity.x);
                 float _acceleration = Mathf.Min(_maxContribution, airAcceleration);
-                rb.velocity += new Vector2(_acceleration, 0f);
+                playerRigidbody.velocity += new Vector2(_acceleration, .0f);
             }
-            else if (!isGrounded && inputLeft && rb.velocity.x > -analogAirMaxVelocity)
+            else if (!isGrounded && inputLeft && playerRigidbody.velocity.x > -analogAirMaxVelocity)
             {
                 isFacingRight = false;
                 isFacingLeft = true;
-                float _maxContribution = Mathf.Max(0, analogAirMaxVelocity + rb.velocity.x);
+                float _maxContribution = Mathf.Max(0, analogAirMaxVelocity + playerRigidbody.velocity.x);
                 float _acceleration = Mathf.Min(_maxContribution, airAcceleration);
-                rb.velocity += new Vector2(-_acceleration, 0f);
+                playerRigidbody.velocity += new Vector2(-_acceleration, .0f);
             }
 
             // horizontal deceleration when joystick not pushed
-            if (!isGrounded && !inputLeft && !inputRight && rb.velocity.x < 0)
+            if (!isGrounded && !inputLeft && !inputRight && playerRigidbody.velocity.x < .0f)
             {
-                float _deceleration = 0.3f;
-                rb.velocity += new Vector2(_deceleration, 0f);
+                float _deceleration = .3f;
+                playerRigidbody.velocity += new Vector2(_deceleration, .0f);
             }
-            else if (!isGrounded && !inputLeft && !inputRight && rb.velocity.x > 0)
+            else if (!isGrounded && !inputLeft && !inputRight && playerRigidbody.velocity.x > .0f)
             {
-                float _deceleration = 0.3f;
-                rb.velocity += new Vector2(-_deceleration, 0f);
+                float _deceleration = .3f;
+                playerRigidbody.velocity += new Vector2(-_deceleration, .0f);
             }
 
             // jump
-            if (inputJump && rb.velocity.y == 0)
+            if (inputJump && playerRigidbody.velocity.y == .0f)
             {
-                rb.velocity = new Vector2(rb.velocity.x, 0f);
-                rb.AddForce(transform.up * jumpVelocity, ForceMode2D.Impulse);
+                playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, .0f);
+                playerRigidbody.AddForce(transform.up * jumpVelocity, ForceMode2D.Impulse);
 
-                Instantiate(jumpVFX, new Vector3(xPos, yPos - this.transform.localScale.y / 2, transform.position.z), Quaternion.identity);
+                Instantiate(jumpVFX, new Vector3(xPos, yPos - this.transform.localScale.y / 2.0f, transform.position.z), Quaternion.identity);
                 inputJump = false;
             }
-            if (rb.velocity.y < 0)
+            if (playerRigidbody.velocity.y < .0f)
             {
-                rb.gravityScale = fallMultiplier;
+                playerRigidbody.gravityScale = fallMultiplier;
             }
-            else if (rb.velocity.y > 0)
+            else if (playerRigidbody.velocity.y > .0f)
             {
                 if (inputJumpHolded)
-                    rb.gravityScale = lowJumpMultiplier;
+                    playerRigidbody.gravityScale = lowJumpMultiplier;
                 else
-                    rb.gravityScale = fallMultiplier;
+                    playerRigidbody.gravityScale = fallMultiplier;
             }
             else if (isGrounded)
             {
-                rb.gravityScale = 1f;
+                playerRigidbody.gravityScale = 1.0f;
             }
             else
             {
@@ -579,7 +564,7 @@ public class PlayerController : MonoBehaviour
             // wall jump using side boxes (trigger) detection
             if (isSlidingOnWall)
             {
-                maxVerticalVelocity = 8f;
+                maxVerticalVelocity = 8.0f;
 
                 if (!isGrounded && canWallJumpToRight)
                 {
@@ -588,9 +573,9 @@ public class PlayerController : MonoBehaviour
 
                     if (inputWallJump)
                     {
-                        rb.velocity = new Vector2(0f, 0f);
+                        playerRigidbody.velocity = new Vector2(.0f, .0f);
                         Vector2 _wallJumpForce = new Vector2(horizontalForce, verticalForce);
-                        rb.AddForce(_wallJumpForce, ForceMode2D.Impulse);
+                        playerRigidbody.AddForce(_wallJumpForce, ForceMode2D.Impulse);
                         isSlidingOnWall = false;
                     }
                 }
@@ -601,19 +586,19 @@ public class PlayerController : MonoBehaviour
 
                     if (inputWallJump)
                     {
-                        rb.velocity = new Vector2(0f, 0f);
+                        playerRigidbody.velocity = new Vector2(.0f, .0f);
                         Vector2 _wallJumpForce = new Vector2(-horizontalForce, verticalForce);
-                        rb.AddForce(_wallJumpForce, ForceMode2D.Impulse);
+                        playerRigidbody.AddForce(_wallJumpForce, ForceMode2D.Impulse);
                         isSlidingOnWall = false;
                     }
                 }
                 inputWallJump = false;
             }
             else
-                maxVerticalVelocity = 20f;
+                maxVerticalVelocity = 20.0f;
         }
         else
-            rb.velocity = Vector2.zero;
+            playerRigidbody.velocity = Vector2.zero;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -630,15 +615,14 @@ public class PlayerController : MonoBehaviour
 
         if (canCollideWithSource && other.tag == "EnergySource")
         {
-            //Debug.Log("enter in collision");
-            currentEnergy += 30f;
+            currentEnergy += 30.0f;
             canCollideWithSource = false;
         }
     }
 
     IEnumerator LandingLag(float time)
     {
-        float i = 0;
+        float i = .0f;
         while (i <= time)
         {
             i += Time.deltaTime;
@@ -649,20 +633,20 @@ public class PlayerController : MonoBehaviour
             else
                 characterAnimator.SetBool("isLanding", false);
             yield return null;
-            //yield return new WaitForSeconds(time / 5);
+            //yield return new WaitForSeconds(time / 5.0f);
         }
     }
 
     IEnumerator EnergyConsumption(float actionCost)
     {
-        float i = 0;
-        while (i <= 1)
+        float i = .0f;
+        while (i <= 1.0f)
         {
-            i += 2;
+            i += 2.0f;
             currentEnergy -= actionCost;
-            if (actionCost < 0.2f)
+            if (actionCost < .2f)
             {
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(1.0f);
             }
             else
             {
@@ -678,11 +662,10 @@ public class PlayerController : MonoBehaviour
     //    float x = screenPos.x;
     //    float y = Screen.height - screenPos.y;
 
-    //    GUI.Label(new Rect(x - 50f, y - 100f, 20f, 50f),
+    //    GUI.Label(new Rect(x - 50.0f, y - 100.0f, 20.0f, 50.0f),
     //        //"spend energy = " + spendEnergy.ToString() + " (S)"
     //        //+ "\n" + "energy decrease = " + energyDecrease.ToString() + " (D)"
     //        /*+*/ "\n" + "energy = " + debugDisplayedEnergy.ToString() + " (E)"
-    //        //"no collision = " + noCollisionState.ToString()
     //        //+ "\n" + "vertical velocity = " + verticalVelocity.ToString()
     //        //+ "\n" + "horizontal velocity = " + horizontalVelocity.ToString()
     //        , guiStyle);
