@@ -52,14 +52,21 @@ public class WallSplitMovement : MonoBehaviour {
         horizontalVelocity = rb.velocity.x;
 
         if (rb.velocity.x >= maxVelocity)
-        {
             rb.velocity = new Vector2(maxVelocity, 0f);
-        }
+        if (rb.velocity.x <= -maxVelocity)
+            rb.velocity = new Vector2(-maxVelocity, 0f);
 
         if (!ReturnPoint.isInReturnPoint && ReturnPoint.isEnable)
             rb.AddForce((returnPoint.transform.position - transform.position).normalized * returnPointAttractionForce * Time.deltaTime);
         if (transform.position.x == returnPoint.transform.position.x && ReturnPoint.isEnable)
             rb.velocity = new Vector2(0f, transform.position.y);
+    }
+
+    public void ApplyHorizontalForce(int forceAmount)
+    {
+        ReturnPoint.isEnable = false;
+        rb.velocity = Vector2.zero;
+        rb.AddForce(transform.right * forceAmount, ForceMode2D.Impulse);
     }
 
     void OnGUI()

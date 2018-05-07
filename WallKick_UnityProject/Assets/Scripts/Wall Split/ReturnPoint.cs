@@ -24,7 +24,7 @@ public class ReturnPoint : MonoBehaviour {
     {
         if (collision.gameObject.tag == "SplitWall" && isEnable)
         {
-            Debug.Log(isInReturnPoint);
+            //Debug.Log(isInReturnPoint);
             isInReturnPoint = true;
         }
     }
@@ -33,7 +33,7 @@ public class ReturnPoint : MonoBehaviour {
     {
         if (collision.gameObject.tag == "SplitWall")
         {
-            Debug.Log(isInReturnPoint);
+            //Debug.Log(isInReturnPoint);
             isInReturnPoint = false;
         }
     }

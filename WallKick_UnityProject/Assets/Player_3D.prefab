@@ -178,7 +178,6 @@ GameObject:
   - component: {fileID: 212802396685704228}
   - component: {fileID: 58816220260940764}
   - component: {fileID: 95083082292130728}
-  - component: {fileID: 111359484269658530}
   m_Layer: 9
   m_Name: Left Punch Collider
   m_TagString: Punch
@@ -1242,7 +1241,7 @@ Animator:
   m_GameObject: {fileID: 1306742963469922}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: bb44cb099c12e754ab73a52a993f91a6, type: 2}
+  m_Controller: {fileID: 9100000, guid: 0ee376486120aa74188ad65766ff3fdb, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1303,21 +1302,6 @@ Light:
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!111 &111359484269658530
-Animation:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1306742963469922}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: 4925310edfdfdb0489003ca44b8b53ca, type: 2}
-  m_Animations:
-  - {fileID: 0}
-  m_WrapMode: 0
-  m_PlayAutomatically: 0
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!114 &114001301321808336
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1369,6 +1353,10 @@ MonoBehaviour:
   horizontalForce: 15
   verticalForce: 18
   maxVerticalVelocity: 20
+  hitStrength: 10
+  bonusStrength: 0
+  bonusStrengthMultiplier: 1
+  totalStrengh: 0
   maximumEnergy: 100
   passiveEnergyLoss: 1
   groundedMoveEnergyCost: 0.1

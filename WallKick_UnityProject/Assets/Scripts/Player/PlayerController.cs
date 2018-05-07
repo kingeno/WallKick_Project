@@ -32,6 +32,12 @@ public class PlayerController : MonoBehaviour
     public float verticalForce = 20.0f;
     public float maxVerticalVelocity; // todo : enter a recommended value
 
+    [Header("Punch")]
+    public int hitStrength;
+    [HideInInspector] public int bonusStrength;
+    public int bonusStrengthMultiplier;
+    [HideInInspector]public int totalStrengh;
+
     [Header("Energy")]
     public float maximumEnergy = 100.0f;
     public float passiveEnergyLoss;
@@ -127,16 +133,21 @@ public class PlayerController : MonoBehaviour
 
         currentEnergy = maximumEnergy;
         energyGauge.fillAmount = maximumEnergy / maximumEnergy;
-        if (energyGauge.fillAmount < .33f)
-        {
-            // make the gauge blink
-        }
 
         guiStyle.normal.textColor = Color.white;
     }
 
     private void Update()
     {
+        bonusStrength = (int)WallSplitMovement.horizontalVelocity;
+        if (bonusStrength < 0)
+            bonusStrength *= -1;
+
+        if (bonusStrength > 0)
+            totalStrengh = hitStrength + (bonusStrength * bonusStrengthMultiplier);
+        else
+            totalStrengh = hitStrength;
+
         canCollideWithSource = false;
 
         debugDisplayedEnergy = (int)currentEnergy;
@@ -293,7 +304,6 @@ public class PlayerController : MonoBehaviour
             if (Device.Action3.WasPressed || Input.GetKeyDown(KeyCode.C))
             {
                 inputPunch = true;
-
                 if (spendEnergy)
                     StartCoroutine(EnergyConsumption(punchEnergyCost));
             }
@@ -412,9 +422,15 @@ public class PlayerController : MonoBehaviour
             }
 
             if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
+            {
+                Debug.Log("right punch collider animation");
                 punchCollidersAnimator.SetBool("enableRightColliderAnimation", true);
+            }
             if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
+            {
+                Debug.Log("left punch collider animation");
                 punchCollidersAnimator.SetBool("enableLeftColliderAnimation", true);
+            }
 
 
             // facing animation (left & right)

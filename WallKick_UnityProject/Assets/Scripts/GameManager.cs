@@ -20,6 +20,12 @@ public class GameManager : MonoBehaviour {
     public float _freezeDurationWhenButtonHit;
     public static float freezeDurationWhenButtonHit;
 
+    public GameObject player1;
+    public GameObject player2;
+
+    public static bool isPlayer1Active;
+    public static bool isPlayer2Active;
+
     private void Awake()
     {
         freezeDurationWhenButtonHit = _freezeDurationWhenButtonHit;
@@ -44,6 +50,24 @@ public class GameManager : MonoBehaviour {
 
     private void Update()
     {
+        if (player1 == null && !isPlayer1Active)
+        {
+            player1 = GameObject.FindGameObjectWithTag("Player1");
+        }
+        if (player1 != null)
+        {
+            isPlayer1Active = true;
+        }
+
+        if (player2 == null && !isPlayer2Active)
+        {
+            player2 = GameObject.FindGameObjectWithTag("Player2");
+        }
+        if (player2 != null)
+        {
+            isPlayer2Active = true;
+        }
+
         if (forcedFrameRate)
         {
             vSyncEnabled = false;

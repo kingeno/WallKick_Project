@@ -8,50 +8,58 @@ public class ButtonCenter : MonoBehaviour
     public GameObject splitWall;
     public Rigidbody2D splitWallRb;
     public WallSplitMovement splitWallMovement;
-    private Rigidbody2D rb;
 
-    private Collider2D buttonCollider;
-
-    public int hitStrengh;
-    private int bonusStrengh;
+    public GameObject player1;
+    public GameObject player2;
+    public PlayerController player1Controller;
+    public PlayerController player2Controller;
 
     private void Start()
     {
-        buttonCollider = GetComponent<Collider2D>();
-        rb = GetComponent<Rigidbody2D>();
+        if (splitWall == null)
+            splitWall = GameObject.Find("Split Wall");
+        if (splitWall != null && splitWallMovement == null)
+            splitWallMovement = splitWall.GetComponent<WallSplitMovement>();
     }
 
     private void Update()
     {
+        if (GameManager.isPlayer1Active && player2 == null)
+        {
+            player1 = GameObject.FindGameObjectWithTag("Player1");
+            player1Controller = player1.GetComponent<PlayerController>();
+        }
+        if (GameManager.isPlayer2Active && player2 == null)
+        {
+            player2 = GameObject.FindGameObjectWithTag("Player2");
+            player2Controller = player2.GetComponent<PlayerController>();
+        }
+        if (player1 != null)
+            player1Controller.bonusStrength = (int)WallSplitMovement.horizontalVelocity;
+        if (player2 != null)
+            player2Controller.bonusStrength = (int)WallSplitMovement.horizontalVelocity;
+
         //Set the horizontal position of the button on the wall
         transform.position = new Vector2(splitWall.transform.position.x, transform.position.y);
-        bonusStrengh = (int)splitWallRb.velocity.x;
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        float xVelocity = splitWallRb.velocity.x;
-
-        
-
         if (other.collider.tag == "Punch1")
         {
             //Debug.Log("Player 1 hit the button!");
             StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
             transform.position = new Vector3(transform.position.x, RandomPos(), transform.position.z);
 
-            if (xVelocity <= .0f)
+            if (WallSplitMovement.horizontalVelocity < .0f)
             {
-                splitWallRb.velocity = Vector2.zero;
-                ReturnPoint.isEnable = false;
-                splitWallRb.AddForce(transform.right * (hitStrengh + (-bonusStrengh * 20)), ForceMode2D.Impulse);
-                Debug.Log("hit strengh = " + hitStrengh + " + " + -bonusStrengh);
+                splitWallMovement.ApplyHorizontalForce(player1Controller.totalStrengh);
+                Debug.Log("hit strengh = " + player1Controller.hitStrength + " + " + (player1Controller.bonusStrength * player1Controller.bonusStrengthMultiplier) + " = " + player1Controller.totalStrengh);
             }
-            else if (xVelocity >= .1f)
+            else if (WallSplitMovement.horizontalVelocity >= .0f)
             {
-                ReturnPoint.isEnable = false;
-                splitWallRb.AddForce(transform.right * hitStrengh, ForceMode2D.Impulse);
-                Debug.Log("hit strengh = " + hitStrengh);
+                splitWallMovement.ApplyHorizontalForce(player1Controller.hitStrength);
+                Debug.Log("hit strengh = " + player1Controller.hitStrength);
             }
         }
 
@@ -61,19 +69,17 @@ public class ButtonCenter : MonoBehaviour
             StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
             transform.position = new Vector3(transform.position.x, RandomPos(), transform.position.z);
 
-            if (xVelocity >= .0f)
+            if (WallSplitMovement.horizontalVelocity > .0f)
             {
-                splitWallRb.velocity = Vector2.zero;
-                ReturnPoint.isEnable = false;
-                splitWallRb.AddForce(transform.right * (-hitStrengh + (-bonusStrengh * 20)), ForceMode2D.Impulse);
-                Debug.Log("hit strengh = " + hitStrengh + " + " + bonusStrengh);
+                splitWallMovement.ApplyHorizontalForce(-player2Controller.totalStrengh);
+                Debug.Log("hit strengh = " + player2Controller.hitStrength + " + " + (player2Controller.bonusStrength * player1Controller.bonusStrengthMultiplier) + " = " + player2Controller.totalStrengh);
             }
-            else if (xVelocity <= -.1f)
+            else if (WallSplitMovement.horizontalVelocity <= .0f)
             {
-                ReturnPoint.isEnable = false;
-                splitWallRb.AddForce(transform.right * -hitStrengh, ForceMode2D.Impulse);
-                Debug.Log("hit strengh = " + hitStrengh);
+                splitWallMovement.ApplyHorizontalForce(-player2Controller.hitStrength);
+                Debug.Log("hit strengh = " + -player2Controller.hitStrength);
             }
+            //ReturnPoint.isEnable = true;
         }
     }
 
