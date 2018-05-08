@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ButtonCenter : MonoBehaviour
 {
+    private Rigidbody2D rb;
 
     public GameObject splitWall;
     public Rigidbody2D splitWallRb;
@@ -16,6 +17,8 @@ public class ButtonCenter : MonoBehaviour
 
     private void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
+
         if (splitWall == null)
             splitWall = GameObject.Find("Split Wall");
         if (splitWall != null && splitWallMovement == null)

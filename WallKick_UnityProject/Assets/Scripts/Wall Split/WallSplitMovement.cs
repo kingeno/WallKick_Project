@@ -7,7 +7,6 @@ public class WallSplitMovement : MonoBehaviour {
     private GUIStyle guiStyle = new GUIStyle();
 
     private Rigidbody2D rb;
-    private Collider2D col;
     public Transform bottomGear;
     public Transform forceField;
     public Transform returnPoint;
@@ -21,7 +20,6 @@ public class WallSplitMovement : MonoBehaviour {
 
     private void Awake()
     {
-        col = GetComponent<Collider2D>();
         rb = GetComponent<Rigidbody2D>();
 
         guiStyle.normal.textColor = Color.white;

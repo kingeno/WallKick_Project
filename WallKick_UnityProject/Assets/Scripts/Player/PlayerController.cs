@@ -661,7 +661,7 @@ public class PlayerController : MonoBehaviour
             currentEnergy -= actionCost;
             if (actionCost < .2f)
             {
-                yield return new WaitForSeconds(1.0f);
+                yield return null;/*new WaitForSeconds(1.0f);*/
             }
             else
             {
