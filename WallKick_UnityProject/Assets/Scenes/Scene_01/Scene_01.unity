@@ -866,7 +866,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 271249804}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 3676680d27fb58b43b89a7e767d736c1, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -2364,7 +2364,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!58 &708977786
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2392,8 +2392,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   splitWall: {fileID: 166936723}
-  startVelocity: 10
-  velocityDecreaseRate: 10
+  startVelocity: 100
+  velocityDecreaseRate: 90
+  descelerationAmplifier: 0
   isPushedUp: 0
   isPushedDown: 0
 --- !u!23 &708977788
@@ -2444,7 +2445,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 708977784}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.92, y: 4.7276, z: 0.44261742}
+  m_LocalPosition: {x: -10.5, y: 6.8, z: 0.44261742}
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

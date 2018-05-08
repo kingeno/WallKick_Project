@@ -13,6 +13,8 @@ public class TestScritp : MonoBehaviour
     public float velocityDecreaseRate;
     private float currentVelocity;
 
+    public float descelerationAmplifier;
+
     public bool isPushedUp = false;
     public bool isPushedDown = false;
 
@@ -33,14 +35,12 @@ public class TestScritp : MonoBehaviour
         {
             Debug.Log("up");
             isPushedUp = true;
-            //StartCoroutine(ButtonMovement(startVelocity, velocityDecreaseRate));
         }
 
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             Debug.Log("down");
             isPushedDown = true;
-            //StartCoroutine(ButtonMovement(startVelocity, velocityDecreaseRate));
         }
     }
 
@@ -48,73 +48,42 @@ public class TestScritp : MonoBehaviour
     {
         if (isPushedUp)
         {
-            rb.velocity = new Vector2(.0f, currentVelocity);
-            Debug.Log("current velocity = " + currentVelocity);
-
-            if (currentVelocity > 1f)
-            {
-                float _maxDesceleration = Mathf.Max(0, 0 + currentVelocity);
-                float _desceleration = Mathf.Min(_maxDesceleration, velocityDecreaseRate);
-                currentVelocity -= _desceleration * Time.deltaTime;
-                //rb.velocity = new Vector2(transform.position.x, currentVelocity);
-            }
-            else if (currentVelocity <= 1f)
-            {
-                Debug.Log("end of coroutine");
-                isPushedUp = false;
-                rb.velocity = Vector2.zero;
-                currentVelocity = startVelocity;
-            }
+            rb.velocity = Vector2.zero;
+            rb.velocity = new Vector2(0f, startVelocity);
+            currentVelocity = startVelocity;
+            isPushedUp = false;
         }
-    }
-
-    public IEnumerator ButtonMovement(float startVelocity, float velocityDecreaseRate)
-    {
-        float currentVelocity = startVelocity;
-        float decreaseRate = velocityDecreaseRate;
-        float i = 0f;
-        while (i < 1)
+        if (!isPushedUp && rb.velocity.y > 2.0f)
         {
-            if (isPushedUp)
-            {
-                rb.velocity = new Vector2(.0f, currentVelocity);
-                Debug.Log("current velocity = " + currentVelocity);
+            float _maxDesceleration = Mathf.Max(0, 0 + currentVelocity);
+            float _desceleration = Mathf.Min(_maxDesceleration, velocityDecreaseRate) * descelerationAmplifier;
+            currentVelocity -= _desceleration * Time.deltaTime;
+            rb.velocity = new Vector2(0f, currentVelocity);
+        }
+        else if (rb.velocity.y <= 2f && rb.velocity.y >= 0f)
+        {
+            rb.velocity = Vector2.zero;
+        }
 
-                if (currentVelocity > 1f)
-                {
-                    float _maxDesceleration = Mathf.Max(0, 0 + currentVelocity);
-                    float _desceleration = Mathf.Min(_maxDesceleration * Time.deltaTime, decreaseRate * Time.deltaTime);
-                    currentVelocity -= _desceleration;
-                    //rb.velocity = new Vector2(transform.position.x, currentVelocity);
-                    yield return null;
-                }
-                else if (currentVelocity <= 1f)
-                {
-                    Debug.Log("end of coroutine");
-                    i += 2;
-                    isPushedUp = false;
-                    rb.velocity = Vector2.zero;
-                    yield return null;
-                }
-            }
-            //if (isPushedDown && currentVelocity < .0f)
-            //{
-            //    float _maxContribution = Mathf.Max(0, 0 + currentVelocity);
-            //    float _acceleration = Mathf.Min(_maxContribution, decreaseRate);
-            //    rb.velocity += new Vector2(.0f, -_acceleration);
-            //    //rb.velocity = new Vector2(transform.position.x, currentVelocity);
-            //    currentVelocity += decreaseRate * Time.deltaTime;
-            //    yield return null;
-            //}
-            //else if (isPushedDown && currentVelocity >= 0)
-            //{
-            //    Debug.Log("end of coroutine");
-            //    i += 2;
-            //    isPushedDown = false;
-            //    rb.velocity = Vector2.zero;
-            //    yield return null;
-            //}
-            yield return null;
+
+
+        if (isPushedDown)
+        {
+            rb.velocity = Vector2.zero;
+            rb.velocity = new Vector2(0f, -startVelocity);
+            currentVelocity = -startVelocity;
+            isPushedDown = false;
+        }
+        if (!isPushedDown && rb.velocity.y < -2.0f)
+        {
+            float _maxDesceleration = Mathf.Min(0, 0 + currentVelocity);
+            float _desceleration = Mathf.Max(-_maxDesceleration, -velocityDecreaseRate) * descelerationAmplifier;
+            currentVelocity += _desceleration * Time.deltaTime;
+            rb.velocity = new Vector2(0f, currentVelocity);
+        }
+        else if (rb.velocity.y >= -2f && rb.velocity.y <= 0f)
+        {
+            rb.velocity = Vector2.zero;
         }
     }
 }

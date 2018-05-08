@@ -520,16 +520,16 @@ public class PlayerController : MonoBehaviour
             // horizontal airborn movement
             if (!isGrounded && inputRight && playerRigidbody.velocity.x < analogAirMaxVelocity)
             {
-                isFacingLeft = false;
-                isFacingRight = true;
+                //isFacingLeft = false;
+                //isFacingRight = true;
                 float _maxContribution = Mathf.Max(0, analogAirMaxVelocity - playerRigidbody.velocity.x);
                 float _acceleration = Mathf.Min(_maxContribution, airAcceleration);
                 playerRigidbody.velocity += new Vector2(_acceleration, .0f);
             }
             else if (!isGrounded && inputLeft && playerRigidbody.velocity.x > -analogAirMaxVelocity)
             {
-                isFacingRight = false;
-                isFacingLeft = true;
+                //isFacingRight = false;
+                //isFacingLeft = true;
                 float _maxContribution = Mathf.Max(0, analogAirMaxVelocity + playerRigidbody.velocity.x);
                 float _acceleration = Mathf.Min(_maxContribution, airAcceleration);
                 playerRigidbody.velocity += new Vector2(-_acceleration, .0f);
