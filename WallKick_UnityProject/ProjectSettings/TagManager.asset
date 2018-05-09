@@ -14,6 +14,8 @@ TagManager:
   - Punch2
   - SplitWall
   - EnergySource
+  - Button_UpperLimiter
+  - Button_BottomLimiter
   layers:
   - Default
   - TransparentFX
@@ -34,7 +36,7 @@ TagManager:
   - OneWayPlateform
   - Level
   - Background
-  - 
+  - Button_Limiters&Triggers
   - 
   - 
   - 

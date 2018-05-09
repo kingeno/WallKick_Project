@@ -423,12 +423,12 @@ public class PlayerController : MonoBehaviour
 
             if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
             {
-                Debug.Log("right punch collider animation");
+                //Debug.Log("right punch collider animation");
                 punchCollidersAnimator.SetBool("enableRightColliderAnimation", true);
             }
             if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
             {
-                Debug.Log("left punch collider animation");
+                //Debug.Log("left punch collider animation");
                 punchCollidersAnimator.SetBool("enableLeftColliderAnimation", true);
             }
 
