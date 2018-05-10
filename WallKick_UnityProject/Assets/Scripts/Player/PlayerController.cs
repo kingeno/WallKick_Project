@@ -95,6 +95,8 @@ public class PlayerController : MonoBehaviour
     private bool inputLeft = false;
     private bool inputRight = false;
     private bool inputPunch = false;
+    private bool inputOvercut = false;
+    private bool inputUppercut = false;
     private bool inputJump = false;
     private bool inputJumpHolded = false;
     private bool inputWallJump = false;
@@ -301,7 +303,8 @@ public class PlayerController : MonoBehaviour
 
 
             //----------------- PUNCH ----------------------
-            if (Device.Action3.WasPressed || Input.GetKeyDown(KeyCode.C))
+            // straight punch
+            if (Device.Action3.WasPressed && Device.LeftStickY < 0.5f && Device.LeftStickY > -0.5f || Input.GetKeyDown(KeyCode.C))
             {
                 inputPunch = true;
                 if (spendEnergy)
@@ -309,6 +312,27 @@ public class PlayerController : MonoBehaviour
             }
             else
                 inputPunch = false;
+            
+            // overcut
+            if (Device.Action3.WasPressed && Device.LeftStickY < -0.5f || Input.GetKeyDown(KeyCode.C) && Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                inputOvercut = true;
+                if (spendEnergy)
+                    StartCoroutine(EnergyConsumption(punchEnergyCost));
+            }
+            else
+                inputOvercut = false;
+            
+            // overcut
+            if (Device.Action3.WasPressed && Device.LeftStickY > 0.5f || Input.GetKeyDown(KeyCode.C) && Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                inputUppercut = true;
+                if (spendEnergy)
+                    StartCoroutine(EnergyConsumption(punchEnergyCost));
+            }
+            else
+                inputUppercut = false;
+
 
             //----------------- PAUSE ----------------------
             if (Device.CommandWasPressed && !inputPause || Input.GetKeyDown(KeyCode.Escape))
@@ -356,32 +380,18 @@ public class PlayerController : MonoBehaviour
             }
 
 
-            if (isGrounded && playerRigidbody.velocity == new Vector2(0f, 0f))
-            {
-                characterAnimator.SetBool("isIdling", true);
-            }
-            else
-            {
-                characterAnimator.SetBool("isIdling", false);
-            }
+            float horizontalSpeed = playerRigidbody.velocity.x / groundedMaxVelocity;
+            if (horizontalSpeed < .0f)
+                horizontalSpeed *= -1;
+            Debug.Log("horizontal speed percent = " + horizontalSpeed);
 
-            if (isGrounded && playerRigidbody.velocity.x < 0f && playerRigidbody.velocity.x > -7f || isGrounded && playerRigidbody.velocity.x > 0f && playerRigidbody.velocity.x < 7f)
+            if (isGrounded)
             {
-                characterAnimator.SetBool("isWalking", true);
+                characterAnimator.SetBool("isGrounded", true);
+                characterAnimator.SetFloat("horizontalSpeed", horizontalSpeed);
             }
             else
-            {
-                characterAnimator.SetBool("isWalking", false);
-            }
-
-            if (isGrounded && playerRigidbody.velocity.x >= 7f || isGrounded && playerRigidbody.velocity.x <= -7f)
-            {
-                characterAnimator.SetBool("isRunning", true);
-            }
-            else
-            {
-                characterAnimator.SetBool("isRunning", false);
-            }
+                characterAnimator.SetBool("isGrounded", false);
 
             if (playerRigidbody.velocity.y > 0f)
             {
@@ -421,15 +431,40 @@ public class PlayerController : MonoBehaviour
                 punchCollidersAnimator.SetBool("enableLeftColliderAnimation", false);
             }
 
+            if (inputOvercut)
+            {
+                characterAnimator.SetBool("isOvercuting", true);
+            }
+            else
+            {
+                characterAnimator.SetBool("isOvercuting", false);
+                //overcutCollidersAnimator.SetBool("enableRightColliderAnimation", false);
+                //overcutCollidersAnimator.SetBool("enableLeftColliderAnimation", false);
+            }
+
+            if (inputUppercut)
+            {
+                characterAnimator.SetBool("isUppercuting", true);
+            }
+            else
+            {
+                characterAnimator.SetBool("isUppercuting", false);
+                //uppercutCollidersAnimator.SetBool("enableRightColliderAnimation", false);
+                //uppercutCollidersAnimator.SetBool("enableLeftColliderAnimation", false);
+            }
+
             if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
             {
-                //Debug.Log("right punch collider animation");
                 punchCollidersAnimator.SetBool("enableRightColliderAnimation", true);
+                //overcutCollidersAnimator.SetBool("enableRightColliderAnimation", true);
+                //uppercutCollidersAnimator.SetBool("enableRightColliderAnimation", true);
             }
             if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
             {
-                //Debug.Log("left punch collider animation");
                 punchCollidersAnimator.SetBool("enableLeftColliderAnimation", true);
+                //overcutCollidersAnimator.SetBool("enableLeftColliderAnimation", true);
+                //uppercutCollidersAnimator.SetBool("enableLeftColliderAnimation", true);
+
             }
 
 
