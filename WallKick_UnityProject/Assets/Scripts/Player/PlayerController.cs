@@ -56,7 +56,10 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool spendEnergy;
 
     [Header("Ground & Wall triggers")]
-    public PlayerGroundCheck playerGroundCheck;
+    public GameObject playerGroundCheck;
+    private Collider2D playerGroundCheckCollider;
+    public PlayerGroundCheck playerGroundCheckScript;
+
     public LeftDetectionBox leftDetectionBox;
     public RightDetectionBox rightDetectionBox;
 
@@ -95,14 +98,15 @@ public class PlayerController : MonoBehaviour
     private bool inputLeft = false;
     private bool inputRight = false;
     private bool inputPunch = false;
-    private bool inputOvercut = false;
+    //private bool inputOvercut = false;
     private bool inputUppercut = false;
+    private bool inputDownAir = false;
     private bool inputJump = false;
     private bool inputJumpHolded = false;
     private bool inputWallJump = false;
     public static bool inputPause = false;
 
-    [HideInInspector] public bool isGrounded = false;
+    /*[HideInInspector]*/ public bool isGrounded = false;
     [HideInInspector] public bool isSlidingOnWall = false;
     [HideInInspector] public bool canWallJumpToRight = false;
     [HideInInspector] public bool canWallJumpToLeft = false;
@@ -127,6 +131,7 @@ public class PlayerController : MonoBehaviour
     {
         playerRigidbody = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
+        playerGroundCheckCollider = playerGroundCheck.GetComponent<Collider2D>();
 
         gameManager = GameObject.Find("GameManager");
         gameManagerScript = gameManager.GetComponent<GameManager>();
@@ -141,6 +146,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (!isGrounded && Device.LeftStickY < -0.3f)
+            isGrounded = false;
         bonusStrength = (int)WallSplitMovement.horizontalVelocity;
         if (bonusStrength < 0)
             bonusStrength *= -1;
@@ -314,16 +321,16 @@ public class PlayerController : MonoBehaviour
                 inputPunch = false;
             
             // overcut
-            if (Device.Action3.WasPressed && Device.LeftStickY < -0.5f || Input.GetKeyDown(KeyCode.C) && Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                inputOvercut = true;
-                if (spendEnergy)
-                    StartCoroutine(EnergyConsumption(punchEnergyCost));
-            }
-            else
-                inputOvercut = false;
+            //if (Device.Action3.WasPressed && Device.LeftStickY < -0.5f || Input.GetKeyDown(KeyCode.C) && Input.GetKeyDown(KeyCode.DownArrow))
+            //{
+            //    inputOvercut = true;
+            //    if (spendEnergy)
+            //        StartCoroutine(EnergyConsumption(punchEnergyCost));
+            //}
+            //else
+            //    inputOvercut = false;
             
-            // overcut
+            // uppercut
             if (Device.Action3.WasPressed && Device.LeftStickY > 0.5f || Input.GetKeyDown(KeyCode.C) && Input.GetKeyDown(KeyCode.UpArrow))
             {
                 inputUppercut = true;
@@ -332,6 +339,16 @@ public class PlayerController : MonoBehaviour
             }
             else
                 inputUppercut = false;
+
+            // down air
+            if (Device.Action2.WasPressed && verticalVelocity != 0f /*!isGrounded && Device.Action3.WasPressed && Device.LeftStickY < -0.5f*/)
+            {
+                inputDownAir = true;
+                if (spendEnergy)
+                    StartCoroutine(EnergyConsumption(punchEnergyCost));
+            }
+            else
+                inputDownAir = false;
 
 
             //----------------- PAUSE ----------------------
@@ -342,7 +359,7 @@ public class PlayerController : MonoBehaviour
 
 
             // check if grounded
-            if (playerGroundCheck.isGrounded && playerRigidbody.velocity.y <= 0f)
+            if (playerGroundCheckScript.isGrounded && playerRigidbody.velocity.y <= 0f)
             {
                 isGrounded = true;
                 isSlidingOnWall = false;
@@ -383,7 +400,7 @@ public class PlayerController : MonoBehaviour
             float horizontalSpeed = playerRigidbody.velocity.x / groundedMaxVelocity;
             if (horizontalSpeed < .0f)
                 horizontalSpeed *= -1;
-            Debug.Log("horizontal speed percent = " + horizontalSpeed);
+            //Debug.Log("horizontal speed percent = " + horizontalSpeed);
 
             if (isGrounded)
             {
@@ -431,16 +448,16 @@ public class PlayerController : MonoBehaviour
                 punchCollidersAnimator.SetBool("enableLeftColliderAnimation", false);
             }
 
-            if (inputOvercut)
-            {
-                characterAnimator.SetBool("isOvercuting", true);
-            }
-            else
-            {
-                characterAnimator.SetBool("isOvercuting", false);
-                //overcutCollidersAnimator.SetBool("enableRightColliderAnimation", false);
-                //overcutCollidersAnimator.SetBool("enableLeftColliderAnimation", false);
-            }
+            //if (inputOvercut)
+            //{
+            //    characterAnimator.SetBool("isOvercuting", true);
+            //}
+            //else
+            //{
+            //    characterAnimator.SetBool("isOvercuting", false);
+            //    //overcutCollidersAnimator.SetBool("enableRightColliderAnimation", false);
+            //    //overcutCollidersAnimator.SetBool("enableLeftColliderAnimation", false);
+            //}
 
             if (inputUppercut)
             {
@@ -449,6 +466,17 @@ public class PlayerController : MonoBehaviour
             else
             {
                 characterAnimator.SetBool("isUppercuting", false);
+                //uppercutCollidersAnimator.SetBool("enableRightColliderAnimation", false);
+                //uppercutCollidersAnimator.SetBool("enableLeftColliderAnimation", false);
+            }
+
+            if (inputDownAir)
+            {
+                characterAnimator.SetBool("isDownAir", true);
+            }
+            else
+            {
+                characterAnimator.SetBool("isDownAir", false);
                 //uppercutCollidersAnimator.SetBool("enableRightColliderAnimation", false);
                 //uppercutCollidersAnimator.SetBool("enableLeftColliderAnimation", false);
             }
@@ -494,7 +522,9 @@ public class PlayerController : MonoBehaviour
                 foreach (Collider2D _collider in gameManagerScript.plateformColliders)
                 {
                     if (_collider.name == gameManagerScript.plateformName)
+                    {
                         Physics2D.IgnoreCollision(playerCollider, _collider, true);
+                    }
                 }
             }
             else if (!willPassThroughPlateform)
