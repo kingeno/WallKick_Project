@@ -16,6 +16,10 @@ TagManager:
   - EnergySource
   - Button_UpperLimiter
   - Button_BottomLimiter
+  - P1_StraightPunch
+  - P2_StraightPunch
+  - P1_Uppercut
+  - P2_Uppercut
   layers:
   - Default
   - TransparentFX

@@ -22,7 +22,8 @@ public class PlayerController : MonoBehaviour
     public float fallingMaxVelocity = 20.0f;
 
     [Header("Jump")]
-    [Range(10, 30)] public float jumpVelocity; //recommended value : 20
+    [Range(10, 30)]
+    public float jumpVelocity; //recommended value : 20
     [Range(0, 100)] public float fallMultiplier; // recommended value : 6
     [Range(0, 100)] public float lowJumpMultiplier; // recommended value : 3
     public float landingLag;
@@ -36,7 +37,7 @@ public class PlayerController : MonoBehaviour
     public int hitStrength;
     [HideInInspector] public int bonusStrength;
     public int bonusStrengthMultiplier;
-    [HideInInspector]public int totalStrengh;
+    [HideInInspector] public int totalStrengh;
 
     [Header("Energy")]
     public float maximumEnergy = 100.0f;
@@ -71,7 +72,8 @@ public class PlayerController : MonoBehaviour
     [Header("Animations")]
     public Transform playerSkin;
     public Animator characterAnimator;
-    public Animator punchCollidersAnimator;
+    public Animator straightPunchColliderAnimator;
+    public Animator uppercutColliderAnimator;
     private bool isFacingRight;
     private bool isFacingLeft = false;
     private Quaternion facingRight = Quaternion.Euler(.0f, 90.0f, .0f);
@@ -106,7 +108,8 @@ public class PlayerController : MonoBehaviour
     private bool inputWallJump = false;
     public static bool inputPause = false;
 
-    /*[HideInInspector]*/ public bool isGrounded = false;
+    /*[HideInInspector]*/
+    public bool isGrounded = false;
     [HideInInspector] public bool isSlidingOnWall = false;
     [HideInInspector] public bool canWallJumpToRight = false;
     [HideInInspector] public bool canWallJumpToLeft = false;
@@ -146,9 +149,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (!isGrounded && Device.LeftStickY < -0.3f)
-            isGrounded = false;
         bonusStrength = (int)WallSplitMovement.horizontalVelocity;
+
         if (bonusStrength < 0)
             bonusStrength *= -1;
 
@@ -156,6 +158,10 @@ public class PlayerController : MonoBehaviour
             totalStrengh = hitStrength + (bonusStrength * bonusStrengthMultiplier);
         else
             totalStrengh = hitStrength;
+
+
+        if (!isGrounded && Device.LeftStickY < -0.3f)
+            isGrounded = false;
 
         canCollideWithSource = false;
 
@@ -227,7 +233,7 @@ public class PlayerController : MonoBehaviour
         if (isPowered)
         {
             //----------------- LEFT ----------------------
-            if (leftStickValueX < -0.2f)
+            if (leftStickValueX < -0.3f)
             {
                 analogGroundedMaxVelocity = -groundedMaxVelocity * leftStickValueX;
                 analogAirMaxVelocity = -airMaxVelocity * leftStickValueX;
@@ -248,7 +254,7 @@ public class PlayerController : MonoBehaviour
                 inputLeft = false;
 
             //----------------- RIGHT ----------------------
-            if (leftStickValueX > .2f)
+            if (leftStickValueX > .3f)
             {
                 analogGroundedMaxVelocity = groundedMaxVelocity * leftStickValueX;
                 analogAirMaxVelocity = airMaxVelocity * leftStickValueX;
@@ -319,7 +325,7 @@ public class PlayerController : MonoBehaviour
             }
             else
                 inputPunch = false;
-            
+
             // overcut
             //if (Device.Action3.WasPressed && Device.LeftStickY < -0.5f || Input.GetKeyDown(KeyCode.C) && Input.GetKeyDown(KeyCode.DownArrow))
             //{
@@ -329,7 +335,7 @@ public class PlayerController : MonoBehaviour
             //}
             //else
             //    inputOvercut = false;
-            
+
             // uppercut
             if (Device.Action3.WasPressed && Device.LeftStickY > 0.5f || Input.GetKeyDown(KeyCode.C) && Input.GetKeyDown(KeyCode.UpArrow))
             {
@@ -444,8 +450,8 @@ public class PlayerController : MonoBehaviour
             else
             {
                 characterAnimator.SetBool("isPunching", false);
-                punchCollidersAnimator.SetBool("enableRightColliderAnimation", false);
-                punchCollidersAnimator.SetBool("enableLeftColliderAnimation", false);
+                straightPunchColliderAnimator.SetBool("enableRightColliderAnimation", false);
+                straightPunchColliderAnimator.SetBool("enableLeftColliderAnimation", false);
             }
 
             //if (inputOvercut)
@@ -466,8 +472,8 @@ public class PlayerController : MonoBehaviour
             else
             {
                 characterAnimator.SetBool("isUppercuting", false);
-                //uppercutCollidersAnimator.SetBool("enableRightColliderAnimation", false);
-                //uppercutCollidersAnimator.SetBool("enableLeftColliderAnimation", false);
+                uppercutColliderAnimator.SetBool("enableRightColliderAnimation", false);
+                uppercutColliderAnimator.SetBool("enableLeftColliderAnimation", false);
             }
 
             if (inputDownAir)
@@ -477,23 +483,25 @@ public class PlayerController : MonoBehaviour
             else
             {
                 characterAnimator.SetBool("isDownAir", false);
-                //uppercutCollidersAnimator.SetBool("enableRightColliderAnimation", false);
-                //uppercutCollidersAnimator.SetBool("enableLeftColliderAnimation", false);
+                uppercutColliderAnimator.SetBool("enableRightColliderAnimation", false);
+                uppercutColliderAnimator.SetBool("enableLeftColliderAnimation", false);
             }
 
             if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
-            {
-                punchCollidersAnimator.SetBool("enableRightColliderAnimation", true);
-                //overcutCollidersAnimator.SetBool("enableRightColliderAnimation", true);
-                //uppercutCollidersAnimator.SetBool("enableRightColliderAnimation", true);
-            }
-            if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
-            {
-                punchCollidersAnimator.SetBool("enableLeftColliderAnimation", true);
-                //overcutCollidersAnimator.SetBool("enableLeftColliderAnimation", true);
-                //uppercutCollidersAnimator.SetBool("enableLeftColliderAnimation", true);
+                straightPunchColliderAnimator.SetBool("enableRightColliderAnimation", true);
+            //if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
+                //downAirColliderAnimator.SetBool("enableRightColliderAnimation", true);
+            if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Uppercut") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
+                uppercutColliderAnimator.SetBool("enableRightColliderAnimation", true);
 
-            }
+
+            if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
+                straightPunchColliderAnimator.SetBool("enableLeftColliderAnimation", true);
+            //if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("DownAir") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
+                //downAirCollidersAnimator.SetBool("enableLeftColliderAnimation", true);
+            if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Uppercut") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
+                uppercutColliderAnimator.SetBool("enableLeftColliderAnimation", true);
+
 
 
             // facing animation (left & right)

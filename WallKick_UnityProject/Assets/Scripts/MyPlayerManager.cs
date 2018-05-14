@@ -95,19 +95,10 @@ public class MyPlayerManager : MonoBehaviour {
                 gameObject.name = "Player1";
                 foreach (Transform t in gameObject.transform)
                 {
-                    if (t.name == "Left Punch Collider") // for 3D player
-                    {
-                        t.tag = "Punch1";
-                    }
-
-                    if (t.name == "Skin") // for 2D player
-                    {
-                        foreach (Transform u in t.transform)
-                            if (u.name == "Punch")
-                                foreach (Transform v in u.transform)
-                                    if (v.name == "PunchCollider")
-                                        v.gameObject.tag = "Punch1";
-                    }
+                    if (t.name == "Straight Punch Collider")
+                        t.tag = "P1_StraightPunch";
+                    else if (t.name == "Uppercut Collider")
+                        t.tag = "P1_Uppercut";
                 }
             }
             else
@@ -116,19 +107,10 @@ public class MyPlayerManager : MonoBehaviour {
                 gameObject.name = "Player2";
                 foreach (Transform t in gameObject.transform)
                 {
-                    if (t.name == "Left Punch Collider") // for 3D player
-                    {
-                        t.tag = "Punch2";
-                    }
-
-                    if (t.name == "Skin") // for 2D player
-                    {
-                        foreach (Transform u in t.transform)
-                            if (u.name == "Punch")
-                                foreach (Transform v in u.transform)
-                                    if (v.name == "PunchCollider")
-                                        v.gameObject.tag = "Punch2";
-                    }
+                    if (t.name == "Straight Punch Collider")
+                        t.tag = "P2_StraightPunch";
+                    else if (t.name == "Uppercut Collider")
+                        t.tag = "P2_Uppercut";
                 }
             }
 
