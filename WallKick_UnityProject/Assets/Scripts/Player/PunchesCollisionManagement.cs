@@ -17,10 +17,10 @@ public class PunchesCollisionManagement : MonoBehaviour {
         _collider = GetComponent<Collider2D>();
         _animator = GetComponent<Animator>();
 
-        straigtPunch_L_AnimationName = "PunchColliderAnimationToLeft";
-        straigtPunch_R_AnimationName = "PunchColliderAnimationToRight";
-        uppercut_L_AnimationName = "Uppercut_ColliderAnimation_L";
-        uppercut_R_AnimationName = "Uppercut_ColliderAnimation_R";
+        straigtPunch_L_AnimationName = "Straight_ColliderAnim_L";
+        straigtPunch_R_AnimationName = "Straight_ColliderAnim_R";
+        uppercut_L_AnimationName = "Uppercut_ColliderAnim_L";
+        uppercut_R_AnimationName = "Uppercut_ColliderAnim_R";
 	}
 	
 

@@ -7,11 +7,8 @@ TagManager:
   - Wall
   - Ground
   - Plateform
-  - Punch
   - Player1
   - Player2
-  - Punch1
-  - Punch2
   - SplitWall
   - EnergySource
   - Button_UpperLimiter
@@ -20,6 +17,7 @@ TagManager:
   - P2_StraightPunch
   - P1_Uppercut
   - P2_Uppercut
+  - Punch
   layers:
   - Default
   - TransparentFX

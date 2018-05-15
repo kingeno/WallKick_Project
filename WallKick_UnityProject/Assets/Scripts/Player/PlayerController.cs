@@ -7,6 +7,13 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    public Transform punch;
+
+    public void SetupPlayer (string tagName)
+    {
+        punch.tag = tagName;
+    }
+
     public InputDevice Device { get; set; }
 
     [Header("Grounded Movement")]
@@ -232,6 +239,9 @@ public class PlayerController : MonoBehaviour
 
         if (isPowered)
         {
+
+            #region Controls
+
             //----------------- LEFT ----------------------
             if (leftStickValueX < -0.3f)
             {
@@ -402,7 +412,11 @@ public class PlayerController : MonoBehaviour
                 isSlidingOnWall = false;
             }
 
+            #endregion
 
+            #region Animation
+            
+            // Normalized horizontal velocity of the player for Grounded Movement blend tree (see character animator)
             float horizontalSpeed = playerRigidbody.velocity.x / groundedMaxVelocity;
             if (horizontalSpeed < .0f)
                 horizontalSpeed *= -1;
@@ -513,6 +527,8 @@ public class PlayerController : MonoBehaviour
             {
                 playerSkin.transform.rotation = facingLeft;
             }
+
+            #endregion
         }
     }
 
@@ -524,6 +540,8 @@ public class PlayerController : MonoBehaviour
 
         if (isPowered)
         {
+
+            #region Pass Through Plateform Management
             // pass through plateform when grounded
             if (willPassThroughPlateform)
             {
@@ -567,7 +585,9 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
+            #endregion
 
+            #region Movements
             // horizontal grounded movement
             if (isGrounded && inputRight && playerRigidbody.velocity.x < analogGroundedMaxVelocity)
             {
@@ -684,6 +704,8 @@ public class PlayerController : MonoBehaviour
             }
             else
                 maxVerticalVelocity = 20.0f;
+
+            #endregion
         }
         else
             playerRigidbody.velocity = Vector2.zero;

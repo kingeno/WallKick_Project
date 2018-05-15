@@ -5,7 +5,7 @@ AnimatorController:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Player_LeftPunchAnimator
+  m_Name: Straight_ColliderAnimator
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: enableRightColliderAnimation
@@ -135,7 +135,7 @@ AnimatorState:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: PunchColliderAnimationToLeft
+  m_Name: Straight_ColliderAnim_L
   m_Speed: 1.2
   m_CycleOffset: 0
   m_Transitions:
@@ -161,7 +161,7 @@ AnimatorState:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: PunchColliderAnimationToRight
+  m_Name: Straight_ColliderAnim_R
   m_Speed: 1.2
   m_CycleOffset: 0
   m_Transitions:

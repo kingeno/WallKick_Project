@@ -198,7 +198,7 @@ ModelImporter:
       name: Air_Falling
       takeName: Air_Falling
       firstFrame: 0
-      lastFrame: 8
+      lastFrame: 16
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -226,7 +226,7 @@ ModelImporter:
       name: Air_Jump
       takeName: Air_Jump
       firstFrame: 0
-      lastFrame: 24
+      lastFrame: 47
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -254,7 +254,7 @@ ModelImporter:
       name: Air_Landing
       takeName: Air_Landing
       firstFrame: 7
-      lastFrame: 11
+      lastFrame: 25
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -310,7 +310,7 @@ ModelImporter:
       name: Grounded_Idle
       takeName: Grounded_Idle
       firstFrame: 0
-      lastFrame: 25
+      lastFrame: 39
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -338,7 +338,7 @@ ModelImporter:
       name: Grounded_PowerOff
       takeName: Grounded_PowerOff
       firstFrame: 0
-      lastFrame: 43
+      lastFrame: 62
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -366,7 +366,7 @@ ModelImporter:
       name: Grounded_PowerOn
       takeName: Grounded_PowerOn
       firstFrame: 0
-      lastFrame: 17
+      lastFrame: 25
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -394,7 +394,7 @@ ModelImporter:
       name: Grounded_Run
       takeName: Grounded_Run
       firstFrame: 0
-      lastFrame: 19
+      lastFrame: 20
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -422,7 +422,7 @@ ModelImporter:
       name: Grounded_Walk
       takeName: Grounded_Walk
       firstFrame: 0
-      lastFrame: 16
+      lastFrame: 33
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -449,8 +449,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Punch_DownAir
       takeName: Punch_DownAir
-      firstFrame: 4
-      lastFrame: 12
+      firstFrame: 0
+      lastFrame: 19
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -477,7 +477,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Punch_Overcut
       takeName: Punch_Overcut
-      firstFrame: 3
+      firstFrame: 0
       lastFrame: 13
       wrapMode: 0
       orientationOffsetY: 0
@@ -505,8 +505,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Punch_Straight
       takeName: Punch_Straight
-      firstFrame: 4
-      lastFrame: 12
+      firstFrame: 0
+      lastFrame: 17
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -533,8 +533,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Punch_Uppercut
       takeName: Punch_Uppercut
-      firstFrame: 1
-      lastFrame: 8
+      firstFrame: 0
+      lastFrame: 17
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
