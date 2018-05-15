@@ -487,19 +487,19 @@ public class PlayerController : MonoBehaviour
                 uppercutColliderAnimator.SetBool("enableLeftColliderAnimation", false);
             }
 
-            if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
+            if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_Straight") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
                 straightPunchColliderAnimator.SetBool("enableRightColliderAnimation", true);
             //if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
                 //downAirColliderAnimator.SetBool("enableRightColliderAnimation", true);
-            if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Uppercut") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
+            if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_Uppercut") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
                 uppercutColliderAnimator.SetBool("enableRightColliderAnimation", true);
 
 
-            if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
+            if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_Straight") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
                 straightPunchColliderAnimator.SetBool("enableLeftColliderAnimation", true);
             //if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("DownAir") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
                 //downAirCollidersAnimator.SetBool("enableLeftColliderAnimation", true);
-            if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Uppercut") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
+            if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_Uppercut") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
                 uppercutColliderAnimator.SetBool("enableLeftColliderAnimation", true);
 
 
