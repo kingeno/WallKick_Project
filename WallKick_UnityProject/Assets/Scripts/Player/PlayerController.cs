@@ -7,14 +7,9 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    public Transform punch;
-
-    public void SetupPlayer (string tagName)
-    {
-        punch.tag = tagName;
-    }
-
     public InputDevice Device { get; set; }
+
+    private int playerCount = MyPlayerManager.players.Count;
 
     [Header("Grounded Movement")]
     public float groundedMaxVelocity;
@@ -45,6 +40,12 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public int bonusStrength;
     public int bonusStrengthMultiplier;
     [HideInInspector] public int totalStrengh;
+    public Transform straightPunchCollider;
+    public Transform uppercutCollider;
+    public Transform downAirCollider;
+    public string straightPunchTagName;
+    public string uppercutTagName;
+    public string downAirTagName;
 
     [Header("Energy")]
     public float maximumEnergy = 100.0f;
@@ -71,9 +72,6 @@ public class PlayerController : MonoBehaviour
     public LeftDetectionBox leftDetectionBox;
     public RightDetectionBox rightDetectionBox;
 
-    [Header("Punch Colliders")]
-    public Transform leftPunchCollider;
-
     //-----------------------------------------------------------------------------------------
 
     [Header("Animations")]
@@ -81,6 +79,7 @@ public class PlayerController : MonoBehaviour
     public Animator characterAnimator;
     public Animator straightPunchColliderAnimator;
     public Animator uppercutColliderAnimator;
+    public Animator downAirColliderAnimator;
     private bool isFacingRight;
     private bool isFacingLeft = false;
     private Quaternion facingRight = Quaternion.Euler(.0f, 90.0f, .0f);
@@ -139,6 +138,8 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
+        SetupPlayer(straightPunchTagName, uppercutTagName, downAirTagName);
+
         playerRigidbody = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
         playerGroundCheckCollider = playerGroundCheck.GetComponent<Collider2D>();
@@ -464,8 +465,7 @@ public class PlayerController : MonoBehaviour
             else
             {
                 characterAnimator.SetBool("isPunching", false);
-                straightPunchColliderAnimator.SetBool("enableRightColliderAnimation", false);
-                straightPunchColliderAnimator.SetBool("enableLeftColliderAnimation", false);
+                straightPunchColliderAnimator.SetBool("enableColliderAnimation", false);
             }
 
             //if (inputOvercut)
@@ -486,8 +486,7 @@ public class PlayerController : MonoBehaviour
             else
             {
                 characterAnimator.SetBool("isUppercuting", false);
-                uppercutColliderAnimator.SetBool("enableRightColliderAnimation", false);
-                uppercutColliderAnimator.SetBool("enableLeftColliderAnimation", false);
+                uppercutColliderAnimator.SetBool("enableColliderAnimation", false);
             }
 
             if (inputDownAir)
@@ -497,26 +496,17 @@ public class PlayerController : MonoBehaviour
             else
             {
                 characterAnimator.SetBool("isDownAir", false);
-                uppercutColliderAnimator.SetBool("enableRightColliderAnimation", false);
-                uppercutColliderAnimator.SetBool("enableLeftColliderAnimation", false);
+                downAirColliderAnimator.SetBool("enableColliderAnimation", false);
             }
 
-            if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_Straight") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
-                straightPunchColliderAnimator.SetBool("enableRightColliderAnimation", true);
-            //if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_001") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
-                //downAirColliderAnimator.SetBool("enableRightColliderAnimation", true);
-            if (isFacingRight && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_Uppercut") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
-                uppercutColliderAnimator.SetBool("enableRightColliderAnimation", true);
+            if (characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_Straight") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
+                straightPunchColliderAnimator.SetBool("enableColliderAnimation", true);
 
+            if (characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_Uppercut") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
+                uppercutColliderAnimator.SetBool("enableColliderAnimation", true);
 
-            if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_Straight") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
-                straightPunchColliderAnimator.SetBool("enableLeftColliderAnimation", true);
-            //if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("DownAir") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
-                //downAirCollidersAnimator.SetBool("enableLeftColliderAnimation", true);
-            if (isFacingLeft && characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_Uppercut") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
-                uppercutColliderAnimator.SetBool("enableLeftColliderAnimation", true);
-
-
+            if (characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_DownAir") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
+                downAirColliderAnimator.SetBool("enableColliderAnimation", true);
 
             // facing animation (left & right)
             if (isFacingRight && !isFacingLeft)
@@ -780,4 +770,21 @@ public class PlayerController : MonoBehaviour
     //        //+ "\n" + "horizontal velocity = " + horizontalVelocity.ToString()
     //        , guiStyle);
     //}
+
+    public void SetupPlayer(string straightPunchTagName, string uppercutTagName, string DownAirTagName)
+    {
+        if (playerCount == 0)
+        {
+            straightPunchCollider.tag = "P1_" + straightPunchTagName;
+            Debug.Log(straightPunchCollider.tag);
+            uppercutCollider.tag = "P1_" + uppercutTagName;
+            downAirCollider.tag = "P1_" + DownAirTagName;
+        }
+        else
+        {
+            straightPunchCollider.tag = "P2_" + straightPunchTagName;
+            uppercutCollider.tag = "P2_" + uppercutTagName;
+            downAirCollider.tag = "P2_" + DownAirTagName;
+        }
+    }
 }

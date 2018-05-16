@@ -177,12 +177,27 @@ public class ButtonCenter : MonoBehaviour
 
         if (collision.tag == "P1_Uppercut")
         {
+            Debug.Log("P1 - Uppercut");
             isPushedUp = true;
             Punch(1, player1Controller.hitStrength, player1Controller.totalStrengh);
         }
         if (collision.tag == "P2_Uppercut")
         {
+            Debug.Log("P2 - Uppercut");
             isPushedUp = true;
+            Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
+        }
+
+        if (collision.tag == "P1_DownAir")
+        {
+            Debug.Log("P1 - DownAir");
+            isPushedDown = true;
+            Punch(1, player1Controller.hitStrength, player1Controller.totalStrengh);
+        }
+        if (collision.tag == "P2_DownAir")
+        {
+            Debug.Log("P2 - DownAir");
+            isPushedDown = true;
             Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
         }
     }

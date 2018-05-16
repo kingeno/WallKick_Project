@@ -17,7 +17,8 @@ TagManager:
   - P2_StraightPunch
   - P1_Uppercut
   - P2_Uppercut
-  - Punch
+  - P1_DownAir
+  - P2_DownAir
   layers:
   - Default
   - TransparentFX

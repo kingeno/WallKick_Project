@@ -16,7 +16,7 @@ public class MyPlayerManager : MonoBehaviour {
             new Vector2( 8f, 2.6f),
         };
 
-    List<PlayerController> players = new List<PlayerController>(maxPlayers);
+    public static List<PlayerController> players = new List<PlayerController>(maxPlayers);
 
 
 
@@ -93,25 +93,11 @@ public class MyPlayerManager : MonoBehaviour {
             {
                 gameObject.tag = "Player1";
                 gameObject.name = "Player1";
-                foreach (Transform t in gameObject.transform)
-                {
-                    if (t.name == "Straight Punch Collider")
-                        t.tag = "P1_StraightPunch";
-                    else if (t.name == "Uppercut Collider")
-                        t.tag = "P1_Uppercut";
-                }
             }
             else
             {
                 gameObject.tag = "Player2";
                 gameObject.name = "Player2";
-                foreach (Transform t in gameObject.transform)
-                {
-                    if (t.name == "Straight Punch Collider")
-                        t.tag = "P2_StraightPunch";
-                    else if (t.name == "Uppercut Collider")
-                        t.tag = "P2_Uppercut";
-                }
             }
 
             var player = gameObject.GetComponent<PlayerController>();

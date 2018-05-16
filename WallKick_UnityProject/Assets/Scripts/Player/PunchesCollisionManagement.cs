@@ -7,48 +7,40 @@ public class PunchesCollisionManagement : MonoBehaviour {
     private Collider2D _collider;
     private Animator _animator;
 
-    private string straigtPunch_L_AnimationName;
-    private string straigtPunch_R_AnimationName;
-    private string uppercut_L_AnimationName;
-    private string uppercut_R_AnimationName;
+    private string straigtPunch_AnimationName;
+    private string uppercut_AnimationName;
+    private string downAir_AnimationName;
 
     void Start () {
 
         _collider = GetComponent<Collider2D>();
         _animator = GetComponent<Animator>();
 
-        straigtPunch_L_AnimationName = "Straight_ColliderAnim_L";
-        straigtPunch_R_AnimationName = "Straight_ColliderAnim_R";
-        uppercut_L_AnimationName = "Uppercut_ColliderAnim_L";
-        uppercut_R_AnimationName = "Uppercut_ColliderAnim_R";
-	}
+        straigtPunch_AnimationName = "Straight_ColliderAnim";
+        uppercut_AnimationName = "Uppercut_ColliderAnim";
+        downAir_AnimationName = "DownAir_ColliderAnim";
+    }
 	
 
 	void Update () {
 
-        if (_animator.GetCurrentAnimatorStateInfo(0).IsName(straigtPunch_L_AnimationName) && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .9f)
+        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Straight_ColliderAnim") && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .9f)
         {
-            Debug.Log("Retablit les collision (Left)");
-            Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
-        }
-        if (_animator.GetCurrentAnimatorStateInfo(0).IsName(straigtPunch_R_AnimationName) && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .9f)
-        {
-            Debug.Log("Retablit les collision (Right)");
+            Debug.Log("SRAIGHT PUNCH - collision enabled");
             Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
         }
 
-        if (_animator.GetCurrentAnimatorStateInfo(0).IsName(uppercut_L_AnimationName) && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .8f)
+        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Uppercut_ColliderAnim") && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .9f)
         {
-            Debug.Log("Retablit les collision (Left)");
-            Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
-        }
-        if (_animator.GetCurrentAnimatorStateInfo(0).IsName(uppercut_R_AnimationName) && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .8f)
-        {
-            Debug.Log("Retablit les collision (Right)");
+            Debug.Log("UPPERCUT - collision enabled");
             Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
         }
 
-
+        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("DownAir_ColliderAnim") && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .9f)
+        {
+            Debug.Log("DOWN AIR - collision enabled");
+            Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
