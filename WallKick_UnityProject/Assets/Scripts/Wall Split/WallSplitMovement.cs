@@ -12,8 +12,10 @@ public class WallSplitMovement : MonoBehaviour {
     public Transform returnPoint;
 
     public float maxVelocity;
-
     public static float horizontalVelocity;
+    public static float normalizedHorizontalVelocity;
+    private float GUI_normalizedHorizontalVelocity;
+
     public float returnPointAttractionForce;
 
     public bool isGeneratingEnergy = false;
@@ -38,16 +40,16 @@ public class WallSplitMovement : MonoBehaviour {
             if (ReturnPoint.isInReturnPoint && horizontalVelocity <= 1.9f && horizontalVelocity >= -1.9f)
             {
                 transform.position = Vector3.MoveTowards(transform.position, returnPoint.position, 1.2f * Time.deltaTime);
-                isGeneratingEnergy = false;
             }
-            else
-                isGeneratingEnergy = true;
         }
     }
 
     private void FixedUpdate()
     {
         horizontalVelocity = rb.velocity.x;
+        normalizedHorizontalVelocity = horizontalVelocity / maxVelocity;
+        GUI_normalizedHorizontalVelocity = normalizedHorizontalVelocity * 100;
+        GUI_normalizedHorizontalVelocity = (int)GUI_normalizedHorizontalVelocity;
 
         if (rb.velocity.x >= maxVelocity)
             rb.velocity = new Vector2(maxVelocity, 0f);
@@ -58,6 +60,13 @@ public class WallSplitMovement : MonoBehaviour {
             rb.AddForce((returnPoint.transform.position - transform.position).normalized * returnPointAttractionForce * Time.deltaTime);
         if (transform.position.x == returnPoint.transform.position.x && ReturnPoint.isEnable)
             rb.velocity = new Vector2(0f, transform.position.y);
+
+        if (normalizedHorizontalVelocity > 0.1)
+        {
+            isGeneratingEnergy = true;
+        }
+        else
+            isGeneratingEnergy = false;
     }
 
     public void ApplyHorizontalForce(int forceAmount)
@@ -75,7 +84,7 @@ public class WallSplitMovement : MonoBehaviour {
         float y = Screen.height - screenPos.y;
 
         GUI.Label(new Rect(x - 50f, y - 100f, 20f, 50f),
-            "x velocity = " + horizontalVelocity.ToString()
+            "% x velocity = " + GUI_normalizedHorizontalVelocity.ToString()
             //+ "\n" + "energy decrease = " + energyDecrease.ToString()
             , guiStyle);
     }

@@ -286,7 +286,7 @@ public class PlayerController : MonoBehaviour
                 inputRight = false;
 
             //----------------- JUMP -----------------------
-            if (Device.Action1.WasPressed && isGrounded || Input.GetKeyDown(KeyCode.Space) && isGrounded || Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
+            if (Device.Action1.WasPressed && isGrounded || Input.GetKeyDown(KeyCode.Space) && isGrounded)
             {
                 inputJump = true;
 
@@ -328,7 +328,7 @@ public class PlayerController : MonoBehaviour
 
             //----------------- PUNCH ----------------------
             // straight punch
-            if (Device.Action3.WasPressed && Device.LeftStickY < 0.5f && Device.LeftStickY > -0.5f || Input.GetKeyDown(KeyCode.C))
+            if (Device.Action3.WasPressed && Device.LeftStickY < 0.4f && Device.LeftStickY > -0.4f || Input.GetKeyDown(KeyCode.C) && !Input.GetKey(KeyCode.DownArrow) && !Input.GetKey(KeyCode.UpArrow))
             {
                 inputPunch = true;
                 if (spendEnergy)
@@ -348,7 +348,7 @@ public class PlayerController : MonoBehaviour
             //    inputOvercut = false;
 
             // uppercut
-            if (Device.Action3.WasPressed && Device.LeftStickY > 0.5f || Input.GetKeyDown(KeyCode.C) && Input.GetKeyDown(KeyCode.UpArrow))
+            if (Device.Action3.WasPressed && Device.LeftStickY > 0.5f || Input.GetKeyDown(KeyCode.C) && Input.GetKey(KeyCode.UpArrow))
             {
                 inputUppercut = true;
                 if (spendEnergy)
@@ -358,7 +358,7 @@ public class PlayerController : MonoBehaviour
                 inputUppercut = false;
 
             // down air
-            if (Device.Action2.WasPressed && verticalVelocity != 0f /*!isGrounded && Device.Action3.WasPressed && Device.LeftStickY < -0.5f*/)
+            if (!isGrounded && Device.Action3.WasPressed && Device.LeftStickY < -0.5f/*verticalVelocity != 0f */|| Input.GetKey(KeyCode.DownArrow) && Input.GetKeyDown(KeyCode.C) && verticalVelocity != 0f)
             {
                 inputDownAir = true;
                 if (spendEnergy)

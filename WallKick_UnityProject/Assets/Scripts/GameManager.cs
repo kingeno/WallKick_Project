@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour {
 
     private void Update()
     {
-        Time.timeScale = 0.1f;
+        //Time.timeScale = 0.5f;
         if (player1 == null && !isPlayer1Active)
         {
             player1 = GameObject.FindGameObjectWithTag("Player1");
