@@ -22,8 +22,15 @@ public class CoopModeHighScore : MonoBehaviour
 
     private float splitWallVelocity;
 
+    public float timeLeft;
+
     [Header("UI")]
     public Image energyGauge;
+
+    private float fillAmount;
+
+    [SerializeField]
+    private float lerpSpeed;
 
     private GUIStyle guiStyle = new GUIStyle();
 
@@ -33,15 +40,49 @@ public class CoopModeHighScore : MonoBehaviour
         energyGauge.fillAmount = minCapacity;
 
         guiStyle.normal.textColor = Color.black;
+
+        InvokeRepeating("addEnergy", 0f, 0.5f);
     }
 
     void Update()
     {
 
         splitWallVelocity = WallSplitMovement.normalizedHorizontalVelocity;
+        splitWallVelocity = Mathf.Round(splitWallVelocity * 100f) / 100f;
 
+        ////if (splitWallVelocity >= 0.2f || splitWallVelocity <= -0.2f)
+        //    generatedEnergy = splitWallVelocity;
+        ////else
+        ////    generatedEnergy = 0f;
+
+        //if (generatedEnergy < 0)
+        //    generatedEnergy *= -1;
+
+        //currentEnergy += generatedEnergy;
+
+        //energyGauge.fillAmount = generatedEnergy;
+
+        //displayedEnergy = (int)currentEnergy;
+
+        //energyGauge.fillAmount = Mathf.Lerp(energyGauge.fillAmount, generatedEnergy, Time.deltaTime * lerpSpeed);
+
+        addEnergy();
+        handleBar();
+
+        displayedEnergy = (int)currentEnergy;
+
+        if (timeLeft > 0f)
+        {
+            timeLeft -= Time.deltaTime;
+        }
+        else
+            timeLeft = 0f;
+    }
+
+    public void addEnergy()
+    {
         //if (splitWallVelocity >= 0.2f || splitWallVelocity <= -0.2f)
-            generatedEnergy = splitWallVelocity;
+        generatedEnergy = splitWallVelocity;
         //else
         //    generatedEnergy = 0f;
 
@@ -50,29 +91,18 @@ public class CoopModeHighScore : MonoBehaviour
 
         currentEnergy += generatedEnergy;
 
-        energyGauge.fillAmount = generatedEnergy;
-
-        displayedEnergy = (int)currentEnergy;
+        //energyGauge.fillAmount = generatedEnergy;
     }
 
-    //IEnumerator EnergyConsumption(float generatedEnergy)
-    //{
-    //    float i = .0f;
-    //    while (i <= 1.0f)
-    //    {
-    //        i += 2.0f;
-    //        currentEnergy += generatedEnergy;
-    //        if (currentEnergy < maxCapacity)
-    //        {
-    //            yield return null;/*new WaitForSeconds(1.0f);*/
-    //        }
-    //        else
-    //        {
-    //            currentEnergy = maxCapacity;
-    //            yield return null;
-    //        }
-    //    }
-    //}
+
+    private void handleBar()
+    {
+        if (fillAmount != energyGauge.fillAmount)
+        {
+            energyGauge.fillAmount = Mathf.Lerp(energyGauge.fillAmount, generatedEnergy, Time.deltaTime * lerpSpeed);
+        }
+    }
+
 
     void OnGUI()
     {
@@ -84,6 +114,10 @@ public class CoopModeHighScore : MonoBehaviour
         GUI.Label(new Rect(x - 150f, y - 1f, 20f, 20f),
             "current energy = " + displayedEnergy.ToString()
             + "\n" + "generated energy= " + generatedEnergy.ToString()
+            , guiStyle);
+
+        GUI.Label(new Rect(x - 150f, y -= 30f, 20f, 20f),
+            "Timer : " + timeLeft.ToString()
             , guiStyle);
     }
 }
