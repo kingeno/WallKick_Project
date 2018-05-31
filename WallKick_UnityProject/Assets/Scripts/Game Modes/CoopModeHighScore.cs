@@ -41,7 +41,7 @@ public class CoopModeHighScore : MonoBehaviour
 
         guiStyle.normal.textColor = Color.black;
 
-        InvokeRepeating("addEnergy", 0f, 0.5f);
+        InvokeRepeating("AddEnergy", 0f, 0.5f);
     }
 
     void Update()
@@ -50,26 +50,7 @@ public class CoopModeHighScore : MonoBehaviour
         splitWallVelocity = WallSplitMovement.normalizedHorizontalVelocity;
         splitWallVelocity = Mathf.Round(splitWallVelocity * 100f) / 100f;
 
-        ////if (splitWallVelocity >= 0.2f || splitWallVelocity <= -0.2f)
-        //    generatedEnergy = splitWallVelocity;
-        ////else
-        ////    generatedEnergy = 0f;
-
-        //if (generatedEnergy < 0)
-        //    generatedEnergy *= -1;
-
-        //currentEnergy += generatedEnergy;
-
-        //energyGauge.fillAmount = generatedEnergy;
-
-        //displayedEnergy = (int)currentEnergy;
-
-        //energyGauge.fillAmount = Mathf.Lerp(energyGauge.fillAmount, generatedEnergy, Time.deltaTime * lerpSpeed);
-
-        addEnergy();
-        handleBar();
-
-        displayedEnergy = (int)currentEnergy;
+        HandleBar();
 
         if (timeLeft > 0f)
         {
@@ -79,28 +60,25 @@ public class CoopModeHighScore : MonoBehaviour
             timeLeft = 0f;
     }
 
-    public void addEnergy()
+    public void AddEnergy()
     {
-        //if (splitWallVelocity >= 0.2f || splitWallVelocity <= -0.2f)
         generatedEnergy = splitWallVelocity;
-        //else
-        //    generatedEnergy = 0f;
 
         if (generatedEnergy < 0)
             generatedEnergy *= -1;
 
         currentEnergy += generatedEnergy;
-
-        //energyGauge.fillAmount = generatedEnergy;
     }
 
 
-    private void handleBar()
+    private void HandleBar()
     {
-        if (fillAmount != energyGauge.fillAmount)
-        {
+        //energyGauge.fillAmount = generatedEnergy;
+
+        //if (fillAmount != energyGauge.fillAmount)
+        //{
             energyGauge.fillAmount = Mathf.Lerp(energyGauge.fillAmount, generatedEnergy, Time.deltaTime * lerpSpeed);
-        }
+        //}
     }
 
 
@@ -112,12 +90,12 @@ public class CoopModeHighScore : MonoBehaviour
         float y = Screen.height - screenPos.y;
 
         GUI.Label(new Rect(x - 150f, y - 1f, 20f, 20f),
-            "current energy = " + displayedEnergy.ToString()
-            + "\n" + "generated energy= " + generatedEnergy.ToString()
+            "current energy = " + displayedEnergy.ToString("F2")
+            + "\n" + "generated energy= " + generatedEnergy.ToString("F2")
             , guiStyle);
 
         GUI.Label(new Rect(x - 150f, y -= 30f, 20f, 20f),
-            "Timer : " + timeLeft.ToString()
+            "Timer : " + timeLeft.ToString("F2")
             , guiStyle);
     }
 }

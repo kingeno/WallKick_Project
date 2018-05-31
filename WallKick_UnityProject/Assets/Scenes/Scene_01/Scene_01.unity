@@ -503,7 +503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugDisplay: 0
-  timeToCharge: 0
+  timeToCharge: 3
   isCharged: 1
 --- !u!1 &129153825
 GameObject:
@@ -862,7 +862,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 271249804}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.5, z: 0}
+  m_LocalPosition: {x: 0, y: -1.45, z: 0}
   m_LocalScale: {x: 80, y: 3, z: 2}
   m_Children: []
   m_Father: {fileID: 1589556413}
@@ -1358,7 +1358,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugDisplay: 0
-  timeToCharge: 0
+  timeToCharge: 3
   isCharged: 1
 --- !u!61 &410687167
 BoxCollider2D:
@@ -1811,7 +1811,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugDisplay: 0
-  timeToCharge: 0
+  timeToCharge: 3
   isCharged: 1
 --- !u!61 &519477073
 BoxCollider2D:
@@ -3097,9 +3097,9 @@ MonoBehaviour:
   player2: {fileID: 0}
   player1Controller: {fileID: 0}
   player2Controller: {fileID: 0}
-  startVelocity: 0
-  velocityDecreaseRate: 1
-  descelerationAmplifier: 1
+  startVelocity: 50
+  velocityDecreaseRate: 20
+  descelerationAmplifier: 10
   isNotPushed: 0
   isPushedUp: 0
   isPushedDown: 0
@@ -3225,7 +3225,6 @@ GameObject:
   - component: {fileID: 933154053}
   - component: {fileID: 933154052}
   - component: {fileID: 933154051}
-  - component: {fileID: 933154056}
   m_Layer: 15
   m_Name: EnergySource (3)
   m_TagString: EnergySource
@@ -3246,7 +3245,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugDisplay: 0
-  timeToCharge: 0
+  timeToCharge: 3
   isCharged: 1
 --- !u!61 &933154052
 BoxCollider2D:
@@ -3331,23 +3330,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 27
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &933154056
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 933154050}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 834dfc5d25b541c49ba626c925b73bb5, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1 &955661197
 GameObject:
   m_ObjectHideFlags: 0
@@ -3661,7 +3643,7 @@ MonoBehaviour:
   plateforms: []
   plateformColliders: []
   plateformName: 
-  _freezeDurationWhenButtonHit: 20
+  _freezeDurationWhenButtonHit: 50
   player1: {fileID: 0}
   player2: {fileID: 0}
 --- !u!1 &1012603471
@@ -3940,8 +3922,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41e3ba5d4799a6748b11de99d0f83934, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pauseMenuUI: {fileID: 0}
-  endGameUI: {fileID: 0}
+  pauseMenuUI: {fileID: 1356002234}
+  endGameUI: {fileID: 1465279212}
 --- !u!1 &1056569037
 GameObject:
   m_ObjectHideFlags: 0

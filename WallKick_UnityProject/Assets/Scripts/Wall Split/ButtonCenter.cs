@@ -18,11 +18,11 @@ public class ButtonCenter : MonoBehaviour
     public PlayerController player1Controller;
     public PlayerController player2Controller;
 
-    public float startVelocity;
-    public float velocityDecreaseRate;
+    public float startVelocity; // default value : 50
+    public float velocityDecreaseRate; // default value : 20
     private float currentVelocity;
 
-    public float descelerationAmplifier;
+    public float descelerationAmplifier; // default value : 10
 
     public bool isNotPushed = false;
     public bool isPushedUp = false;
