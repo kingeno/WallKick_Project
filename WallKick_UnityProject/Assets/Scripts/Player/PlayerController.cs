@@ -14,31 +14,34 @@ public class PlayerController : MonoBehaviour
     [Header("Grounded Movement")]
     public float groundedMaxVelocity;
     private float analogGroundedMaxVelocity;
-    [Range(.2f, 5.0f)] public float groundedAcceleration;
+    public float groundedAcceleration;
 
     [Header("Airborn Movement")]
     public float airMaxVelocity;
     private float analogAirMaxVelocity;
-    [Range(.2f, 20.0f)] public float airAcceleration;
+    public float airAcceleration;
     private float fallingVelocity;
     public float fallingMaxVelocity = 20.0f;
+    //public float maxVerticalVelocity; // todo : enter a recommended value
 
     [Header("Jump")]
-    [Range(10, 30)]
-    public float jumpVelocity; //recommended value : 20
-    [Range(0, 100)] public float fallMultiplier; // recommended value : 6
-    [Range(0, 100)] public float lowJumpMultiplier; // recommended value : 3
-    public float landingLag;
+    public float jumpForce; //recommended value : 18
+    public float fallMultiplier; // recommended value : 6
+    public float lowJumpMultiplier; // recommended value : 3
+    public float doubleJumpForce;
+    public float doubleJumpHorizontalAcceleration;
+    public bool canDoubleJump = true;
+    public float landingLag = 0.8f;
 
     [Header("Wall Jump")]
     public float horizontalForce = 10.0f;
     public float verticalForce = 20.0f;
-    public float maxVerticalVelocity; // todo : enter a recommended value
+    public float maxSlidingVelocity;
 
     [Header("Punch")]
-    public int hitStrength;
+    public int hitStrength = 10;
     [HideInInspector] public int bonusStrength;
-    public int bonusStrengthMultiplier;
+    public int bonusStrengthMultiplier = 1;
     [HideInInspector] public int totalStrengh;
     public Transform straightPunchCollider;
     public Transform uppercutCollider;
@@ -49,7 +52,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Energy")]
     public float maximumEnergy = 100.0f;
-    public float passiveEnergyLoss;
+    public float passiveEnergyLoss = 1.0f;
     public float groundedMoveEnergyCost = .1f;
     public float airMoveEnergyCost = .1f;
     public float jumpEnergyCost = 1.0f;
@@ -75,7 +78,7 @@ public class PlayerController : MonoBehaviour
     //-----------------------------------------------------------------------------------------
 
     [Header("Animations")]
-    public Transform playerSkin;
+    public Transform playerModel;
     public Animator characterAnimator;
     public Animator straightPunchColliderAnimator;
     public Animator uppercutColliderAnimator;
@@ -111,11 +114,11 @@ public class PlayerController : MonoBehaviour
     private bool inputDownAir = false;
     private bool inputJump = false;
     private bool inputJumpHolded = false;
+    private bool inputDoubleJump = false;
     private bool inputWallJump = false;
     public static bool inputPause = false;
 
-    /*[HideInInspector]*/
-    public bool isGrounded = false;
+    [HideInInspector] public bool isGrounded = false;
     [HideInInspector] public bool isSlidingOnWall = false;
     [HideInInspector] public bool canWallJumpToRight = false;
     [HideInInspector] public bool canWallJumpToLeft = false;
@@ -226,10 +229,10 @@ public class PlayerController : MonoBehaviour
         verticalVelocity = (int)playerRigidbody.velocity.y;
         horizontalVelocity = (int)playerRigidbody.velocity.x;
 
-        if (playerRigidbody.velocity.y <= -maxVerticalVelocity)
-        {
-            playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, -maxVerticalVelocity);
-        }
+        //if (playerRigidbody.velocity.y <= -fallingMaxVelocity)
+        //{
+        //    playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, -fallingMaxVelocity);
+        //}
 
         xPos = transform.position.x;
         yPos = transform.position.y;
@@ -299,6 +302,12 @@ public class PlayerController : MonoBehaviour
             else
                 inputJumpHolded = false;
 
+            //----------------- JUMP -----------------------
+            if (Device.Action1.WasPressed && !isGrounded && canDoubleJump && !isSlidingOnWall)
+            {
+                inputDoubleJump = true;
+            }
+
             //----------------- WALL JUMP -----------------------
 
             if (Device.Action1.WasPressed && isSlidingOnWall || Input.GetKeyDown(KeyCode.Space) && isSlidingOnWall || Input.GetKeyDown(KeyCode.UpArrow) && isSlidingOnWall)
@@ -336,16 +345,6 @@ public class PlayerController : MonoBehaviour
             }
             else
                 inputPunch = false;
-
-            // overcut
-            //if (Device.Action3.WasPressed && Device.LeftStickY < -0.5f || Input.GetKeyDown(KeyCode.C) && Input.GetKeyDown(KeyCode.DownArrow))
-            //{
-            //    inputOvercut = true;
-            //    if (spendEnergy)
-            //        StartCoroutine(EnergyConsumption(punchEnergyCost));
-            //}
-            //else
-            //    inputOvercut = false;
 
             // uppercut
             if (Device.Action3.WasPressed && Device.LeftStickY > 0.5f || Input.GetKeyDown(KeyCode.C) && Input.GetKey(KeyCode.UpArrow))
@@ -415,13 +414,12 @@ public class PlayerController : MonoBehaviour
 
             #endregion
 
-            #region Animation
+            #region Animations
             
             // Normalized horizontal velocity of the player for Grounded Movement blend tree (see character animator)
             float horizontalSpeed = playerRigidbody.velocity.x / groundedMaxVelocity;
             if (horizontalSpeed < .0f)
                 horizontalSpeed *= -1;
-            //Debug.Log("horizontal speed percent = " + horizontalSpeed);
 
             if (isGrounded)
             {
@@ -431,13 +429,22 @@ public class PlayerController : MonoBehaviour
             else
                 characterAnimator.SetBool("isGrounded", false);
 
-            if (playerRigidbody.velocity.y > 0f)
+            if (/*inputJump && */playerRigidbody.velocity.y > 0f)
             {
                 characterAnimator.SetBool("isJumping", true);
             }
             else
             {
                 characterAnimator.SetBool("isJumping", false);
+            }
+
+            if (inputDoubleJump && canDoubleJump/* && playerRigidbody.velocity.y > 0f*/)
+            {
+                characterAnimator.SetBool("isDoubleJumping", true);
+            }
+            else
+            {
+                characterAnimator.SetBool("isDoubleJumping", false);
             }
 
             if (!isGrounded && playerRigidbody.velocity.y < 7f)
@@ -467,17 +474,6 @@ public class PlayerController : MonoBehaviour
                 characterAnimator.SetBool("isPunching", false);
                 straightPunchColliderAnimator.SetBool("enableColliderAnimation", false);
             }
-
-            //if (inputOvercut)
-            //{
-            //    characterAnimator.SetBool("isOvercuting", true);
-            //}
-            //else
-            //{
-            //    characterAnimator.SetBool("isOvercuting", false);
-            //    //overcutCollidersAnimator.SetBool("enableRightColliderAnimation", false);
-            //    //overcutCollidersAnimator.SetBool("enableLeftColliderAnimation", false);
-            //}
 
             if (inputUppercut)
             {
@@ -511,11 +507,11 @@ public class PlayerController : MonoBehaviour
             // facing animation (left & right)
             if (isFacingRight && !isFacingLeft)
             {
-                playerSkin.transform.rotation = facingRight;
+                playerModel.transform.rotation = facingRight;
             }
             if (isFacingLeft && !isFacingRight)
             {
-                playerSkin.transform.rotation = facingLeft;
+                playerModel.transform.rotation = facingLeft;
             }
 
             #endregion
@@ -634,7 +630,7 @@ public class PlayerController : MonoBehaviour
             if (inputJump && playerRigidbody.velocity.y == .0f)
             {
                 playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, .0f);
-                playerRigidbody.AddForce(transform.up * jumpVelocity, ForceMode2D.Impulse);
+                playerRigidbody.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
 
                 Instantiate(jumpVFX, new Vector3(xPos, yPos - this.transform.localScale.y / 2.0f, transform.position.z), Quaternion.identity);
                 inputJump = false;
@@ -659,10 +655,42 @@ public class PlayerController : MonoBehaviour
                 inputJumpHolded = false;
             }
 
+            // double jump
+            if (isGrounded)
+                canDoubleJump = true;
+            if (inputDoubleJump && canDoubleJump)
+            {
+                playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, .0f);
+                playerRigidbody.AddForce(transform.up * doubleJumpForce, ForceMode2D.Impulse);
+
+                Instantiate(jumpVFX, new Vector3(xPos, yPos - this.transform.localScale.y / 2.0f, transform.position.z), Quaternion.identity);
+
+                if (inputRight && playerRigidbody.velocity.x < analogAirMaxVelocity)
+                {
+                    isFacingLeft = false;
+                    isFacingRight = true;
+                    float _maxContribution = Mathf.Max(0, analogAirMaxVelocity - playerRigidbody.velocity.x);
+                    float _acceleration = Mathf.Min(_maxContribution, doubleJumpHorizontalAcceleration);
+                    playerRigidbody.velocity += new Vector2(_acceleration, .0f);
+                }
+                else if (!isGrounded && inputLeft && playerRigidbody.velocity.x > -analogAirMaxVelocity)
+                {
+                    isFacingRight = false;
+                    isFacingLeft = true;
+                    float _maxContribution = Mathf.Max(0, analogAirMaxVelocity + playerRigidbody.velocity.x);
+                    float _acceleration = Mathf.Min(_maxContribution, doubleJumpHorizontalAcceleration);
+                    playerRigidbody.velocity += new Vector2(-_acceleration, .0f);
+                }
+
+                canDoubleJump = false;
+                inputDoubleJump = false;
+            }
+
             // wall jump using side boxes (trigger) detection
             if (isSlidingOnWall)
             {
-                maxVerticalVelocity = 8.0f;
+                if (playerRigidbody.velocity.y <= -maxSlidingVelocity)
+                    playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, -maxSlidingVelocity);
 
                 if (!isGrounded && canWallJumpToRight)
                 {
@@ -692,8 +720,6 @@ public class PlayerController : MonoBehaviour
                 }
                 inputWallJump = false;
             }
-            else
-                maxVerticalVelocity = 20.0f;
 
             #endregion
         }
@@ -717,6 +743,23 @@ public class PlayerController : MonoBehaviour
         {
             currentEnergy += 30.0f;
             canCollideWithSource = false;
+        }
+    }
+
+    public void SetupPlayer(string straightPunchTagName, string uppercutTagName, string DownAirTagName)
+    {
+        if (playerCount == 0)
+        {
+            straightPunchCollider.tag = "P1_" + straightPunchTagName;
+            Debug.Log(straightPunchCollider.tag);
+            uppercutCollider.tag = "P1_" + uppercutTagName;
+            downAirCollider.tag = "P1_" + DownAirTagName;
+        }
+        else
+        {
+            straightPunchCollider.tag = "P2_" + straightPunchTagName;
+            uppercutCollider.tag = "P2_" + uppercutTagName;
+            downAirCollider.tag = "P2_" + DownAirTagName;
         }
     }
 
@@ -770,21 +813,4 @@ public class PlayerController : MonoBehaviour
     //        //+ "\n" + "horizontal velocity = " + horizontalVelocity.ToString()
     //        , guiStyle);
     //}
-
-    public void SetupPlayer(string straightPunchTagName, string uppercutTagName, string DownAirTagName)
-    {
-        if (playerCount == 0)
-        {
-            straightPunchCollider.tag = "P1_" + straightPunchTagName;
-            Debug.Log(straightPunchCollider.tag);
-            uppercutCollider.tag = "P1_" + uppercutTagName;
-            downAirCollider.tag = "P1_" + DownAirTagName;
-        }
-        else
-        {
-            straightPunchCollider.tag = "P2_" + straightPunchTagName;
-            uppercutCollider.tag = "P2_" + uppercutTagName;
-            downAirCollider.tag = "P2_" + DownAirTagName;
-        }
-    }
 }

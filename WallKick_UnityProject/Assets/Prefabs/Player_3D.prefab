@@ -1627,18 +1627,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ae9c3c70eff2294e95b72f446b92c11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundedMaxVelocity: 17
-  groundedAcceleration: 5
-  airMaxVelocity: 13
-  airAcceleration: 1.2
-  fallingMaxVelocity: 18
-  jumpVelocity: 20
-  fallMultiplier: 8
-  lowJumpMultiplier: 2.7
+  groundedMaxVelocity: 16
+  groundedAcceleration: 3
+  airMaxVelocity: 10
+  airAcceleration: 1.1
+  fallingMaxVelocity: 20
+  jumpForce: 23
+  fallMultiplier: 12
+  lowJumpMultiplier: 5
+  doubleJumpForce: 19
+  doubleJumpHorizontalAcceleration: 1.8
+  canDoubleJump: 0
   landingLag: 0.08
-  horizontalForce: 15
-  verticalForce: 18
-  maxVerticalVelocity: 20
+  horizontalForce: 14
+  verticalForce: 21
+  maxSlidingVelocity: 10
   hitStrength: 10
   bonusStrength: 0
   bonusStrengthMultiplier: 1
@@ -1667,7 +1670,7 @@ MonoBehaviour:
   playerGroundCheckScript: {fileID: 114001301321808336}
   leftDetectionBox: {fileID: 114860504696487352}
   rightDetectionBox: {fileID: 114955074824424184}
-  playerSkin: {fileID: 4841939589882952}
+  playerModel: {fileID: 4841939589882952}
   characterAnimator: {fileID: 95904996405941196}
   straightPunchColliderAnimator: {fileID: 95083082292130728}
   uppercutColliderAnimator: {fileID: 95031129955752822}

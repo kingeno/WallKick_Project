@@ -109,6 +109,7 @@ ModelImporter:
     7400068: Grounded_PowerOn
     7400070: Grounded_Run
     7400072: Grounded_Walk
+    7400074: Air_DoubleJump
     9500000: //RootNode
     13700000: Body
     13700002: Head
@@ -119,17 +120,17 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: BodyMaterial
-    second: {fileID: 2100000, guid: cb4f4c9eec78ac54e874e49f6da7f013, type: 2}
+    second: {fileID: 2100000, guid: eab353acdb0e8fa4399bb8eecfc04009, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: FistMaterial
-    second: {fileID: 2100000, guid: caae2ce97c0d9dc42a44b05271332fed, type: 2}
+    second: {fileID: 2100000, guid: a9374f54c15f10441b7071c73b1d1d41, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: HeadMaterial
-    second: {fileID: 2100000, guid: b81909435b6b6a64fa0596d93cdb7e75, type: 2}
+    second: {fileID: 2100000, guid: 612e2ba4d77ff214387b2d5973785984, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -170,7 +171,35 @@ ModelImporter:
       name: Default Take
       takeName: Default Take
       firstFrame: 0
-      lastFrame: 23
+      lastFrame: 29
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Air_DoubleJump
+      takeName: Air_DoubleJump
+      firstFrame: 0
+      lastFrame: 21
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -198,14 +227,14 @@ ModelImporter:
       name: Air_Falling
       takeName: Air_Falling
       firstFrame: 0
-      lastFrame: 16
+      lastFrame: 15
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -226,7 +255,7 @@ ModelImporter:
       name: Air_Jump
       takeName: Air_Jump
       firstFrame: 0
-      lastFrame: 47
+      lastFrame: 46
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -253,8 +282,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Air_Landing
       takeName: Air_Landing
-      firstFrame: 7
-      lastFrame: 25
+      firstFrame: 0
+      lastFrame: 18
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -310,7 +339,7 @@ ModelImporter:
       name: Grounded_Idle
       takeName: Grounded_Idle
       firstFrame: 0
-      lastFrame: 39
+      lastFrame: 38
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -338,7 +367,7 @@ ModelImporter:
       name: Grounded_PowerOff
       takeName: Grounded_PowerOff
       firstFrame: 0
-      lastFrame: 62
+      lastFrame: 61
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -366,7 +395,7 @@ ModelImporter:
       name: Grounded_PowerOn
       takeName: Grounded_PowerOn
       firstFrame: 0
-      lastFrame: 25
+      lastFrame: 24
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -394,7 +423,7 @@ ModelImporter:
       name: Grounded_Run
       takeName: Grounded_Run
       firstFrame: 0
-      lastFrame: 20
+      lastFrame: 19
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -422,7 +451,7 @@ ModelImporter:
       name: Grounded_Walk
       takeName: Grounded_Walk
       firstFrame: 0
-      lastFrame: 33
+      lastFrame: 32
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -450,35 +479,7 @@ ModelImporter:
       name: Punch_DownAir
       takeName: Punch_DownAir
       firstFrame: 0
-      lastFrame: 19
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
-    - serializedVersion: 16
-      name: Punch_Overcut
-      takeName: Punch_Overcut
-      firstFrame: 0
-      lastFrame: 13
+      lastFrame: 18
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -506,7 +507,7 @@ ModelImporter:
       name: Punch_Straight
       takeName: Punch_Straight
       firstFrame: 0
-      lastFrame: 17
+      lastFrame: 16
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -534,7 +535,7 @@ ModelImporter:
       name: Punch_Uppercut
       takeName: Punch_Uppercut
       firstFrame: 0
-      lastFrame: 17
+      lastFrame: 16
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
