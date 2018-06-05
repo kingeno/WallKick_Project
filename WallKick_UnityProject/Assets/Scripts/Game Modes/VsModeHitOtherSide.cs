@@ -8,14 +8,10 @@ public class VsModeHitOtherSide : MonoBehaviour {
     public SplitWallLimiters rightLimiter;
     public SplitWallLimiters leftLimiter;
 
-    public static int static_p1Score;
-    public static int static_p2Score;
+    public int pointsToAdd;
 
     private int p1Score;
     private int p2Score;
-
-    public int pointsToAdd;
-    public static int static_pointsToAdd;
 
     private GUIStyle guiStyle = new GUIStyle();
 
@@ -23,14 +19,20 @@ public class VsModeHitOtherSide : MonoBehaviour {
 
         SplitWallLimiters.vsMode_HiteOtherSide = true;
 
-        static_pointsToAdd = pointsToAdd;
-
         guiStyle.normal.textColor = Color.white;
     }
 	
 	void Update () {
-        p1Score = static_p1Score;
-        p2Score = static_p2Score;
+        if (rightLimiter.isHit == true)
+        {
+            p1Score += pointsToAdd;
+            rightLimiter.isHit = false;
+        }
+        if (leftLimiter.isHit == true)
+        {
+            p2Score += pointsToAdd;
+            leftLimiter.isHit = false;
+        }
     }
 
     void OnGUI()

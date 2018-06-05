@@ -11,7 +11,7 @@ public class PauseMenu : MonoBehaviour {
     public static bool GameIsPaused = false;
 
     public GameObject pauseMenuUI;
-    public GameObject endGameUI;
+    public GameObject modeSelectionUI;
 
     void Update () {
 
@@ -28,7 +28,7 @@ public class PauseMenu : MonoBehaviour {
 
     public void Pause()
     {
-        endGameUI.SetActive(false);
+        modeSelectionUI.SetActive(false);
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         GameIsPaused = true;
@@ -44,6 +44,14 @@ public class PauseMenu : MonoBehaviour {
     public void Restart()
     {
         SceneManager.LoadScene(1);
+    }
+
+    public void ModeSelection()
+    {
+        pauseMenuUI.SetActive(false);
+        modeSelectionUI.SetActive(true);
+        Time.timeScale = 0f;
+        GameIsPaused = true;
     }
 
     public void Menu()

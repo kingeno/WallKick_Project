@@ -44,13 +44,13 @@ public class GameManager : MonoBehaviour {
         {
             plateformColliders.Add(plateforms[i].GetComponent<Collider2D>());
             plateformColliders[i].name = "PlateformCol_" + i.ToString();
-            Debug.Log(plateformColliders[i].name);
+            //Debug.Log(plateformColliders[i].name);
         }
     }
 
     private void Update()
     {
-        //Time.timeScale = 0.5f;
+        //Time.timeScale = 0.2f;
         if (player1 == null && !isPlayer1Active)
         {
             player1 = GameObject.FindGameObjectWithTag("Player1");

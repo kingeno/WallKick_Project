@@ -26,14 +26,12 @@ public class CoopModeReachIt : MonoBehaviour {
     private GUIStyle guiStyle = new GUIStyle();
 
     void Start () {
-
         energyGauge.fillAmount = minCapacity;
 
         guiStyle.normal.textColor = Color.black;
     }
 	
 	void Update () {
-
         splitWallVelocity = WallSplitMovement.normalizedHorizontalVelocity;
 
         if (splitWallVelocity >= 0.2f || splitWallVelocity <= -0.2f)

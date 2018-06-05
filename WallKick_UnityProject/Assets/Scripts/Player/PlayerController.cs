@@ -160,6 +160,16 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        verticalVelocity = (int)playerRigidbody.velocity.y;
+        horizontalVelocity = (int)playerRigidbody.velocity.x;
+
+        xPos = transform.position.x;
+        yPos = transform.position.y;
+        zPos = transform.position.z;
+
+        var inputDevice = InputManager.ActiveDevice;
+        float leftStickValueX = Device.LeftStickX;
+
         bonusStrength = (int)WallSplitMovement.horizontalVelocity;
 
         if (bonusStrength < 0)
@@ -225,21 +235,6 @@ public class PlayerController : MonoBehaviour
                 characterAnimator.SetBool("poweredOn", true);
             }
         }
-
-        verticalVelocity = (int)playerRigidbody.velocity.y;
-        horizontalVelocity = (int)playerRigidbody.velocity.x;
-
-        //if (playerRigidbody.velocity.y <= -fallingMaxVelocity)
-        //{
-        //    playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, -fallingMaxVelocity);
-        //}
-
-        xPos = transform.position.x;
-        yPos = transform.position.y;
-        zPos = transform.position.z;
-
-        var inputDevice = InputManager.ActiveDevice;
-        float leftStickValueX = Device.LeftStickX;
 
         if (isPowered)
         {
@@ -309,7 +304,6 @@ public class PlayerController : MonoBehaviour
             }
 
             //----------------- WALL JUMP -----------------------
-
             if (Device.Action1.WasPressed && isSlidingOnWall || Input.GetKeyDown(KeyCode.Space) && isSlidingOnWall || Input.GetKeyDown(KeyCode.UpArrow) && isSlidingOnWall)
             {
                 inputWallJump = true;
@@ -319,7 +313,6 @@ public class PlayerController : MonoBehaviour
             }
 
             //----------- PASS THROUGH PLATEFORM ------------
-
             if (Device.LeftStickY < -0.5 || Input.GetKey(KeyCode.DownArrow))
             {
                 willPassThroughPlateform = true;
@@ -343,8 +336,8 @@ public class PlayerController : MonoBehaviour
                 if (spendEnergy)
                     StartCoroutine(EnergyConsumption(punchEnergyCost));
             }
-            else
-                inputPunch = false;
+            //else
+            //    inputPunch = false;
 
             // uppercut
             if (Device.Action3.WasPressed && Device.LeftStickY > 0.5f || Input.GetKeyDown(KeyCode.C) && Input.GetKey(KeyCode.UpArrow))
@@ -353,8 +346,8 @@ public class PlayerController : MonoBehaviour
                 if (spendEnergy)
                     StartCoroutine(EnergyConsumption(punchEnergyCost));
             }
-            else
-                inputUppercut = false;
+            //else
+            //    inputUppercut = false;
 
             // down air
             if (!isGrounded && Device.Action3.WasPressed && Device.LeftStickY < -0.5f/*verticalVelocity != 0f */|| Input.GetKey(KeyCode.DownArrow) && Input.GetKeyDown(KeyCode.C) && verticalVelocity != 0f)
@@ -363,8 +356,8 @@ public class PlayerController : MonoBehaviour
                 if (spendEnergy)
                     StartCoroutine(EnergyConsumption(punchEnergyCost));
             }
-            else
-                inputDownAir = false;
+            //else
+            //    inputDownAir = false;
 
 
             //----------------- PAUSE ----------------------
@@ -468,6 +461,7 @@ public class PlayerController : MonoBehaviour
             if (inputPunch)
             {
                 characterAnimator.SetBool("isPunching", true);
+                inputPunch = false;
             }
             else
             {
@@ -478,6 +472,7 @@ public class PlayerController : MonoBehaviour
             if (inputUppercut)
             {
                 characterAnimator.SetBool("isUppercuting", true);
+                inputUppercut = false;
             }
             else
             {
@@ -488,6 +483,7 @@ public class PlayerController : MonoBehaviour
             if (inputDownAir)
             {
                 characterAnimator.SetBool("isDownAir", true);
+                inputDownAir = false;
             }
             else
             {
@@ -526,8 +522,8 @@ public class PlayerController : MonoBehaviour
 
         if (isPowered)
         {
-
             #region Pass Through Plateform Management
+
             // pass through plateform when grounded
             if (willPassThroughPlateform)
             {
@@ -751,7 +747,6 @@ public class PlayerController : MonoBehaviour
         if (playerCount == 0)
         {
             straightPunchCollider.tag = "P1_" + straightPunchTagName;
-            Debug.Log(straightPunchCollider.tag);
             uppercutCollider.tag = "P1_" + uppercutTagName;
             downAirCollider.tag = "P1_" + DownAirTagName;
         }

@@ -1635,8 +1635,8 @@ MonoBehaviour:
   jumpForce: 23
   fallMultiplier: 12
   lowJumpMultiplier: 5
-  doubleJumpForce: 19
-  doubleJumpHorizontalAcceleration: 1.8
+  doubleJumpForce: 21
+  doubleJumpHorizontalAcceleration: 1.9
   canDoubleJump: 0
   landingLag: 0.08
   horizontalForce: 14
