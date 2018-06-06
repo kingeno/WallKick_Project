@@ -5,12 +5,11 @@ using UnityEngine.UI;
 
 public class CoopModeHighScore : MonoBehaviour
 {
+
     // MODE RULES
     // "Reach It" is a mode where the players have to cooperate in order to reach an "energy score" in a given time.
     // The score increase when the wall split velocity is higher than 10% of it maximum speed
     // exemple : players have to reach 1000 "energy points" whithin 2 minutes.
-
-    public WallSplitMovement splitWallMovement;
 
     public float maxCapacity;
     public float minCapacity;
@@ -20,17 +19,12 @@ public class CoopModeHighScore : MonoBehaviour
 
     private int displayedEnergy;
 
-    private float splitWallVelocity;
+    private float timePast;
 
-    public float timeLeft;
+    private float splitWallVelocity;
 
     [Header("UI")]
     public Image energyGauge;
-
-    private float fillAmount;
-
-    [SerializeField]
-    private float lerpSpeed;
 
     private GUIStyle guiStyle = new GUIStyle();
 
@@ -41,49 +35,62 @@ public class CoopModeHighScore : MonoBehaviour
 
     void Start()
     {
+        timePast = 0f;
+
         energyGauge.fillAmount = minCapacity;
 
         guiStyle.normal.textColor = Color.black;
-
-        InvokeRepeating("AddEnergy", 0f, 0.5f);
     }
 
     void Update()
     {
         splitWallVelocity = WallSplitMovement.normalizedHorizontalVelocity;
-        splitWallVelocity = Mathf.Round(splitWallVelocity * 100f) / 100f;
 
-        HandleBar();
-
-        if (timeLeft > 0f)
-        {
-            timeLeft -= Time.deltaTime;
-        }
+        if (splitWallVelocity >= 0.2f || splitWallVelocity <= -0.2f)
+            generatedEnergy = splitWallVelocity;
         else
-            timeLeft = 0f;
-    }
-
-    public void AddEnergy()
-    {
-        generatedEnergy = splitWallVelocity;
+            generatedEnergy = 0f;
 
         if (generatedEnergy < 0)
             generatedEnergy *= -1;
 
-        currentEnergy += generatedEnergy;
+        currentEnergy += generatedEnergy * Time.deltaTime;
+
+        energyGauge.fillAmount = currentEnergy / maxCapacity;
+
+        displayedEnergy = (int)currentEnergy;
+
+        if (currentEnergy >= maxCapacity)
+        {
+            currentEnergy = maxCapacity;
+        }
+
+        timePast += Time.deltaTime;
     }
 
-
-    private void HandleBar()
+    void endGame()
     {
-        //energyGauge.fillAmount = generatedEnergy;
 
-        //if (fillAmount != energyGauge.fillAmount)
-        //{
-            energyGauge.fillAmount = Mathf.Lerp(energyGauge.fillAmount, generatedEnergy, Time.deltaTime * lerpSpeed);
-        //}
     }
 
+    //IEnumerator EnergyConsumption(float generatedEnergy)
+    //{
+    //    float i = .0f;
+    //    while (i <= 1.0f)
+    //    {
+    //        i += 2.0f;
+    //        currentEnergy += generatedEnergy;
+    //        if (currentEnergy < maxCapacity)
+    //        {
+    //            yield return null;/*new WaitForSeconds(1.0f);*/
+    //        }
+    //        else
+    //        {
+    //            currentEnergy = maxCapacity;
+    //            yield return null;
+    //        }
+    //    }
+    //}
 
     void OnGUI()
     {
@@ -93,12 +100,10 @@ public class CoopModeHighScore : MonoBehaviour
         float y = Screen.height - screenPos.y;
 
         GUI.Label(new Rect(x - 150f, y - 1f, 20f, 20f),
-            "current energy = " + displayedEnergy.ToString("F2")
-            + "\n" + "generated energy= " + generatedEnergy.ToString("F2")
-            , guiStyle);
-
-        GUI.Label(new Rect(x - 150f, y -= 30f, 20f, 20f),
-            "Timer : " + timeLeft.ToString("F2")
+            "current energy = " + displayedEnergy.ToString()
+            + "\n" + "generated energy= " + generatedEnergy.ToString()
+            + "\n" + "Time = " + timePast.ToString()
             , guiStyle);
     }
 }
+

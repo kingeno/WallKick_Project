@@ -13,14 +13,20 @@ public class ModeSelectionMenu : MonoBehaviour
 
     public GameObject pauseMenuUI;
     public GameObject modeSelectionUI;
-    public GameObject coopModeReachIt;
     public GameObject coopModeHighScore;
+    public GameObject coopModeReachIt;
     public GameObject vsModeHitOtherSide;
     public GameObject vsModeKeepItAway;
 
     void Update()
     {
         var inputDevice = InputManager.ActiveDevice;
+
+        if (PlayerController.inputPause)
+        {
+            if (GameIsPaused)
+                Resume();
+        }
     }
 
     public void CoopModeReachIt()
@@ -81,5 +87,12 @@ public class ModeSelectionMenu : MonoBehaviour
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         GameIsPaused = true;
+    }
+
+    public void Resume()
+    {
+        modeSelectionUI.SetActive(false);
+        Time.timeScale = 1f;
+        GameIsPaused = false;
     }
 }

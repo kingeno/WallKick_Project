@@ -781,7 +781,7 @@ public class PlayerController : MonoBehaviour
         while (i <= 1.0f)
         {
             i += 2.0f;
-            currentEnergy -= actionCost;
+            currentEnergy -= actionCost * Time.deltaTime;
             if (actionCost < .2f)
             {
                 yield return null;/*new WaitForSeconds(1.0f);*/

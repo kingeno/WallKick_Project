@@ -1653,12 +1653,12 @@ MonoBehaviour:
   uppercutTagName: Uppercut
   downAirTagName: DownAir
   maximumEnergy: 100
-  passiveEnergyLoss: 1
-  groundedMoveEnergyCost: 0.1
-  airMoveEnergyCost: 0.1
-  jumpEnergyCost: 1
-  wallJumpEnergyCost: 0.5
-  punchEnergyCost: 2
+  passiveEnergyLoss: 2
+  groundedMoveEnergyCost: 0.5
+  airMoveEnergyCost: 0.5
+  jumpEnergyCost: 2
+  wallJumpEnergyCost: 1
+  punchEnergyCost: 4
   currentEnergy: 0
   isLoosingEnergy: 0
   isSpendingEnergy: 0

@@ -447,6 +447,7 @@ GameObject:
   - component: {fileID: 51324489}
   - component: {fileID: 51324488}
   - component: {fileID: 51324487}
+  - component: {fileID: 51324490}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -460,7 +461,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 51324486}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 1077351063, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
@@ -483,7 +484,7 @@ MonoBehaviour:
   m_Script: {fileID: -619905303, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
+  m_FirstSelected: {fileID: 1562823842}
   m_sendNavigationEvents: 1
   m_DragThreshold: 5
 --- !u!4 &51324489
@@ -492,13 +493,32 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 51324486}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &51324490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 51324486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b24994c7bab8d436a8b302ce62dfa856, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  submitButton: 19
+  cancelButton: 20
+  analogMoveThreshold: 0.5
+  moveRepeatFirstDuration: 0.8
+  moveRepeatDelayDuration: 0.1
+  forceModuleActive: 0
+  allowMouseInput: 1
+  focusOnMouseHover: 0
 --- !u!1 &52836397
 GameObject:
   m_ObjectHideFlags: 0
@@ -509,7 +529,7 @@ GameObject:
   - component: {fileID: 52836398}
   - component: {fileID: 52836399}
   m_Layer: 5
-  m_Name: CoopMode ReachIt
+  m_Name: CoopMode HighScore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -545,9 +565,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67e4b545699c5484ca878c7c9093f169, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  splitWallMovement: {fileID: 0}
   maxCapacity: 1000
   minCapacity: 0
+  timeLeft: 60
   energyGauge: {fileID: 1012603473}
+  lerpSpeed: 0
 --- !u!1 &101205957
 GameObject:
   m_ObjectHideFlags: 0
@@ -611,7 +634,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &122782926
 GameObject:
@@ -941,7 +964,7 @@ MonoBehaviour:
   bottomGear: {fileID: 854119878}
   forceField: {fileID: 684294097}
   returnPoint: {fileID: 1480191802}
-  maxVelocity: 15
+  maxVelocity: 25
   returnPointAttractionForce: 100
   isGeneratingEnergy: 0
 --- !u!50 &166936725
@@ -2175,9 +2198,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 1562823844}
+    m_SelectOnDown: {fileID: 2060146102}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -2492,10 +2515,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 2105731961}
+    m_SelectOnDown: {fileID: 1255335536}
+    m_SelectOnLeft: {fileID: 1485834226}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
@@ -3145,7 +3168,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 170, y: 0, z: 0}
 --- !u!1 &606185056
 GameObject:
@@ -3892,9 +3915,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 2060146102}
+    m_SelectOnDown: {fileID: 1767094732}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -4127,7 +4150,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &752112425
 MonoBehaviour:
@@ -5180,7 +5203,7 @@ MonoBehaviour:
   plateforms: []
   plateformColliders: []
   plateformName: 
-  _freezeDurationWhenButtonHit: 50
+  _freezeDurationWhenButtonHit: 35
   player1: {fileID: 0}
   player2: {fileID: 0}
 --- !u!1 &1012603471
@@ -5475,8 +5498,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pauseMenuUI: {fileID: 1356002234}
   modeSelectionUI: {fileID: 1712108453}
-  coopModeReachIt: {fileID: 52836397}
   coopModeHighScore: {fileID: 1280876374}
+  coopModeReachIt: {fileID: 52836397}
   vsModeHitOtherSide: {fileID: 1435919717}
   vsModeKeepItAway: {fileID: 190717981}
 --- !u!1 &1034271755
@@ -6355,7 +6378,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1255335535
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6387,10 +6410,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
-    m_SelectOnUp: {fileID: 0}
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 441231534}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnLeft: {fileID: 2089666708}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
@@ -6470,7 +6493,7 @@ GameObject:
   - component: {fileID: 1280876375}
   - component: {fileID: 1280876376}
   m_Layer: 5
-  m_Name: CoopMode HighScore
+  m_Name: CoopMode ReachIt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6506,12 +6529,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdef512341722104ebdf039bee215f85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  splitWallMovement: {fileID: 166936724}
-  maxCapacity: 1000
+  maxCapacity: 100
   minCapacity: 0
-  timeLeft: 50
   energyGauge: {fileID: 1676981901}
-  lerpSpeed: 2
 --- !u!1 &1323779725
 GameObject:
   m_ObjectHideFlags: 0
@@ -7179,10 +7199,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 2105731961}
+    m_SelectOnDown: {fileID: 2089666708}
+    m_SelectOnLeft: {fileID: 441231534}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
@@ -7488,9 +7508,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 1767094732}
+    m_SelectOnDown: {fileID: 427180108}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -8403,7 +8423,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1755260730}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 17, z: 0}
+  m_LocalPosition: {x: 0, y: 19, z: 0}
   m_LocalScale: {x: 22, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -8458,9 +8478,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 712825214}
+    m_SelectOnDown: {fileID: 1562823844}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -8867,7 +8887,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2060146100
 GameObject:
@@ -8918,9 +8938,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 427180108}
+    m_SelectOnDown: {fileID: 712825214}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -9040,11 +9060,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
-    m_SelectOnUp: {fileID: 0}
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 1485834226}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnRight: {fileID: 1255335536}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 0}
@@ -9162,11 +9182,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
+    m_Mode: 3
     m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_SelectOnDown: {fileID: 1485834226}
     m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnRight: {fileID: 441231534}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 0, b: 0, a: 0}
