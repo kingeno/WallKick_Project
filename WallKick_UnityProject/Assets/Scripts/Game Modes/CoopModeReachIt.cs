@@ -25,6 +25,11 @@ public class CoopModeReachIt : MonoBehaviour {
 
     private GUIStyle guiStyle = new GUIStyle();
 
+    private void OnEnable()
+    {
+        currentEnergy = 0;
+    }
+
     void Start () {
         energyGauge.fillAmount = minCapacity;
 

@@ -34,9 +34,13 @@ public class CoopModeHighScore : MonoBehaviour
 
     private GUIStyle guiStyle = new GUIStyle();
 
+    private void OnEnable()
+    {
+        currentEnergy = 0;
+    }
+
     void Start()
     {
-
         energyGauge.fillAmount = minCapacity;
 
         guiStyle.normal.textColor = Color.black;
@@ -46,7 +50,6 @@ public class CoopModeHighScore : MonoBehaviour
 
     void Update()
     {
-
         splitWallVelocity = WallSplitMovement.normalizedHorizontalVelocity;
         splitWallVelocity = Mathf.Round(splitWallVelocity * 100f) / 100f;
 
