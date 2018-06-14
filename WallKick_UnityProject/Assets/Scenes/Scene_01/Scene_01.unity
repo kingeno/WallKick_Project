@@ -517,7 +517,7 @@ MonoBehaviour:
   moveRepeatFirstDuration: 0.8
   moveRepeatDelayDuration: 0.1
   forceModuleActive: 0
-  allowMouseInput: 1
+  allowMouseInput: 0
   focusOnMouseHover: 0
 --- !u!1 &52836397
 GameObject:
@@ -534,7 +534,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &52836398
 RectTransform:
   m_ObjectHideFlags: 0
@@ -562,15 +562,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 52836397}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67e4b545699c5484ca878c7c9093f169, type: 3}
+  m_Script: {fileID: 11500000, guid: e961ada92eef76d4189d2bbfc46f2fb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   splitWallMovement: {fileID: 0}
-  maxCapacity: 1000
+  maxCapacity: 0.5
   minCapacity: 0
-  timeLeft: 60
+  timeLeft: 30
   energyGauge: {fileID: 1012603473}
-  lerpSpeed: 0
+  lerpSpeed: 1
 --- !u!1 &101205957
 GameObject:
   m_ObjectHideFlags: 0
@@ -655,7 +655,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &122782927
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2055,7 +2055,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &410687166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2782,7 +2782,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &519477072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4164,7 +4164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camTransform: {fileID: 0}
-  shakeAmount: 0.7
+  shakeAmount: 0.4
   decreaseFactor: 1
 --- !u!1 &777156008
 GameObject:
@@ -4791,7 +4791,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &933154051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5203,7 +5203,7 @@ MonoBehaviour:
   plateforms: []
   plateformColliders: []
   plateformName: 
-  _freezeDurationWhenButtonHit: 35
+  _freezeDurationWhenButtonHit: 45
   player1: {fileID: 0}
   player2: {fileID: 0}
 --- !u!1 &1012603471
@@ -5389,7 +5389,7 @@ GameObject:
   - component: {fileID: 1031863078}
   - component: {fileID: 1031863079}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: Menus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6526,10 +6526,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1280876374}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdef512341722104ebdf039bee215f85, type: 3}
+  m_Script: {fileID: 11500000, guid: 6af20fa7104f6e841a01ad3c789e0a93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxCapacity: 100
+  maxCapacity: 10
   minCapacity: 0
   energyGauge: {fileID: 1676981901}
 --- !u!1 &1323779725
@@ -7007,7 +7007,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1435919718
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8870,8 +8870,8 @@ MonoBehaviour:
   xInputUpdateRate: 0
   xInputOverrideBufferSize: 0
   xInputBufferSize: 0
-  enableNativeInput: 0
-  nativeInputEnableXInput: 1
+  enableNativeInput: 1
+  nativeInputEnableXInput: 0
   nativeInputPreventSleep: 0
   nativeInputOverrideUpdateRate: 0
   nativeInputUpdateRate: 0

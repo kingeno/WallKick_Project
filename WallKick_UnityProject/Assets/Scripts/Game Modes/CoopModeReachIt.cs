@@ -6,10 +6,9 @@ using UnityEngine.UI;
 public class CoopModeReachIt : MonoBehaviour {
 
     // MODE RULES
-    // "Reach It" is a mode where the players have to cooperate in order to reach an "energy score" in a minimum amount of time.
+    // "Reach It" is a mode where the players have to cooperate in order to reach an "energy score" in a given time.
     // The score increase when the wall split velocity is higher than 10% of it maximum speed
-
-    public WallSplitMovement splitWallMovement;
+    // exemple : players have to reach 1000 "energy points" whithin 2 minutes.
 
     public float maxCapacity;
     public float minCapacity;
@@ -17,19 +16,14 @@ public class CoopModeReachIt : MonoBehaviour {
     private float generatedEnergy;
     private float currentEnergy;
 
-    private float displayedEnergy;
+    private int displayedEnergy;
+
+    private float timePast;
 
     private float splitWallVelocity;
 
-    public float timeLeft;
-
     [Header("UI")]
     public Image energyGauge;
-
-    private float fillAmount;
-
-    [SerializeField]
-    private float lerpSpeed;
 
     private GUIStyle guiStyle = new GUIStyle();
 
@@ -40,62 +34,64 @@ public class CoopModeReachIt : MonoBehaviour {
 
     void Start()
     {
+        timePast = 0f;
+
         energyGauge.fillAmount = minCapacity;
 
         guiStyle.normal.textColor = Color.black;
-
-        InvokeRepeating("AddEnergy", 0f, 0.5f);
     }
 
     void Update()
     {
         splitWallVelocity = WallSplitMovement.normalizedHorizontalVelocity;
-        splitWallVelocity = Mathf.Round(splitWallVelocity * 100f) / 100f;
 
-        HandleBar();
-
-        if (timeLeft > 0f)
-        {
-            timeLeft -= Time.deltaTime;
-        }
+        if (splitWallVelocity >= 0.2f || splitWallVelocity <= -0.2f)
+            generatedEnergy = splitWallVelocity;
         else
-            timeLeft = 0f;
-
-        displayedEnergy = currentEnergy;
-
-        if (timeLeft <= 0)
-        {
-            endGame();
-        }
-    }
-
-    public void AddEnergy()
-    {
-        generatedEnergy = splitWallVelocity;
+            generatedEnergy = 0f;
 
         if (generatedEnergy < 0)
             generatedEnergy *= -1;
 
         currentEnergy += generatedEnergy * Time.deltaTime;
+
+        energyGauge.fillAmount = currentEnergy / maxCapacity;
+
+        displayedEnergy = (int)currentEnergy;
+
+        if (currentEnergy >= maxCapacity)
+        {
+            currentEnergy = maxCapacity;
+            EndGame();
+        }
+
+        timePast += Time.deltaTime;
     }
 
-
-    private void HandleBar()
+    void EndGame()
     {
-        //energyGauge.fillAmount = generatedEnergy;
-
-        //if (fillAmount != energyGauge.fillAmount)
-        //{
-        energyGauge.fillAmount = Mathf.Lerp(energyGauge.fillAmount, generatedEnergy, Time.deltaTime * lerpSpeed);
-        //}
-    }
-
-    private void endGame()
-    {
-        Debug.Log("TIME OUT ! your score is " + currentEnergy);
         Time.timeScale = 0f;
+        Debug.Log("Your score is = " + timePast);
     }
 
+    //IEnumerator EnergyConsumption(float generatedEnergy)
+    //{
+    //    float i = .0f;
+    //    while (i <= 1.0f)
+    //    {
+    //        i += 2.0f;
+    //        currentEnergy += generatedEnergy;
+    //        if (currentEnergy < maxCapacity)
+    //        {
+    //            yield return null;/*new WaitForSeconds(1.0f);*/
+    //        }
+    //        else
+    //        {
+    //            currentEnergy = maxCapacity;
+    //            yield return null;
+    //        }
+    //    }
+    //}
 
     void OnGUI()
     {
@@ -105,12 +101,9 @@ public class CoopModeReachIt : MonoBehaviour {
         float y = Screen.height - screenPos.y;
 
         GUI.Label(new Rect(x - 150f, y - 1f, 20f, 20f),
-            "current energy = " + displayedEnergy.ToString("F2")
-            + "\n" + "generated energy= " + generatedEnergy.ToString("F2")
-            , guiStyle);
-
-        GUI.Label(new Rect(x - 150f, y -= 30f, 20f, 20f),
-            "Timer : " + timeLeft.ToString("F2")
+            "current energy = " + displayedEnergy.ToString()
+            + "\n" + "generated energy= " + generatedEnergy.ToString()
+            + "\n" + "Time = " + timePast.ToString()
             , guiStyle);
     }
 }

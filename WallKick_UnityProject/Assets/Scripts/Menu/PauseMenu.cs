@@ -43,7 +43,8 @@ public class PauseMenu : MonoBehaviour {
 
     public void Restart()
     {
-        SceneManager.LoadScene(1);
+        //SceneManager.LoadScene(1);
+        SceneManager.LoadScene("Scene_01");
     }
 
     public void ModeSelection()
@@ -56,7 +57,8 @@ public class PauseMenu : MonoBehaviour {
 
     public void Menu()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+        SceneManager.LoadScene("Menu");
     }
 
     void QuitGame()

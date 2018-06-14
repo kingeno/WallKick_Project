@@ -32,13 +32,13 @@ public class PunchesCollisionManagement : MonoBehaviour {
 
         if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Uppercut_ColliderAnim") && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .95f)
         {
-            Debug.Log("UPPERCUT - collision enabled");
+            //Debug.Log("UPPERCUT - collision enabled");
             Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
         }
 
         if (_animator.GetCurrentAnimatorStateInfo(0).IsName("DownAir_ColliderAnim") && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .95f)
         {
-            Debug.Log("DOWN AIR - collision enabled");
+            //Debug.Log("DOWN AIR - collision enabled");
             Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
         }
     }

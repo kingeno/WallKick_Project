@@ -28,6 +28,9 @@ public class GameManager : MonoBehaviour {
 
     private void Awake()
     {
+        isPlayer1Active = false;
+        isPlayer2Active = false;
+
         freezeDurationWhenButtonHit = _freezeDurationWhenButtonHit;
         Time.timeScale = timeSpeed;
 
@@ -95,12 +98,12 @@ public class GameManager : MonoBehaviour {
             if (i < freezeDuration)
             {
                 //Debug.Log(i);
+                ScreenShake.shakeDuration = .1f;
                 Time.timeScale = .0f;
             }
             else if (i < freezeDuration + 1)
             {
                 //Debug.Log("end of coroutine");
-                ScreenShake.shakeDuration = .1f;
                 Time.timeScale = timeSpeed;
             }
             yield return null;

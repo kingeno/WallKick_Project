@@ -152,7 +152,7 @@ public class ButtonCenter : MonoBehaviour
         }
         else if (collision.gameObject.tag == "Button_BottomLimiter")
         {
-            Debug.Log("Button hit bottom limiter");
+            //Debug.Log("Button hit bottom limiter");
             hasHitBottomLimiter = true;
             isPushedUp = true;
         }

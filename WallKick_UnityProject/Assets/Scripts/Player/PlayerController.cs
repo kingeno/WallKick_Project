@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
 {
     public InputDevice Device { get; set; }
 
-    private int playerCount = MyPlayerManager.players.Count;
+    private int playerCount;
 
     [Header("Grounded Movement")]
     public float groundedMaxVelocity;
@@ -90,6 +90,10 @@ public class PlayerController : MonoBehaviour
 
     [Header("Visual Effects")]
     public GameObject jumpVFX;
+    public GameObject wallJumpVFX;
+    public GameObject landingVFX;
+    public GameObject movementVFX;
+    public GameObject hitVFX;
 
     [Header("UI")]
     public Image energyGauge;
@@ -141,6 +145,8 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
+        playerCount = MyPlayerManager.players.Count;
+
         SetupPlayer(straightPunchTagName, uppercutTagName, downAirTagName);
 
         playerRigidbody = GetComponent<Rigidbody2D>();
@@ -151,6 +157,9 @@ public class PlayerController : MonoBehaviour
         gameManagerScript = gameManager.GetComponent<GameManager>();
 
         oneWayPlateformMask = LayerMask.GetMask("OneWayPlateform");
+
+        energyDecrease = false;
+        spendEnergy = false;
 
         currentEnergy = maximumEnergy;
         energyGauge.fillAmount = maximumEnergy / maximumEnergy;
@@ -628,7 +637,7 @@ public class PlayerController : MonoBehaviour
                 playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, .0f);
                 playerRigidbody.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
 
-                Instantiate(jumpVFX, new Vector3(xPos, yPos - this.transform.localScale.y / 2.0f, transform.position.z), Quaternion.identity);
+                //Instantiate(jumpVFX, new Vector3(xPos, playerGroundCheckCollider.transform.position.y, transform.position.z), Quaternion.identity);
                 inputJump = false;
             }
             if (playerRigidbody.velocity.y < .0f)
@@ -658,8 +667,6 @@ public class PlayerController : MonoBehaviour
             {
                 playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, .0f);
                 playerRigidbody.AddForce(transform.up * doubleJumpForce, ForceMode2D.Impulse);
-
-                Instantiate(jumpVFX, new Vector3(xPos, yPos - this.transform.localScale.y / 2.0f, transform.position.z), Quaternion.identity);
 
                 if (inputRight && playerRigidbody.velocity.x < analogAirMaxVelocity)
                 {
@@ -727,18 +734,10 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Plateform")
         {
+            if (playerRigidbody.velocity.y == 0)
+                Instantiate(landingVFX, new Vector3(xPos, playerGroundCheckCollider.transform.position.y, transform.position.z), Quaternion.identity);
+
             StartCoroutine(LandingLag(landingLag));
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        canCollideWithSource = true;
-
-        if (canCollideWithSource && other.tag == "EnergySource")
-        {
-            currentEnergy += 30.0f;
-            canCollideWithSource = false;
         }
     }
 
@@ -758,20 +757,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    IEnumerator LandingLag(float time)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        float i = .0f;
-        while (i <= time)
+        canCollideWithSource = true;
+
+        if (canCollideWithSource && other.tag == "EnergySource")
         {
-            i += Time.deltaTime;
-            if (i <= time/* && isGrounded*/)
-            {
-                characterAnimator.SetBool("isLanding", true);
-            }
-            else
-                characterAnimator.SetBool("isLanding", false);
-            yield return null;
-            //yield return new WaitForSeconds(time / 5.0f);
+            currentEnergy += 30.0f;
+            canCollideWithSource = false;
         }
     }
 
@@ -790,6 +783,23 @@ public class PlayerController : MonoBehaviour
             {
                 yield return null;
             }
+        }
+    }
+
+    IEnumerator LandingLag(float time)
+    {
+        float i = .0f;
+        while (i <= time)
+        {
+            i += Time.deltaTime;
+            if (i <= time/* && isGrounded*/)
+            {
+                characterAnimator.SetBool("isLanding", true);
+            }
+            else
+                characterAnimator.SetBool("isLanding", false);
+            yield return null;
+            //yield return new WaitForSeconds(time / 5.0f);
         }
     }
 

@@ -16,13 +16,15 @@ public class MyPlayerManager : MonoBehaviour {
             new Vector2( 8f, 2.6f),
         };
 
-    public static List<PlayerController> players = new List<PlayerController>(maxPlayers);
+    public static List<PlayerController> players;
 
 
 
     void Start()
     {
         InputManager.OnDeviceDetached += OnDeviceDetached;
+
+        players = new List<PlayerController>(maxPlayers);
 
         guiStyle.normal.textColor = Color.white;
     }

@@ -519,7 +519,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1761390289194588
 GameObject:
   m_ObjectHideFlags: 0
@@ -1653,12 +1653,12 @@ MonoBehaviour:
   uppercutTagName: Uppercut
   downAirTagName: DownAir
   maximumEnergy: 100
-  passiveEnergyLoss: 2
-  groundedMoveEnergyCost: 0.5
-  airMoveEnergyCost: 0.5
-  jumpEnergyCost: 2
-  wallJumpEnergyCost: 1
-  punchEnergyCost: 4
+  passiveEnergyLoss: 8
+  groundedMoveEnergyCost: 12
+  airMoveEnergyCost: 12
+  jumpEnergyCost: 14
+  wallJumpEnergyCost: 8
+  punchEnergyCost: 16
   currentEnergy: 0
   isLoosingEnergy: 0
   isSpendingEnergy: 0
@@ -1676,6 +1676,10 @@ MonoBehaviour:
   uppercutColliderAnimator: {fileID: 95031129955752822}
   downAirColliderAnimator: {fileID: 95436114138903458}
   jumpVFX: {fileID: 1405802149343542, guid: 89a0f6afd5fae884eb3202f409078c88, type: 2}
+  wallJumpVFX: {fileID: 0}
+  landingVFX: {fileID: 0}
+  movementVFX: {fileID: 0}
+  hitVFX: {fileID: 0}
   energyGauge: {fileID: 114818634378149348}
   isGrounded: 0
   isSlidingOnWall: 0

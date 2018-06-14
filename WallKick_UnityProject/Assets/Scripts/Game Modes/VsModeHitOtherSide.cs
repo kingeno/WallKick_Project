@@ -13,6 +13,8 @@ public class VsModeHitOtherSide : MonoBehaviour {
     private int p1Score;
     private int p2Score;
 
+    private int winningPlayer;
+
     private GUIStyle guiStyle = new GUIStyle();
 
     private void OnEnable()
@@ -39,6 +41,23 @@ public class VsModeHitOtherSide : MonoBehaviour {
             p2Score += pointsToAdd;
             leftLimiter.isHit = false;
         }
+
+        if (p1Score == 50)
+        {
+            winningPlayer = 1;
+            EndGame();
+        }
+        else if (p2Score == 50)
+        {
+            winningPlayer = 2;
+            EndGame();
+        }
+    }
+
+    void EndGame()
+    {
+        Time.timeScale = 0f;
+        Debug.Log("PLAYER " + winningPlayer + " WINS");
     }
 
     void OnGUI()
