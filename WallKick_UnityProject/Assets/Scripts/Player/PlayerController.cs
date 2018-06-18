@@ -40,9 +40,11 @@ public class PlayerController : MonoBehaviour
 
     [Header("Punch")]
     public int hitStrength = 10;
+    public int sweetSpotHitStrength = 20;
     [HideInInspector] public int bonusStrength;
     public int bonusStrengthMultiplier = 1;
     [HideInInspector] public int totalStrengh;
+    [HideInInspector] public int sweetSpotTotalStrength;
     public Transform straightPunchCollider;
     public Transform uppercutCollider;
     public Transform downAirCollider;
@@ -90,10 +92,11 @@ public class PlayerController : MonoBehaviour
 
     [Header("Visual Effects")]
     public GameObject jumpVFX;
-    public GameObject wallJumpVFX;
+    public GameObject doubleJumpVFX;
+    public GameObject wallJumpToRightVFX;
+    public GameObject wallJumpToLeftVFX;
     public GameObject landingVFX;
-    public GameObject movementVFX;
-    public GameObject hitVFX;
+    public GameObject runVFX;
 
     [Header("UI")]
     public Image energyGauge;
@@ -185,9 +188,15 @@ public class PlayerController : MonoBehaviour
             bonusStrength *= -1;
 
         if (bonusStrength > 0)
+        {
             totalStrengh = hitStrength + (bonusStrength * bonusStrengthMultiplier);
+            sweetSpotTotalStrength = sweetSpotHitStrength + (bonusStrength * bonusStrengthMultiplier);
+        }
         else
+        {
             totalStrengh = hitStrength;
+            sweetSpotTotalStrength = sweetSpotHitStrength;
+        }
 
 
         if (!isGrounded && Device.LeftStickY < -0.3f)
@@ -255,6 +264,7 @@ public class PlayerController : MonoBehaviour
             {
                 analogGroundedMaxVelocity = -groundedMaxVelocity * leftStickValueX;
                 analogAirMaxVelocity = -airMaxVelocity * leftStickValueX;
+
                 inputLeft = true;
 
                 if (spendEnergy)
@@ -265,6 +275,7 @@ public class PlayerController : MonoBehaviour
                 analogGroundedMaxVelocity = groundedMaxVelocity;
                 analogAirMaxVelocity = airMaxVelocity;
                 inputLeft = true;
+
                 if (spendEnergy)
                     StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
             }
@@ -286,6 +297,7 @@ public class PlayerController : MonoBehaviour
                 analogGroundedMaxVelocity = groundedMaxVelocity;
                 analogAirMaxVelocity = airMaxVelocity;
                 inputRight = true;
+
                 if (spendEnergy)
                     StartCoroutine(EnergyConsumption(groundedMoveEnergyCost));
             }
@@ -637,7 +649,7 @@ public class PlayerController : MonoBehaviour
                 playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, .0f);
                 playerRigidbody.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
 
-                //Instantiate(jumpVFX, new Vector3(xPos, playerGroundCheckCollider.transform.position.y, transform.position.z), Quaternion.identity);
+                Instantiate(jumpVFX, new Vector3(xPos, playerGroundCheckCollider.transform.position.y, transform.position.z), Quaternion.identity);
                 inputJump = false;
             }
             if (playerRigidbody.velocity.y < .0f)
@@ -667,6 +679,7 @@ public class PlayerController : MonoBehaviour
             {
                 playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, .0f);
                 playerRigidbody.AddForce(transform.up * doubleJumpForce, ForceMode2D.Impulse);
+                Instantiate(doubleJumpVFX, new Vector3(xPos, playerGroundCheckCollider.transform.position.y + playerGroundCheckCollider.transform.localScale.y*2, transform.position.z), Quaternion.identity);
 
                 if (inputRight && playerRigidbody.velocity.x < analogAirMaxVelocity)
                 {
@@ -705,6 +718,7 @@ public class PlayerController : MonoBehaviour
                         playerRigidbody.velocity = new Vector2(.0f, .0f);
                         Vector2 _wallJumpForce = new Vector2(horizontalForce, verticalForce);
                         playerRigidbody.AddForce(_wallJumpForce, ForceMode2D.Impulse);
+                        Instantiate(wallJumpToRightVFX, new Vector3(xPos - 0.5f, transform.position.y - 0.5f, transform.position.z), Quaternion.identity);
                         isSlidingOnWall = false;
                     }
                 }
@@ -718,6 +732,7 @@ public class PlayerController : MonoBehaviour
                         playerRigidbody.velocity = new Vector2(.0f, .0f);
                         Vector2 _wallJumpForce = new Vector2(-horizontalForce, verticalForce);
                         playerRigidbody.AddForce(_wallJumpForce, ForceMode2D.Impulse);
+                        Instantiate(wallJumpToLeftVFX, new Vector3(xPos + 0.5f, transform.position.y - 0.5f, transform.position.z), Quaternion.identity);
                         isSlidingOnWall = false;
                     }
                 }

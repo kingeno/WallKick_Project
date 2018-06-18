@@ -699,7 +699,7 @@ Transform:
   m_GameObject: {fileID: 1927934613342896}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4669367599599258}
   m_RootOrder: 2
@@ -739,7 +739,7 @@ Transform:
   m_GameObject: {fileID: 1306742963469922}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4669367599599258}
   m_RootOrder: 0
@@ -1110,7 +1110,7 @@ Transform:
   m_GameObject: {fileID: 1116260410515228}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4669367599599258}
   m_RootOrder: 1
@@ -1422,7 +1422,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.32, y: 0.32}
     newSize: {x: 1.28, y: 1.28}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -1632,20 +1632,22 @@ MonoBehaviour:
   airMaxVelocity: 10
   airAcceleration: 1.1
   fallingMaxVelocity: 20
-  jumpForce: 23
+  jumpForce: 24
   fallMultiplier: 12
   lowJumpMultiplier: 5
-  doubleJumpForce: 21
+  doubleJumpForce: 21.5
   doubleJumpHorizontalAcceleration: 1.9
   canDoubleJump: 0
   landingLag: 0.08
   horizontalForce: 14
-  verticalForce: 21
+  verticalForce: 21.5
   maxSlidingVelocity: 10
-  hitStrength: 10
+  hitStrength: 8
+  sweetSpotHitStrength: 12
   bonusStrength: 0
   bonusStrengthMultiplier: 1
   totalStrengh: 0
+  sweetSpotTotalStrength: 0
   straightPunchCollider: {fileID: 4199727873269924}
   uppercutCollider: {fileID: 4920722544140740}
   downAirCollider: {fileID: 4103926968858750}
@@ -1675,11 +1677,15 @@ MonoBehaviour:
   straightPunchColliderAnimator: {fileID: 95083082292130728}
   uppercutColliderAnimator: {fileID: 95031129955752822}
   downAirColliderAnimator: {fileID: 95436114138903458}
-  jumpVFX: {fileID: 1405802149343542, guid: 89a0f6afd5fae884eb3202f409078c88, type: 2}
-  wallJumpVFX: {fileID: 0}
-  landingVFX: {fileID: 0}
-  movementVFX: {fileID: 0}
-  hitVFX: {fileID: 0}
+  jumpVFX: {fileID: 1222330258044782, guid: 2efb4663e8e7d3346b1141cb7c5e069f, type: 2}
+  doubleJumpVFX: {fileID: 1422669933378926, guid: ccd88feaaa38feb46802a25718ef785b,
+    type: 2}
+  wallJumpToRightVFX: {fileID: 1857815494013498, guid: 38532fea442a04340bf2ab6fcd4e0597,
+    type: 2}
+  wallJumpToLeftVFX: {fileID: 1857815494013498, guid: 7685eae6ea4cba74abe58803c562089d,
+    type: 2}
+  landingVFX: {fileID: 1405802149343542, guid: 14d0c9c4d0833ef4e8b9d05cda5b5891, type: 2}
+  runVFX: {fileID: 1196639638999022, guid: 73090f26d6af08046a019bad5084d095, type: 2}
   energyGauge: {fileID: 114818634378149348}
   isGrounded: 0
   isSlidingOnWall: 0

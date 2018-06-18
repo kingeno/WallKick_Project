@@ -20,6 +20,9 @@ public class GameManager : MonoBehaviour {
     public float _freezeDurationWhenButtonHit;
     public static float freezeDurationWhenButtonHit;
 
+    public float _freezeDurationWhenButtonHit_sweetSpot;
+    public static float freezeDurationWhenButtonHit_sweetSpot;
+
     public GameObject player1;
     public GameObject player2;
 
@@ -32,6 +35,8 @@ public class GameManager : MonoBehaviour {
         isPlayer2Active = false;
 
         freezeDurationWhenButtonHit = _freezeDurationWhenButtonHit;
+        freezeDurationWhenButtonHit_sweetSpot = _freezeDurationWhenButtonHit_sweetSpot;
+
         Time.timeScale = timeSpeed;
 
         forcedFrameRate = false;

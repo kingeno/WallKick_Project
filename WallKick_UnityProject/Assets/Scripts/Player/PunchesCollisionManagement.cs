@@ -11,6 +11,8 @@ public class PunchesCollisionManagement : MonoBehaviour {
     private string uppercut_AnimationName;
     private string downAir_AnimationName;
 
+    //public GameObject hitVFX;
+
     void Start () {
 
         _collider = GetComponent<Collider2D>();
@@ -20,32 +22,37 @@ public class PunchesCollisionManagement : MonoBehaviour {
         uppercut_AnimationName = "Uppercut_ColliderAnim";
         downAir_AnimationName = "DownAir_ColliderAnim";
     }
-	
 
-	void Update () {
 
+    void Update()
+    {
         if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Straight_ColliderAnim") && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .95f)
         {
             //Debug.Log("SRAIGHT PUNCH - collision enabled");
-            Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
+            //Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
+            Physics2D.IgnoreLayerCollision(9, 11, false);
         }
 
         if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Uppercut_ColliderAnim") && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .95f)
         {
             //Debug.Log("UPPERCUT - collision enabled");
-            Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
+            //Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
+            Physics2D.IgnoreLayerCollision(9, 11, false);
         }
 
         if (_animator.GetCurrentAnimatorStateInfo(0).IsName("DownAir_ColliderAnim") && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .95f)
         {
             //Debug.Log("DOWN AIR - collision enabled");
-            Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
+            //Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
+            Physics2D.IgnoreLayerCollision(9, 11, false);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //Debug.Log("disable collision");
-        Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, true);
+        //Instantiate(hitVFX, transform.position, Quaternion.identity);
+        //Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, true);
+        Physics2D.IgnoreLayerCollision(9, 11, true);
     }
 }

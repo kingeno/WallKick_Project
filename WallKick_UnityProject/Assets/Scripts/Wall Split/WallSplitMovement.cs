@@ -76,16 +76,16 @@ public class WallSplitMovement : MonoBehaviour {
         rb.AddForce(transform.right * forceAmount, ForceMode2D.Impulse);
     }
 
-    void OnGUI()
-    {
-        guiStyle.fontSize = 14;
-        Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
-        float x = screenPos.x;
-        float y = Screen.height - screenPos.y;
+    //void OnGUI()
+    //{
+    //    guiStyle.fontSize = 14;
+    //    Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+    //    float x = screenPos.x;
+    //    float y = Screen.height - screenPos.y;
 
-        GUI.Label(new Rect(x - 50f, y - 100f, 20f, 50f),
-            "% x velocity = " + GUI_normalizedHorizontalVelocity.ToString()
-            //+ "\n" + "energy decrease = " + energyDecrease.ToString()
-            , guiStyle);
-    }
+    //    GUI.Label(new Rect(x - 50f, y - 100f, 20f, 50f),
+    //        "% x velocity = " + GUI_normalizedHorizontalVelocity.ToString()
+    //        //+ "\n" + "energy decrease = " + energyDecrease.ToString()
+    //        , guiStyle);
+    //}
 }

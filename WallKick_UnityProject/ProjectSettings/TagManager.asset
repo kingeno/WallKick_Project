@@ -19,6 +19,7 @@ TagManager:
   - P2_Uppercut
   - P1_DownAir
   - P2_DownAir
+  - Button
   layers:
   - Default
   - TransparentFX

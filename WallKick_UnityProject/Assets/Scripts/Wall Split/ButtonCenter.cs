@@ -18,15 +18,24 @@ public class ButtonCenter : MonoBehaviour
     public PlayerController player1Controller;
     public PlayerController player2Controller;
 
+    public GameObject hitVFX;
+
     public float startVelocity; // default value : 50
+    public float SS_startVelocity; // default value : 80
     public float velocityDecreaseRate; // default value : 20
     private float currentVelocity;
 
     public float descelerationAmplifier; // default value : 10
 
+    // if it hits the button
     public bool isNotPushed = false;
     public bool isPushedUp = false;
     public bool isPushedDown = false;
+
+    // if it hits one of the sweet spots (SS) of the button
+    public bool isNotPushed_SS = false;
+    public bool isPushedUp_SS = false;
+    public bool isPushedDown_SS = false;
 
     public float limitersBounceForce;
     public bool hasHitUpperLimiter = false;
@@ -73,7 +82,7 @@ public class ButtonCenter : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isPushedUp)
+        if (isPushedUp || isPushedUp_SS)
         {
             rb.velocity = Vector2.zero;
             if (hasHitBottomLimiter)
@@ -84,12 +93,16 @@ public class ButtonCenter : MonoBehaviour
             else
             {
                 rb.velocity = new Vector2(0f, startVelocity);
-                currentVelocity = startVelocity;
+                if (isPushedUp_SS)
+                    currentVelocity = SS_startVelocity;
+                else
+                    currentVelocity = startVelocity;
             }
             isPushedUp = false;
+            isPushedUp_SS = false;
             hasHitBottomLimiter = false;
         }
-        if (!isPushedUp && rb.velocity.y > 2.0f)
+        if (!isPushedUp && rb.velocity.y > 2.0f || !isPushedUp_SS && rb.velocity.y > 2.0f)
         {
             float _maxDesceleration = Mathf.Max(0, 0 + currentVelocity);
             float _desceleration = Mathf.Min(_maxDesceleration, velocityDecreaseRate) * descelerationAmplifier;
@@ -103,7 +116,7 @@ public class ButtonCenter : MonoBehaviour
         }
 
 
-        if (isPushedDown)
+        if (isPushedDown || isPushedDown_SS)
         {
             rb.velocity = Vector2.zero;
             if (hasHitUpperLimiter)
@@ -114,12 +127,16 @@ public class ButtonCenter : MonoBehaviour
             else
             {
                 rb.velocity = new Vector2(0f, -startVelocity);
-                currentVelocity = -startVelocity;
+                if (isPushedDown_SS)
+                    currentVelocity = -SS_startVelocity;
+                else
+                    currentVelocity = -startVelocity;
             }
             isPushedDown = false;
+            isPushedDown_SS = false;
             hasHitUpperLimiter = false;
         }
-        if (!isPushedDown && rb.velocity.y < -2.0f)
+        if (!isPushedDown && rb.velocity.y < -2.0f || !isPushedDown_SS && rb.velocity.y < -2.0f)
         {
             float _maxDesceleration = Mathf.Max(0, 0 + -currentVelocity);
             float _desceleration = Mathf.Min(_maxDesceleration, velocityDecreaseRate) * descelerationAmplifier;
@@ -134,10 +151,11 @@ public class ButtonCenter : MonoBehaviour
             rb.velocity = Vector2.zero;
         }
 
-        if (isNotPushed)
+        if (isNotPushed || isNotPushed_SS)
         {
             rb.velocity = Vector2.zero;
             isNotPushed = false;
+            isNotPushed_SS = false;
         }
     }
 
@@ -161,58 +179,67 @@ public class ButtonCenter : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "P1_StraightPunch")
+
+        if (collision.tag == "P1_StraightPunch" && !isNotPushed_SS)
         {
             isNotPushed = true;
             Punch(1, player1Controller.hitStrength, player1Controller.totalStrengh);
+            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
         }
 
-        if (collision.tag == "P2_StraightPunch")
+        if (collision.tag == "P2_StraightPunch" && !isNotPushed_SS)
         {
+            Debug.Log("caca super caca");
             isNotPushed = true;
             Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
+            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
         }
 
-        if (collision.tag == "P1_Uppercut")
+        if (collision.tag == "P1_Uppercut" && !isPushedUp_SS)
         {
             isPushedUp = true;
             Punch(1, player1Controller.hitStrength, player1Controller.totalStrengh);
+            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
         }
-        if (collision.tag == "P2_Uppercut")
+        if (collision.tag == "P2_Uppercut" && !isPushedUp_SS)
         {
             isPushedUp = true;
             Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
+            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
         }
 
-        if (collision.tag == "P1_DownAir")
+        if (collision.tag == "P1_DownAir" && !isPushedDown_SS)
         {
             isPushedDown = true;
             Punch(1, player1Controller.hitStrength, player1Controller.totalStrengh);
+            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
         }
-        if (collision.tag == "P2_DownAir")
+        if (collision.tag == "P2_DownAir" && !isPushedDown_SS)
         {
             isPushedDown = true;
             Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
+            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
         }
+        StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
     }
 
-    private void Punch (int playerNumber, int playerStrenght, int playerTotalStrenght)
+    public void Punch (int playerNumber, int playerStrenght, int playerTotalStrenght)
     {
-        StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
-
         if (playerNumber == 1)
         {
-            //Debug.Log("Player Number = " + playerNumber);
+            Debug.Log("Player Number = " + playerNumber);
 
             if (WallSplitMovement.horizontalVelocity >= .0f)
             {
                 splitWallMovement.ApplyHorizontalForce(playerStrenght);
-                //Debug.Log("hit strengh = " + player1Controller.hitStrength);
+                Debug.Log("hit strengh = " + player1Controller.hitStrength);
+                Debug.Log("hit strengh = " + playerStrenght);
             }
             else if (WallSplitMovement.horizontalVelocity < .0f)
             {
                 splitWallMovement.ApplyHorizontalForce(playerTotalStrenght);
-                //Debug.Log("hit strengh = " + player1Controller.hitStrength + " + " + (player1Controller.bonusStrength * player1Controller.bonusStrengthMultiplier) + " = " + player1Controller.totalStrengh);
+                Debug.Log("hit strengh = " + player1Controller.hitStrength + " + " + (player1Controller.bonusStrength * player1Controller.bonusStrengthMultiplier) + " = " + player1Controller.totalStrengh);
+                Debug.Log("hit strengh = " + playerStrenght + " + " + (player1Controller.bonusStrength * player1Controller.bonusStrengthMultiplier) + " = " + playerTotalStrenght);
             }
         }
         if (playerNumber == 2)
@@ -227,7 +254,7 @@ public class ButtonCenter : MonoBehaviour
             else if (WallSplitMovement.horizontalVelocity > .0f)
             {
                 splitWallMovement.ApplyHorizontalForce(-playerTotalStrenght);
-                Debug.Log("hit strengh = " + player2Controller.hitStrength + " + " + (player2Controller.bonusStrength * player2Controller.bonusStrengthMultiplier) + " = " + player2Controller.totalStrengh);
+                Debug.Log("hit strengh = " + playerStrenght + " + " + (player2Controller.bonusStrength * player2Controller.bonusStrengthMultiplier) + " = " + playerTotalStrenght);
             }
         }
     }

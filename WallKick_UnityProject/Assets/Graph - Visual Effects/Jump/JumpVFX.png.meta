@@ -1,12 +1,9 @@
 fileFormatVersion: 2
-guid: ef0d11ca8dc5c8a4ca342c12f1d2f1d6
-timeCreated: 1528986339
+guid: f42b21fcce92bd24fa63e90bd13601b3
+timeCreated: 1528987975
 licenseType: Free
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: jump_Sprite_Animation_0
-    21300002: jump_Sprite_Animation_1
-    21300004: jump_Sprite_Animation_2
+  fileIDToRecycleName: {}
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -43,10 +40,10 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 0
+  alignment: 9
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
@@ -91,49 +88,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: jump_Sprite_Animation_0
-      rect:
-        serializedVersion: 2
-        x: 7
-        y: 0
-        width: 50
-        height: 35
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: jump_Sprite_Animation_1
-      rect:
-        serializedVersion: 2
-        x: 82
-        y: 0
-        width: 33
-        height: 53
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: jump_Sprite_Animation_2
-      rect:
-        serializedVersion: 2
-        x: 159
-        y: 0
-        width: 5
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
+    sprites: []
     outline: []
     physicsShape: []
   spritePackingTag: 
