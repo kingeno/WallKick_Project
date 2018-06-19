@@ -179,48 +179,55 @@ public class ButtonCenter : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if(collision.IsTouchingLayers(9))
+        {
+            if (collision.tag == "P1_StraightPunch" && !isNotPushed_SS)
+            {
+                isNotPushed = true;
+                Punch(1, player1Controller.hitStrength, player1Controller.totalStrengh);
+                Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
+                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
+            }
 
-        if (collision.tag == "P1_StraightPunch" && !isNotPushed_SS)
-        {
-            isNotPushed = true;
-            Punch(1, player1Controller.hitStrength, player1Controller.totalStrengh);
-            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
-        }
+            if (collision.tag == "P2_StraightPunch" && !isNotPushed_SS)
+            {
+                Debug.Log("caca super caca");
+                isNotPushed = true;
+                Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
+                Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
+                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
+            }
 
-        if (collision.tag == "P2_StraightPunch" && !isNotPushed_SS)
-        {
-            Debug.Log("caca super caca");
-            isNotPushed = true;
-            Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
-            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
-        }
+            if (collision.tag == "P1_Uppercut" && !isPushedUp_SS)
+            {
+                isPushedUp = true;
+                Punch(1, player1Controller.hitStrength, player1Controller.totalStrengh);
+                Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
+                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
+            }
+            if (collision.tag == "P2_Uppercut" && !isPushedUp_SS)
+            {
+                isPushedUp = true;
+                Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
+                Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
+                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
+            }
 
-        if (collision.tag == "P1_Uppercut" && !isPushedUp_SS)
-        {
-            isPushedUp = true;
-            Punch(1, player1Controller.hitStrength, player1Controller.totalStrengh);
-            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
+            if (collision.tag == "P1_DownAir" && !isPushedDown_SS)
+            {
+                isPushedDown = true;
+                Punch(1, player1Controller.hitStrength, player1Controller.totalStrengh);
+                Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
+                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
+            }
+            if (collision.tag == "P2_DownAir" && !isPushedDown_SS)
+            {
+                isPushedDown = true;
+                Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
+                Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
+                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
+            }
         }
-        if (collision.tag == "P2_Uppercut" && !isPushedUp_SS)
-        {
-            isPushedUp = true;
-            Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
-            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
-        }
-
-        if (collision.tag == "P1_DownAir" && !isPushedDown_SS)
-        {
-            isPushedDown = true;
-            Punch(1, player1Controller.hitStrength, player1Controller.totalStrengh);
-            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
-        }
-        if (collision.tag == "P2_DownAir" && !isPushedDown_SS)
-        {
-            isPushedDown = true;
-            Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
-            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
-        }
-        StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
     }
 
     public void Punch (int playerNumber, int playerStrenght, int playerTotalStrenght)
