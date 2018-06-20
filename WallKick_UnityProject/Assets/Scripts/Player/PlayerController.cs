@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
 
     private int playerCount;
 
+    private int playerNumber;
+
     [Header("Grounded Movement")]
     public float groundedMaxVelocity;
     private float analogGroundedMaxVelocity;
@@ -151,6 +153,11 @@ public class PlayerController : MonoBehaviour
         playerCount = MyPlayerManager.players.Count;
 
         SetupPlayer(straightPunchTagName, uppercutTagName, downAirTagName);
+
+        if (tag == "Player1")
+            playerNumber = 1;
+        else if (tag == "Player2")
+            playerNumber = 2;
 
         playerRigidbody = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
@@ -354,6 +361,16 @@ public class PlayerController : MonoBehaviour
             if (Device.Action3.WasPressed && Device.LeftStickY < 0.4f && Device.LeftStickY > -0.4f || Input.GetKeyDown(KeyCode.C) && !Input.GetKey(KeyCode.DownArrow) && !Input.GetKey(KeyCode.UpArrow))
             {
                 inputPunch = true;
+                if (playerNumber == 1)
+                {
+                    isFacingRight = true;
+                    isFacingLeft = false;
+                }
+                else if (playerNumber == 2)
+                {
+                    isFacingLeft = true;
+                    isFacingRight = false;
+                }
                 if (spendEnergy)
                     StartCoroutine(EnergyConsumption(punchEnergyCost));
             }
@@ -435,7 +452,7 @@ public class PlayerController : MonoBehaviour
             if (horizontalSpeed < .0f)
                 horizontalSpeed *= -1;
 
-            if (isGrounded)
+            if (isGrounded && playerRigidbody.velocity.y == 0f)
             {
                 characterAnimator.SetBool("isGrounded", true);
                 characterAnimator.SetFloat("horizontalSpeed", horizontalSpeed);
@@ -452,7 +469,7 @@ public class PlayerController : MonoBehaviour
                 characterAnimator.SetBool("isJumping", false);
             }
 
-            if (inputDoubleJump && canDoubleJump/* && playerRigidbody.velocity.y > 0f*/)
+            if (/*inputDoubleJump && */!canDoubleJump && playerRigidbody.velocity.y > 0f)
             {
                 characterAnimator.SetBool("isDoubleJumping", true);
             }
@@ -461,7 +478,7 @@ public class PlayerController : MonoBehaviour
                 characterAnimator.SetBool("isDoubleJumping", false);
             }
 
-            if (!isGrounded && playerRigidbody.velocity.y < 7f)
+            if (!isGrounded && playerRigidbody.velocity.y < 1f)
             {
                 characterAnimator.SetBool("isFalling", true);
             }
@@ -750,9 +767,10 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Plateform")
         {
             if (playerRigidbody.velocity.y == 0)
+            {
                 Instantiate(landingVFX, new Vector3(xPos, playerGroundCheckCollider.transform.position.y, transform.position.z), Quaternion.identity);
-
-            StartCoroutine(LandingLag(landingLag));
+                StartCoroutine(LandingLag(landingLag));
+            }
         }
     }
 
@@ -807,7 +825,7 @@ public class PlayerController : MonoBehaviour
         while (i <= time)
         {
             i += Time.deltaTime;
-            if (i <= time/* && isGrounded*/)
+            if (i <= time && isGrounded)
             {
                 characterAnimator.SetBool("isLanding", true);
             }

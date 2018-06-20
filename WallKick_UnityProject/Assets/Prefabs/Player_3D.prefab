@@ -528,6 +528,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4715853437676352}
+  - component: {fileID: 61058951079852438}
   - component: {fileID: 70568715379193090}
   - component: {fileID: 50898342896116340}
   - component: {fileID: 114276444212737604}
@@ -699,7 +700,7 @@ Transform:
   m_GameObject: {fileID: 1927934613342896}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_Children: []
   m_Father: {fileID: 4669367599599258}
   m_RootOrder: 2
@@ -739,7 +740,7 @@ Transform:
   m_GameObject: {fileID: 1306742963469922}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_Children: []
   m_Father: {fileID: 4669367599599258}
   m_RootOrder: 0
@@ -1110,7 +1111,7 @@ Transform:
   m_GameObject: {fileID: 1116260410515228}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_Children: []
   m_Father: {fileID: 4669367599599258}
   m_RootOrder: 1
@@ -1381,6 +1382,31 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!61 &61058951079852438
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1761390289194588}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.4, y: 1}
+  m_EdgeRadius: 0
 --- !u!61 &61432994592892236
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -1437,7 +1463,7 @@ CapsuleCollider2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1761390289194588}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -1617,7 +1643,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ae9c3c70eff2294e95b72f446b92c11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundedMaxVelocity: 17
+  groundedMaxVelocity: 18
   groundedAcceleration: 2.8
   airMaxVelocity: 11
   airAcceleration: 1.1
@@ -1629,8 +1655,8 @@ MonoBehaviour:
   doubleJumpHorizontalAcceleration: 2.1
   canDoubleJump: 0
   landingLag: 0.08
-  horizontalForce: 14
-  verticalForce: 21.5
+  horizontalForce: 15
+  verticalForce: 21.8
   maxSlidingVelocity: 10
   hitStrength: 8
   sweetSpotHitStrength: 12

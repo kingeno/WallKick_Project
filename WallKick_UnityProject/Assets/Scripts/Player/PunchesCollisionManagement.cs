@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PunchesCollisionManagement : MonoBehaviour {
+public class PunchesCollisionManagement : MonoBehaviour
+{
 
     private Collider2D _collider;
     private Animator _animator;
@@ -13,7 +14,8 @@ public class PunchesCollisionManagement : MonoBehaviour {
 
     //public GameObject hitVFX;
 
-    void Start () {
+    void Start()
+    {
 
         _collider = GetComponent<Collider2D>();
         _animator = GetComponent<Animator>();
@@ -26,7 +28,7 @@ public class PunchesCollisionManagement : MonoBehaviour {
 
     void Update()
     {
-        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Straight_ColliderAnim") && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .95f)
+        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Straight_ColliderAnim") && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .96f)
         {
             //Debug.Log("SRAIGHT PUNCH - collision enabled");
             //Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
@@ -34,7 +36,7 @@ public class PunchesCollisionManagement : MonoBehaviour {
             Debug.Log(Physics2D.GetIgnoreLayerCollision(9, 11));
         }
 
-        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Uppercut_ColliderAnim") && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .95f)
+        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Uppercut_ColliderAnim") && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .96f)
         {
             //Debug.Log("UPPERCUT - collision enabled");
             //Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
@@ -42,12 +44,12 @@ public class PunchesCollisionManagement : MonoBehaviour {
             Debug.Log(Physics2D.GetIgnoreLayerCollision(9, 11));
         }
 
-        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("DownAir_ColliderAnim") && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .95f)
+        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("DownAir_ColliderAnim") && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .96f)
         {
             //Debug.Log("DOWN AIR - collision enabled");
             //Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
             Physics2D.IgnoreLayerCollision(9, 11, false);
-            Debug.Log(Physics2D.GetIgnoreLayerCollision(9, 11));
+            //Debug.Log(Physics2D.GetIgnoreLayerCollision(9, 11));
         }
     }
 
@@ -56,10 +58,8 @@ public class PunchesCollisionManagement : MonoBehaviour {
         //Debug.Log("disable collision");
         //Instantiate(hitVFX, transform.position, Quaternion.identity);
         //Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, true);
-        if (collision.IsTouchingLayers(11))
-        {
-            Physics2D.IgnoreLayerCollision(9, 11, true);
-            Debug.Log(Physics2D.GetIgnoreLayerCollision(9, 11));
-        }
+
+        Physics2D.IgnoreLayerCollision(9, 11, true);
+        Debug.Log(Physics2D.GetIgnoreLayerCollision(9, 11));
     }
 }

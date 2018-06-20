@@ -8,7 +8,8 @@ public class VsModeHitOtherSide : MonoBehaviour {
     public SplitWallLimiters rightLimiter;
     public SplitWallLimiters leftLimiter;
 
-    public int pointsToAdd;
+    public int scoreToReach;
+    public int pointsAddedWhenScoring;
 
     private int p1Score;
     private int p2Score;
@@ -33,21 +34,21 @@ public class VsModeHitOtherSide : MonoBehaviour {
 	void Update () {
         if (rightLimiter.isHit == true)
         {
-            p1Score += pointsToAdd;
+            p1Score += pointsAddedWhenScoring;
             rightLimiter.isHit = false;
         }
         if (leftLimiter.isHit == true)
         {
-            p2Score += pointsToAdd;
+            p2Score += pointsAddedWhenScoring;
             leftLimiter.isHit = false;
         }
 
-        if (p1Score == 50)
+        if (p1Score >= scoreToReach)
         {
             winningPlayer = 1;
             EndGame();
         }
-        else if (p2Score == 50)
+        else if (p2Score >= scoreToReach)
         {
             winningPlayer = 2;
             EndGame();
