@@ -191,7 +191,6 @@ public class ButtonCenter : MonoBehaviour
 
             if (collision.tag == "P2_StraightPunch" && !isNotPushed_SS)
             {
-                Debug.Log("caca super caca");
                 isNotPushed = true;
                 Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
                 Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
@@ -234,34 +233,33 @@ public class ButtonCenter : MonoBehaviour
     {
         if (playerNumber == 1)
         {
-            Debug.Log("Player Number = " + playerNumber);
+            ////Debug.Log("Player Number = " + playerNumber);
 
             if (WallSplitMovement.horizontalVelocity >= .0f)
             {
                 splitWallMovement.ApplyHorizontalForce(playerStrenght);
-                Debug.Log("hit strengh = " + player1Controller.hitStrength);
-                Debug.Log("hit strengh = " + playerStrenght);
+                //Debug.Log("hit strengh = " + player1Controller.hitStrength);
+                //Debug.Log("hit strengh = " + playerStrenght);
             }
             else if (WallSplitMovement.horizontalVelocity < .0f)
             {
                 splitWallMovement.ApplyHorizontalForce(playerTotalStrenght);
-                Debug.Log("hit strengh = " + player1Controller.hitStrength + " + " + (player1Controller.bonusStrength * player1Controller.bonusStrengthMultiplier) + " = " + player1Controller.totalStrengh);
                 Debug.Log("hit strengh = " + playerStrenght + " + " + (player1Controller.bonusStrength * player1Controller.bonusStrengthMultiplier) + " = " + playerTotalStrenght);
             }
         }
         if (playerNumber == 2)
         {
-            Debug.Log("Player Number = " + playerNumber);
+            //Debug.Log("Player Number = " + playerNumber);
 
             if (WallSplitMovement.horizontalVelocity <= .0f)
             {
                 splitWallMovement.ApplyHorizontalForce(-playerStrenght);
-                Debug.Log("hit strengh = " + player2Controller.hitStrength);
+                //Debug.Log("hit strengh = " + player2Controller.hitStrength);
             }
             else if (WallSplitMovement.horizontalVelocity > .0f)
             {
                 splitWallMovement.ApplyHorizontalForce(-playerTotalStrenght);
-                Debug.Log("hit strengh = " + playerStrenght + " + " + (player2Controller.bonusStrength * player2Controller.bonusStrengthMultiplier) + " = " + playerTotalStrenght);
+                //Debug.Log("hit strengh = " + playerStrenght + " + " + (player2Controller.bonusStrength * player2Controller.bonusStrengthMultiplier) + " = " + playerTotalStrenght);
             }
         }
     }

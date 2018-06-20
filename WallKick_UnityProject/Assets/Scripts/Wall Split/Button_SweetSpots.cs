@@ -94,7 +94,7 @@ public class Button_SweetSpots : MonoBehaviour
         {
             if (collision.tag == "P1_Uppercut")
             {
-                Debug.Log("Uppercut SS !");
+                //Debug.Log("Uppercut SS !");
                 buttonCenterScript.isPushedUp_SS = true;
                 buttonCenterScript.Punch(1, player1Controller.sweetSpotHitStrength, player1Controller.sweetSpotTotalStrength);
                 Instantiate(hitSweetSpotVFX, collision.transform.position, Quaternion.identity);

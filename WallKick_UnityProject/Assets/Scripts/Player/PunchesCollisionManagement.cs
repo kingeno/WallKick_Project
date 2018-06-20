@@ -31,6 +31,7 @@ public class PunchesCollisionManagement : MonoBehaviour {
             //Debug.Log("SRAIGHT PUNCH - collision enabled");
             //Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
             Physics2D.IgnoreLayerCollision(9, 11, false);
+            Debug.Log(Physics2D.GetIgnoreLayerCollision(9, 11));
         }
 
         if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Uppercut_ColliderAnim") && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .95f)
@@ -38,6 +39,7 @@ public class PunchesCollisionManagement : MonoBehaviour {
             //Debug.Log("UPPERCUT - collision enabled");
             //Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
             Physics2D.IgnoreLayerCollision(9, 11, false);
+            Debug.Log(Physics2D.GetIgnoreLayerCollision(9, 11));
         }
 
         if (_animator.GetCurrentAnimatorStateInfo(0).IsName("DownAir_ColliderAnim") && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .95f)
@@ -45,6 +47,7 @@ public class PunchesCollisionManagement : MonoBehaviour {
             //Debug.Log("DOWN AIR - collision enabled");
             //Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, false);
             Physics2D.IgnoreLayerCollision(9, 11, false);
+            Debug.Log(Physics2D.GetIgnoreLayerCollision(9, 11));
         }
     }
 
@@ -53,6 +56,10 @@ public class PunchesCollisionManagement : MonoBehaviour {
         //Debug.Log("disable collision");
         //Instantiate(hitVFX, transform.position, Quaternion.identity);
         //Physics2D.IgnoreCollision(_collider, ButtonCenter.buttonCollider, true);
-        Physics2D.IgnoreLayerCollision(9, 11, true);
+        if (collision.IsTouchingLayers(11))
+        {
+            Physics2D.IgnoreLayerCollision(9, 11, true);
+            Debug.Log(Physics2D.GetIgnoreLayerCollision(9, 11));
+        }
     }
 }

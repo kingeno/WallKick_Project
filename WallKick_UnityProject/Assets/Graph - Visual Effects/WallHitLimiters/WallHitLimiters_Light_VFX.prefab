@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4396658199988116}
   - component: {fileID: 108018685876205378}
   m_Layer: 0
-  m_Name: WallHitLimiters_Light_SFX
+  m_Name: WallHitLimiters_Light_VFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
