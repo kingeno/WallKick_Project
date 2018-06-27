@@ -46,7 +46,7 @@ public class Button_SweetSpots : MonoBehaviour
     {
         if (topSweetSpot)
         {
-            if (collision.tag == "P1_DownAir")
+            if (buttonCenterScript.hasHit && collision.tag == "P1_DownAir")
             {
                 Debug.Log("Dair SS !");
                 buttonCenterScript.isPushedDown_SS = true;
@@ -55,7 +55,7 @@ public class Button_SweetSpots : MonoBehaviour
                 StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit_sweetSpot));
             }
 
-            if (collision.tag == "P2_DownAir")
+            if (buttonCenterScript.hasHit && collision.tag == "P2_DownAir")
             {
                 Debug.Log("Dair SS !");
                 buttonCenterScript.isPushedDown_SS = true;
@@ -69,7 +69,7 @@ public class Button_SweetSpots : MonoBehaviour
 
         else if (middleSweetSpot)
         {
-            if (collision.tag == "P1_StraightPunch")
+            if (!buttonCenterScript.hasHit && collision.tag == "P1_StraightPunch")
             {
                 Debug.Log("Fair SS !");
                 buttonCenterScript.isNotPushed_SS = true;
@@ -78,7 +78,7 @@ public class Button_SweetSpots : MonoBehaviour
                 StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit_sweetSpot));
             }
 
-            if (collision.tag == "P2_StraightPunch")
+            if (!buttonCenterScript && collision.tag == "P2_StraightPunch")
             {
                 Debug.Log("Fair SS !");
                 buttonCenterScript.isNotPushed_SS = true;
@@ -92,16 +92,16 @@ public class Button_SweetSpots : MonoBehaviour
 
         else if (bottomSweetSpot)
         {
-            if (collision.tag == "P1_Uppercut")
+            if (!buttonCenterScript && collision.tag == "P1_Uppercut")
             {
-                //Debug.Log("Uppercut SS !");
+                Debug.Log("Uppercut SS !");
                 buttonCenterScript.isPushedUp_SS = true;
                 buttonCenterScript.Punch(1, player1Controller.sweetSpotHitStrength, player1Controller.sweetSpotTotalStrength);
                 Instantiate(hitSweetSpotVFX, collision.transform.position, Quaternion.identity);
                 StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit_sweetSpot));
             }
 
-            if (collision.tag == "P2_Uppercut")
+            if (!buttonCenterScript && collision.tag == "P2_Uppercut")
             {
                 Debug.Log("Uppercut SS !");
                 buttonCenterScript.isPushedUp_SS = true;

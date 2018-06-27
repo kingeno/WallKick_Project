@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
 
     private int playerCount;
 
-    private int playerNumber;
+    public int playerNumber;
 
     [Header("Grounded Movement")]
     public float groundedMaxVelocity;
@@ -154,11 +154,6 @@ public class PlayerController : MonoBehaviour
 
         SetupPlayer(straightPunchTagName, uppercutTagName, downAirTagName);
 
-        if (tag == "Player1")
-            playerNumber = 1;
-        else if (tag == "Player2")
-            playerNumber = 2;
-
         playerRigidbody = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
         playerGroundCheckCollider = playerGroundCheck.GetComponent<Collider2D>();
@@ -175,6 +170,21 @@ public class PlayerController : MonoBehaviour
         energyGauge.fillAmount = maximumEnergy / maximumEnergy;
 
         guiStyle.normal.textColor = Color.white;
+    }
+
+    private void Start()
+    {
+        if (tag == "Player1")
+        {
+            playerNumber = 1;
+            Debug.Log("player number : " + playerNumber);
+        }
+        else if (tag == "Player2")
+        {
+            playerNumber = 2;
+            Debug.Log("player number : " + playerNumber);
+        }
+
     }
 
     private void Update()
@@ -361,41 +371,28 @@ public class PlayerController : MonoBehaviour
             if (Device.Action3.WasPressed && Device.LeftStickY < 0.4f && Device.LeftStickY > -0.4f || Input.GetKeyDown(KeyCode.C) && !Input.GetKey(KeyCode.DownArrow) && !Input.GetKey(KeyCode.UpArrow))
             {
                 inputPunch = true;
-                if (playerNumber == 1)
-                {
-                    isFacingRight = true;
-                    isFacingLeft = false;
-                }
-                else if (playerNumber == 2)
-                {
-                    isFacingLeft = true;
-                    isFacingRight = false;
-                }
+                Debug.LogWarning("FPunch - Input");
                 if (spendEnergy)
                     StartCoroutine(EnergyConsumption(punchEnergyCost));
             }
-            //else
-            //    inputPunch = false;
 
             // uppercut
             if (Device.Action3.WasPressed && Device.LeftStickY > 0.5f || Input.GetKeyDown(KeyCode.C) && Input.GetKey(KeyCode.UpArrow))
             {
                 inputUppercut = true;
+                Debug.LogWarning("Uppercut - Input");
                 if (spendEnergy)
                     StartCoroutine(EnergyConsumption(punchEnergyCost));
             }
-            //else
-            //    inputUppercut = false;
 
             // down air
             if (!isGrounded && Device.Action3.WasPressed && Device.LeftStickY < -0.5f/*verticalVelocity != 0f */|| Input.GetKey(KeyCode.DownArrow) && Input.GetKeyDown(KeyCode.C) && verticalVelocity != 0f)
             {
                 inputDownAir = true;
+                Debug.LogWarning("DownAir - Input");
                 if (spendEnergy)
                     StartCoroutine(EnergyConsumption(punchEnergyCost));
             }
-            //else
-            //    inputDownAir = false;
 
 
             //----------------- PAUSE ----------------------
@@ -499,6 +496,7 @@ public class PlayerController : MonoBehaviour
             if (inputPunch)
             {
                 characterAnimator.SetBool("isPunching", true);
+                Debug.Log("Fpunch - Animator Bool True");
                 inputPunch = false;
             }
             else
@@ -510,6 +508,7 @@ public class PlayerController : MonoBehaviour
             if (inputUppercut)
             {
                 characterAnimator.SetBool("isUppercuting", true);
+                Debug.Log("Uppercut - Animator Bool True");
                 inputUppercut = false;
             }
             else
@@ -521,6 +520,7 @@ public class PlayerController : MonoBehaviour
             if (inputDownAir)
             {
                 characterAnimator.SetBool("isDownAir", true);
+                Debug.Log("DownAir - Animator Bool True");
                 inputDownAir = false;
             }
             else
@@ -529,14 +529,30 @@ public class PlayerController : MonoBehaviour
                 downAirColliderAnimator.SetBool("enableColliderAnimation", false);
             }
 
-            if (characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_Straight") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
+            if (characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_Straight") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .3f)
                 straightPunchColliderAnimator.SetBool("enableColliderAnimation", true);
 
-            if (characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_Uppercut") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
+            if (characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_Uppercut") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .3f)
                 uppercutColliderAnimator.SetBool("enableColliderAnimation", true);
 
-            if (characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_DownAir") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .5f)
+            if (characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_DownAir") && characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < .3f)
                 downAirColliderAnimator.SetBool("enableColliderAnimation", true);
+
+            if (characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_Straight")
+                || characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_Uppercut")
+                || characterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Punch_DownAir"))
+            {
+                if (playerNumber == 1)
+                {
+                    isFacingRight = true;
+                    isFacingLeft = false;
+                }
+                else if (playerNumber == 2)
+                {
+                    isFacingLeft = true;
+                    isFacingRight = false;
+                }
+            }
 
             // facing animation (left & right)
             if (isFacingRight && !isFacingLeft)
@@ -555,6 +571,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+
         if (playerRigidbody.velocity.y <= -fallingMaxVelocity)
             playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, -fallingMaxVelocity);
 
@@ -633,8 +650,6 @@ public class PlayerController : MonoBehaviour
             // horizontal airborn movement
             if (!isGrounded && inputRight && playerRigidbody.velocity.x < analogAirMaxVelocity)
             {
-                //isFacingLeft = false;
-                //isFacingRight = true;
                 float _maxContribution = Mathf.Max(0, analogAirMaxVelocity - playerRigidbody.velocity.x);
                 float _acceleration = Mathf.Min(_maxContribution, airAcceleration);
                 playerRigidbody.velocity += new Vector2(_acceleration, .0f);

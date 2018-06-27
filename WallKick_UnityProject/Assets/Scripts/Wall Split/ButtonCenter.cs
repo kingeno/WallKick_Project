@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ButtonCenter : MonoBehaviour
 {
+
+    public bool hasHit;
+
     private Rigidbody2D rb;
     private Collider2D _collider;
     public static Collider2D buttonCollider;
@@ -43,6 +46,8 @@ public class ButtonCenter : MonoBehaviour
 
     private void Start()
     {
+        hasHit = false;
+
         rb = GetComponent<Rigidbody2D>();
         _collider = GetComponent<Collider2D>();
         buttonCollider = GetComponent<Collider2D>();
@@ -82,9 +87,10 @@ public class ButtonCenter : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isPushedUp || isPushedUp_SS)
+        if (isPushedUp || isPushedUp_SS) //pushed up function
         {
             rb.velocity = Vector2.zero;
+
             if (hasHitBottomLimiter)
             {
                 rb.velocity = new Vector2(0f, limitersBounceForce);
@@ -102,7 +108,7 @@ public class ButtonCenter : MonoBehaviour
             isPushedUp_SS = false;
             hasHitBottomLimiter = false;
         }
-        if (!isPushedUp && rb.velocity.y > 2.0f || !isPushedUp_SS && rb.velocity.y > 2.0f)
+        if (!isPushedUp && rb.velocity.y > 2.0f || !isPushedUp_SS && rb.velocity.y > 2.0f) //progressive vertical desceleration of the button when pushed up
         {
             float _maxDesceleration = Mathf.Max(0, 0 + currentVelocity);
             float _desceleration = Mathf.Min(_maxDesceleration, velocityDecreaseRate) * descelerationAmplifier;
@@ -110,15 +116,16 @@ public class ButtonCenter : MonoBehaviour
             rb.velocity = new Vector2(0f, currentVelocity);
             limitersBounceForce = -currentVelocity;
         }
-        else if (rb.velocity.y <= 2f && rb.velocity.y >= 0f)
+        else if (rb.velocity.y <= 2f && rb.velocity.y >= 0f) //stops the button when its velocity < 2 && >= 0
         {
             rb.velocity = Vector2.zero;
         }
 
 
-        if (isPushedDown || isPushedDown_SS)
+        if (isPushedDown || isPushedDown_SS) //pushed down function
         {
             rb.velocity = Vector2.zero;
+
             if (hasHitUpperLimiter)
             {
                 rb.velocity = new Vector2(0f, limitersBounceForce);
@@ -136,21 +143,21 @@ public class ButtonCenter : MonoBehaviour
             isPushedDown_SS = false;
             hasHitUpperLimiter = false;
         }
-        if (!isPushedDown && rb.velocity.y < -2.0f || !isPushedDown_SS && rb.velocity.y < -2.0f)
+        if (!isPushedDown && rb.velocity.y < -2.0f || !isPushedDown_SS && rb.velocity.y < -2.0f) //progressive vertical desceleration of the button when pushed down
         {
             float _maxDesceleration = Mathf.Max(0, 0 + -currentVelocity);
             float _desceleration = Mathf.Min(_maxDesceleration, velocityDecreaseRate) * descelerationAmplifier;
-            //Debug.Log("max desceleration = " + _maxDesceleration);
-            //Debug.Log("velocity decrease rate = " + velocityDecreaseRate);
             currentVelocity += _desceleration * Time.deltaTime;
             rb.velocity = new Vector2(0f, currentVelocity);
             limitersBounceForce = -currentVelocity;
         }
-        else if (rb.velocity.y >= -2f && rb.velocity.y <= 0f)
+        else if (rb.velocity.y >= -2f && rb.velocity.y <= 0f) //stops the button when its velocity > -2 && <= 0
         {
             rb.velocity = Vector2.zero;
         }
 
+
+        // reset the button vertical velocity and booleans
         if (isNotPushed || isNotPushed_SS)
         {
             rb.velocity = Vector2.zero;
@@ -162,15 +169,13 @@ public class ButtonCenter : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Button_UpperLimiter")
+        if (collision.gameObject.tag == "Button_UpperLimiter") //when the button hit the upper limiter
         {
-            Debug.Log("Button hit upper limiter");
             hasHitUpperLimiter = true;
             isPushedDown = true;
         }
-        else if (collision.gameObject.tag == "Button_BottomLimiter")
+        else if (collision.gameObject.tag == "Button_BottomLimiter") //when the button hit the bottom limiter
         {
-            //Debug.Log("Button hit bottom limiter");
             hasHitBottomLimiter = true;
             isPushedUp = true;
         }
@@ -179,98 +184,98 @@ public class ButtonCenter : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.IsTouchingLayers(9))
+        // PLAYER 1
+        if (!hasHit && collision.tag == "P1_StraightPunch" && !isNotPushed_SS)
         {
-            if (collision.tag == "P1_StraightPunch" && !isNotPushed_SS)
-            {
-                isNotPushed = true;
-                Punch(1, player1Controller.hitStrength, player1Controller.totalStrengh);
-                Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
-                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
-            }
+            isNotPushed = true;
+            Punch(1, player1Controller.hitStrength, player1Controller.totalStrengh);
+            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
+            StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
+        }
+        if (!hasHit && collision.tag == "P1_Uppercut" && !isPushedUp_SS)
+        {
+            isPushedUp = true;
+            Punch(1, player1Controller.hitStrength, player1Controller.totalStrengh);
+            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
+            StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
+        }
+        if (!hasHit && collision.tag == "P1_DownAir" && !isPushedDown_SS)
+        {
+            isPushedDown = true;
+            Punch(1, player1Controller.hitStrength, player1Controller.totalStrengh);
+            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
+            StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
+        }
 
-            if (collision.tag == "P2_StraightPunch" && !isNotPushed_SS)
-            {
-                isNotPushed = true;
-                Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
-                Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
-                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
-            }
 
-            if (collision.tag == "P1_Uppercut" && !isPushedUp_SS)
-            {
-                isPushedUp = true;
-                Punch(1, player1Controller.hitStrength, player1Controller.totalStrengh);
-                Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
-                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
-            }
-            if (collision.tag == "P2_Uppercut" && !isPushedUp_SS)
-            {
-                isPushedUp = true;
-                Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
-                Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
-                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
-            }
-
-            if (collision.tag == "P1_DownAir" && !isPushedDown_SS)
-            {
-                isPushedDown = true;
-                Punch(1, player1Controller.hitStrength, player1Controller.totalStrengh);
-                Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
-                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
-            }
-            if (collision.tag == "P2_DownAir" && !isPushedDown_SS)
-            {
-                isPushedDown = true;
-                Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
-                Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
-                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
-            }
+        // PLAYER 2
+        if (!hasHit && collision.tag == "P2_StraightPunch" && !isNotPushed_SS)
+        {
+            isNotPushed = true;
+            Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
+            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
+            StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
+        }
+        if (!hasHit && collision.tag == "P2_Uppercut" && !isPushedUp_SS)
+        {
+            isPushedUp = true;
+            Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
+            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
+            StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
+        }
+        if (!hasHit && collision.tag == "P2_DownAir" && !isPushedDown_SS)
+        {
+            isPushedDown = true;
+            Punch(2, player2Controller.hitStrength, player2Controller.totalStrengh);
+            Instantiate(hitVFX, collision.transform.position, Quaternion.identity);
+            StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit));
         }
     }
 
-    public void Punch (int playerNumber, int playerStrenght, int playerTotalStrenght)
+    public void Punch(int playerNumber, int playerStrenght, int playerTotalStrenght)
     {
+        //Debug.Log("Player Number = " + playerNumber);
+        Debug.Log("punch function called");
+
         if (playerNumber == 1)
         {
-            ////Debug.Log("Player Number = " + playerNumber);
-
             if (WallSplitMovement.horizontalVelocity >= .0f)
             {
+                hasHit = true;
+                Physics2D.IgnoreLayerCollision(9, 11, true);
                 splitWallMovement.ApplyHorizontalForce(playerStrenght);
-                //Debug.Log("hit strengh = " + player1Controller.hitStrength);
-                //Debug.Log("hit strengh = " + playerStrenght);
             }
             else if (WallSplitMovement.horizontalVelocity < .0f)
             {
+                hasHit = true;
+                Physics2D.IgnoreLayerCollision(9, 11, true);
                 splitWallMovement.ApplyHorizontalForce(playerTotalStrenght);
-                Debug.Log("hit strengh = " + playerStrenght + " + " + (player1Controller.bonusStrength * player1Controller.bonusStrengthMultiplier) + " = " + playerTotalStrenght);
             }
         }
         if (playerNumber == 2)
         {
-            //Debug.Log("Player Number = " + playerNumber);
-
             if (WallSplitMovement.horizontalVelocity <= .0f)
             {
+                hasHit = true;
+                Physics2D.IgnoreLayerCollision(9, 11, true);
                 splitWallMovement.ApplyHorizontalForce(-playerStrenght);
-                //Debug.Log("hit strengh = " + player2Controller.hitStrength);
             }
             else if (WallSplitMovement.horizontalVelocity > .0f)
             {
+                hasHit = true;
+                Physics2D.IgnoreLayerCollision(9, 11, true);
                 splitWallMovement.ApplyHorizontalForce(-playerTotalStrenght);
-                //Debug.Log("hit strengh = " + playerStrenght + " + " + (player2Controller.bonusStrength * player2Controller.bonusStrengthMultiplier) + " = " + playerTotalStrenght);
             }
         }
     }
 
-    private int RandomPos()
-    {
-        int newRandomPos;
+    //private int RandomPos()
+    //{
+    //    int newRandomPos;
 
-        int[] arrayOfPos = new int[] { 4, 6, 8, 10, 12, 14, 16, 18 };
-        newRandomPos = arrayOfPos[Random.Range(0, 7)];
+    //    int[] arrayOfPos = new int[] { 4, 6, 8, 10, 12, 14, 16, 18 };
+    //    newRandomPos = arrayOfPos[Random.Range(0, 7)];
 
-        return newRandomPos;
-    }
+    //    return newRandomPos;
+    //}
 }
