@@ -54,6 +54,8 @@ public class PlayerController : MonoBehaviour
     public string uppercutTagName;
     public string downAirTagName;
 
+    public bool hasJustHitButton;
+
     [Header("Energy")]
     public float maximumEnergy = 100.0f;
     public float passiveEnergyLoss = 1.0f;
@@ -107,6 +109,10 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D playerRigidbody;
     private Collider2D playerCollider;
+
+    public GameObject splitWall;
+    public WallSplitMovement splitWallMovement;
+
     private RaycastHit2D isHitingPlateform; // used to store collision with plateform when not grounded and holding joystick down
     private int oneWayPlateformMask;  // contains the layermask for OneWayPlateform;
 
@@ -168,6 +174,11 @@ public class PlayerController : MonoBehaviour
 
         currentEnergy = maximumEnergy;
         energyGauge.fillAmount = maximumEnergy / maximumEnergy;
+
+        if (splitWall == null)
+            splitWall = GameObject.Find("Split Wall");
+        if (splitWall != null && splitWallMovement == null)
+            splitWallMovement = splitWall.GetComponent<WallSplitMovement>();
 
         guiStyle.normal.textColor = Color.white;
     }
@@ -775,6 +786,43 @@ public class PlayerController : MonoBehaviour
         }
         else
             playerRigidbody.velocity = Vector2.zero;
+    }
+
+    public void Punch(int playerNumber, int playerStrenght, int playerTotalStrenght)
+    {
+        //Debug.Log("Player Number = " + playerNumber);
+        Debug.Log("punch function called");
+
+        if (playerNumber == 1)
+        {
+            if (WallSplitMovement.horizontalVelocity >= .0f)
+            {
+                hasJustHitButton = true;
+                Physics2D.IgnoreLayerCollision(9, 11, true);
+                WallSplitMovement.ApplyHorizontalForce(playerStrenght);
+            }
+            else if (WallSplitMovement.horizontalVelocity < .0f)
+            {
+                hasJustHitButton = true;
+                Physics2D.IgnoreLayerCollision(9, 11, true);
+                WallSplitMovement.ApplyHorizontalForce(playerTotalStrenght);
+            }
+        }
+        if (playerNumber == 2)
+        {
+            if (WallSplitMovement.horizontalVelocity <= .0f)
+            {
+                hasJustHitButton = true;
+                Physics2D.IgnoreLayerCollision(9, 11, true);
+                WallSplitMovement.ApplyHorizontalForce(-playerStrenght);
+            }
+            else if (WallSplitMovement.horizontalVelocity > .0f)
+            {
+                hasJustHitButton = true;
+                Physics2D.IgnoreLayerCollision(9, 11, true);
+                WallSplitMovement.ApplyHorizontalForce(-playerTotalStrenght);
+            }
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

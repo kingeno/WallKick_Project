@@ -6,7 +6,8 @@ public class WallSplitMovement : MonoBehaviour {
 
     private GUIStyle guiStyle = new GUIStyle();
 
-    private Rigidbody2D rb;
+    public static Rigidbody2D _rb;
+    public static Transform _transform;
     public Transform bottomGear;
     public Transform forceField;
     public Transform returnPoint;
@@ -22,7 +23,8 @@ public class WallSplitMovement : MonoBehaviour {
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        _rb = GetComponent<Rigidbody2D>();
+        _transform = GetComponent<Transform>();
 
         guiStyle.normal.textColor = Color.white;
 
@@ -46,20 +48,20 @@ public class WallSplitMovement : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        horizontalVelocity = rb.velocity.x;
+        horizontalVelocity = _rb.velocity.x;
         normalizedHorizontalVelocity = horizontalVelocity / maxVelocity;
         GUI_normalizedHorizontalVelocity = normalizedHorizontalVelocity * 100;
         GUI_normalizedHorizontalVelocity = (int)GUI_normalizedHorizontalVelocity;
 
-        if (rb.velocity.x >= maxVelocity)
-            rb.velocity = new Vector2(maxVelocity, 0f);
-        if (rb.velocity.x <= -maxVelocity)
-            rb.velocity = new Vector2(-maxVelocity, 0f);
+        if (_rb.velocity.x >= maxVelocity)
+            _rb.velocity = new Vector2(maxVelocity, 0f);
+        if (_rb.velocity.x <= -maxVelocity)
+            _rb.velocity = new Vector2(-maxVelocity, 0f);
 
         if (!ReturnPoint.isInReturnPoint && ReturnPoint.isEnable)
-            rb.AddForce((returnPoint.transform.position - transform.position).normalized * returnPointAttractionForce * Time.deltaTime);
+            _rb.AddForce((returnPoint.transform.position - transform.position).normalized * returnPointAttractionForce * Time.deltaTime);
         if (transform.position.x == returnPoint.transform.position.x && ReturnPoint.isEnable)
-            rb.velocity = new Vector2(0f, transform.position.y);
+            _rb.velocity = new Vector2(0f, transform.position.y);
 
         if (normalizedHorizontalVelocity > 0.1)
         {
@@ -69,11 +71,11 @@ public class WallSplitMovement : MonoBehaviour {
             isGeneratingEnergy = false;
     }
 
-    public void ApplyHorizontalForce(int forceAmount)
+    public static void ApplyHorizontalForce(int forceAmount)
     {
         ReturnPoint.isEnable = false;
-        rb.velocity = Vector2.zero;
-        rb.AddForce(transform.right * forceAmount, ForceMode2D.Impulse);
+        _rb.velocity = Vector2.zero;
+        _rb.AddForce(_transform.right * forceAmount, ForceMode2D.Impulse);
     }
 
     //void OnGUI()
