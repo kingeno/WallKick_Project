@@ -1175,7 +1175,7 @@ MeshRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1306742963469922}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1209,7 +1209,7 @@ MeshRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1116260410515228}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1243,7 +1243,7 @@ MeshRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1927934613342896}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1616,6 +1616,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09696033aadbd9e41a032ea6b404684c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player1: {fileID: 0}
+  player2: {fileID: 0}
+  player1Controller: {fileID: 0}
+  player2Controller: {fileID: 0}
 --- !u!114 &114275117624863514
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1671,6 +1675,7 @@ MonoBehaviour:
   straightPunchTagName: StraightPunch
   uppercutTagName: Uppercut
   downAirTagName: DownAir
+  hasJustHitButton: 0
   maximumEnergy: 100
   passiveEnergyLoss: 8
   groundedMoveEnergyCost: 12
@@ -1704,6 +1709,8 @@ MonoBehaviour:
   landingVFX: {fileID: 1405802149343542, guid: 14d0c9c4d0833ef4e8b9d05cda5b5891, type: 2}
   runVFX: {fileID: 1196639638999022, guid: 73090f26d6af08046a019bad5084d095, type: 2}
   energyGauge: {fileID: 114818634378149348}
+  splitWall: {fileID: 0}
+  splitWallMovement: {fileID: 0}
   isGrounded: 0
   isSlidingOnWall: 0
   canWallJumpToRight: 0
@@ -1769,6 +1776,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09696033aadbd9e41a032ea6b404684c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player1: {fileID: 0}
+  player2: {fileID: 0}
+  player1Controller: {fileID: 0}
+  player2Controller: {fileID: 0}
 --- !u!114 &114756581170989112
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1780,6 +1791,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09696033aadbd9e41a032ea6b404684c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player1: {fileID: 0}
+  player2: {fileID: 0}
+  player1Controller: {fileID: 0}
+  player2Controller: {fileID: 0}
 --- !u!114 &114818634378149348
 MonoBehaviour:
   m_ObjectHideFlags: 1

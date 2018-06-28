@@ -94,8 +94,9 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public static IEnumerator FreezeFrame(float freezeDuration)
+    public static IEnumerator FreezeFrame(float freezeDuration, float shakeDuration)
     {
+        MainCamera.shakeDuration = shakeDuration;
         float i = .0f;
         while (i <= freezeDuration)
         {
@@ -103,7 +104,7 @@ public class GameManager : MonoBehaviour {
             if (i < freezeDuration)
             {
                 //Debug.Log(i);
-                ScreenShake.shakeDuration = .1f;
+                MainCamera.shakeDuration = .1f;
                 Time.timeScale = .0f;
             }
             else if (i < freezeDuration + 1)

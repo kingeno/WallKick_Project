@@ -52,7 +52,7 @@ public class Button_SweetSpots : MonoBehaviour
                 buttonCenterScript.isPushedDown_SS = true;
                 player1Controller.Punch(1, player1Controller.sweetSpotHitStrength, player1Controller.sweetSpotTotalStrength);
                 Instantiate(hitSweetSpotVFX, collision.transform.position, Quaternion.identity);
-                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit_sweetSpot));
+                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit_sweetSpot, 0.5f));
             }
 
             if (!player2Controller.hasJustHitButton && collision.tag == "P2_DownAir")
@@ -61,7 +61,7 @@ public class Button_SweetSpots : MonoBehaviour
                 buttonCenterScript.isPushedDown_SS = true;
                 player2Controller.Punch(2, player2Controller.sweetSpotHitStrength, player2Controller.sweetSpotTotalStrength);
                 Instantiate(hitSweetSpotVFX, collision.transform.position, Quaternion.identity);
-                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit_sweetSpot));
+                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit_sweetSpot, 0.5f));
             }
         }
 
@@ -75,7 +75,7 @@ public class Button_SweetSpots : MonoBehaviour
                 buttonCenterScript.isNotPushed_SS = true;
                 player1Controller.Punch(1, player1Controller.sweetSpotHitStrength, player1Controller.sweetSpotTotalStrength);
                 Instantiate(hitSweetSpotVFX, collision.transform.position, Quaternion.identity);
-                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit_sweetSpot));
+                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit_sweetSpot, 0.5f));
             }
 
             if (!player2Controller.hasJustHitButton && collision.tag == "P2_StraightPunch")
@@ -84,7 +84,7 @@ public class Button_SweetSpots : MonoBehaviour
                 buttonCenterScript.isNotPushed_SS = true;
                 player2Controller.Punch(2, player2Controller.sweetSpotHitStrength, player2Controller.sweetSpotTotalStrength);
                 Instantiate(hitSweetSpotVFX, collision.transform.position, Quaternion.identity);
-                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit_sweetSpot));
+                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit_sweetSpot, 0.5f));
             }
         }
 
@@ -98,7 +98,7 @@ public class Button_SweetSpots : MonoBehaviour
                 buttonCenterScript.isPushedUp_SS = true;
                 player1Controller.Punch(1, player1Controller.sweetSpotHitStrength, player1Controller.sweetSpotTotalStrength);
                 Instantiate(hitSweetSpotVFX, collision.transform.position, Quaternion.identity);
-                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit_sweetSpot));
+                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit_sweetSpot, 0.5f));
             }
 
             if (!player2Controller.hasJustHitButton && collision.tag == "P2_Uppercut")
@@ -107,7 +107,7 @@ public class Button_SweetSpots : MonoBehaviour
                 buttonCenterScript.isPushedUp_SS = true;
                 player2Controller.Punch(2, player2Controller.sweetSpotHitStrength, player2Controller.sweetSpotTotalStrength);
                 Instantiate(hitSweetSpotVFX, collision.transform.position, Quaternion.identity);
-                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit_sweetSpot));
+                StartCoroutine(GameManager.FreezeFrame(GameManager.freezeDurationWhenButtonHit_sweetSpot, 0.5f));
             }
         }
     }
