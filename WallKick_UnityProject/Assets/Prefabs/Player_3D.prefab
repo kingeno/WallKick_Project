@@ -1651,7 +1651,7 @@ MonoBehaviour:
   groundedMaxVelocity: 18
   groundedAcceleration: 2.8
   airMaxVelocity: 11
-  airAcceleration: 1.1
+  airAcceleration: 2
   fallingMaxVelocity: 19.2
   jumpForce: 25.2
   fallMultiplier: 12

@@ -899,19 +899,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //void OnGUI()
-    //{
-    //    guiStyle.fontSize = 14;
-    //    Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
-    //    float x = screenPos.x;
-    //    float y = Screen.height - screenPos.y;
+    void OnGUI()
+    {
+        guiStyle.fontSize = 14;
+        Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+        float x = screenPos.x;
+        float y = Screen.height - screenPos.y;
 
-    //    GUI.Label(new Rect(x - 50.0f, y - 100.0f, 20.0f, 50.0f),
-    //        //"spend energy = " + spendEnergy.ToString() + " (S)"
-    //        //+ "\n" + "energy decrease = " + energyDecrease.ToString() + " (D)"
-    //        /*+*/ "\n" + "energy = " + debugDisplayedEnergy.ToString() + " (E)"
-    //        //+ "\n" + "vertical velocity = " + verticalVelocity.ToString()
-    //        //+ "\n" + "horizontal velocity = " + horizontalVelocity.ToString()
-    //        , guiStyle);
-    //}
+        GUI.Label(new Rect(x - 50.0f, y - 100.0f, 20.0f, 50.0f),
+            //"spend energy = " + spendEnergy.ToString() + " (S)"
+            //+ "\n" + "energy decrease = " + energyDecrease.ToString() + " (D)"
+            /*+*/ "\n" + "energy = " + debugDisplayedEnergy.ToString() + " (E)"
+            //+ "\n" + "vertical velocity = " + verticalVelocity.ToString()
+            //+ "\n" + "horizontal velocity = " + horizontalVelocity.ToString()
+            , guiStyle);
+    }
 }
